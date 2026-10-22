@@ -1,7 +1,7 @@
 ---
 name: sdd-tasks
 description: "Break an approved LLD into a milestone plan of small, dependency-ordered tasks, each traced to criterion IDs. Use after Gate 3, or to plan a fix on the short path."
-argument-hint: "<component> <milestone, for example iam M2>"
+argument-hint: "<component> <milestone, for example tech M2>"
 metadata:
   version: 1.1.0
 ---
@@ -14,7 +14,7 @@ Turn approved designs into work an implementer can finish in one session per tas
 
 ## When to use
 
-- The component's LLD is approved (Gate 3). The gate hook blocks this skill otherwise; name the component, for example `/sdd-tasks iam M2`.
+- The component's LLD is approved (Gate 3). The gate hook blocks this skill otherwise; name the component, for example `/sdd-tasks tech M2`.
 - A bug or small change on the short path needs a task list.
 - The queue changes (a new S0 or S1 item, a re-ranked story).
 

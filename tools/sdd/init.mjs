@@ -7,7 +7,7 @@ import { FRAMEWORK_VERSION, git } from "../lib/sdd-lib.mjs";
 import { writeDocmap } from "./docs.mjs";
 
 export function parseComponents(spec) {
-  // "iam:IAM,billing:BILL" -> { iam: { prefix: "IAM", paths: [...] } }
+  // "tech:TECH,billing:BILL" -> { tech: { prefix: "TECH", paths: [...] } }
   const out = {};
   for (const part of String(spec || "").split(",").map((s) => s.trim()).filter(Boolean)) {
     const [name, prefix] = part.split(":");

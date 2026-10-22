@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: >
     Access checks, role grants and role revocation for the worked example.
-    Requirement IDs refer to docs/prd/components/PRD-iam-v1.md.
+    Requirement IDs refer to docs/prd/components/PRD-tech-v1.md.
 servers:
   - url: https://authz.example.internal
 security:
@@ -13,7 +13,7 @@ paths:
   /v1/authorize:
     get:
       operationId: authorize
-      summary: Check whether a user may perform an action (IAM-1)
+      summary: Check whether a user may perform an action (TECH-1)
       parameters:
         - name: userId
           in: query
@@ -56,7 +56,7 @@ paths:
   /v1/users/{userId}/roles/{role}:
     delete:
       operationId: revokeRole
-      summary: Revoke a role from a user (IAM-2, IAM-3, IAM-4)
+      summary: Revoke a role from a user (TECH-2, TECH-3, TECH-4)
       parameters:
         - $ref: "#/components/parameters/userId"
         - name: role
@@ -97,4 +97,4 @@ components:
       properties:
         code: { type: string, examples: ["not_found"] }
         message: { type: string }
-        requirement: { type: string, description: "Requirement ID that defines this error", examples: ["IAM-3"] }
+        requirement: { type: string, description: "Requirement ID that defines this error", examples: ["TECH-3"] }

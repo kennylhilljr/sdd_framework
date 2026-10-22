@@ -9,7 +9,7 @@ Domain terms used across this project's documents, defined once. Terms used only
 | Term | Definition |
 | --- | --- |
 | Access Management | The example L1 domain of this toolkit's reference profile: how people and systems are given, reviewed and removed access. |
-| Acceptance criterion | A testable statement of behavior in EARS notation, with an ID such as `IAM-2`. Tests and code cite it with `@spec`. |
+| Acceptance criterion | A testable statement of behavior in EARS notation, with an ID such as `TECH-2`. Tests and code cite it with `@spec`. |
 | ADR | Architecture decision record: one decision with its options and tradeoffs. Superseded by a new ADR, never edited after acceptance. |
 | Agent role (persona) | A named, scoped role an agent plays when it drafts or reviews part of a document, such as `product-writer` or `verifier`. It prepares material; it never makes an accountable decision. |
 | Annotation reach | The share of changed source files that carry at least one `@spec` annotation. |
@@ -24,13 +24,13 @@ Domain terms used across this project's documents, defined once. Terms used only
 | HLD | High level design: the SPEC, the system design with its ADRs. An artifact type, not an organizational level. |
 | Intake checkpoint | The human approval of the problem framing (PRD Section 1) before requirements are written. A local control, not one of the three gates. |
 | LLD | Low level design: one per software component, with contracts, schema, authorization and the test strategy. An artifact type, not an organizational level. |
-| Organizational scope (L0 to L3) | Where an artifact sits in the organization: L0 Cyber and Cyber IAM strategy, declarations and imperatives; L1 domain; L2 solution or capability; L3 Business Application. Recorded in the scope map. |
+| Organizational scope (L0 to L3) | Where an artifact sits in the organization: L0 Enterprise strategy, declarations and imperatives; L1 domain; L2 solution or capability; L3 Business Application. Recorded in the scope map. |
 | Portable core | The parts every adopting organization keeps: templates with decision owners, human gates, stable IDs and their lifecycle, structural trace checks and change control. |
 | Reverse orphan | An `@spec` annotation that cites an ID no document defines. |
 | Scope map | `docs/scope/scope-map.yaml`: each organizational scope, its level, its parent one level up, its owner and status. |
 | Severity (S0 to S4) | The urgency and impact of support work, from S0 (critical, immediate) to S4 (negligible, backlog). A separate lens from Product priority (P1 to P3). |
-| Software component | A part of one application's code with its own ID prefix, PRD and LLD, such as `iam` in the worked example. Not an organizational scope. |
-| Strategy | L0 direction for the whole organization, such as the Cyber and Cyber IAM strategy that domains translate. |
+| Software component | A part of one application's code with its own ID prefix, PRD and LLD, such as `tech` in the worked example. Not an organizational scope. |
+| Strategy | L0 direction for the whole organization, such as the enterprise strategy that domains translate. |
 | Traceability | Plain-text links from a criterion to the tests and code that cite it, checked by trace-check. Structural: a link does not prove that a test checks what the criterion means. |
 
 ## Domain terms

@@ -1,14 +1,14 @@
-# Differential audit: IAM-2
+# Differential audit: TECH-2
 
 > **Owner:** A · **Persona:** `verifier`. Produced by the optional bidirectional differential (feature flag `differentialAudit`). A new audit of the same criterion replaces this file; git keeps the history.
 
 | Field | Value |
 | --- | --- |
-| Criterion | IAM-2 |
+| Criterion | TECH-2 |
 | Date | 2026-10-20 |
 | Git SHA | n/a (example) |
 | Runs per direction | N = 3 |
-| Code regions | `src/iam/revoke-role.ts` (`revokeRole`), `src/iam/authorize.ts` (`authorize`) |
+| Code regions | `src/tech/revoke-role.ts` (`revokeRole`), `src/tech/authorize.ts` (`authorize`) |
 | Classification | B-ONLY-DRIFT |
 | Action | reconcile-EARS (documentation only) |
 
@@ -30,10 +30,10 @@ Three blind sessions were given the code with IDs and requirement-echoing names 
 
 | # | Finding | Severity |
 | --- | --- | --- |
-| 1 | The code invalidates after the commit and relies on a 30-second time-to-live as a safety net. Both choices are in LLD-iam §3 and §9 but not in the criterion. The behavior meets IAM-2; the criterion is less specific than the design. | pure-documentation |
+| 1 | The code invalidates after the commit and relies on a 30-second time-to-live as a safety net. Both choices are in LLD-tech §3 and §9 but not in the criterion. The behavior meets TECH-2; the criterion is less specific than the design. | pure-documentation |
 
-No hollow tests were found: the test for IAM-2 fails if the invalidation call is removed.
+No hollow tests were found: the test for TECH-2 fails if the invalidation call is removed.
 
 ## Recommended reconciliation
 
-Keep IAM-2 as written (it states the outcome the owner cares about). Add the invalidation order to the LLD's test plan section so an integration test pins it. No code change.
+Keep TECH-2 as written (it states the outcome the owner cares about). Add the invalidation order to the LLD's test plan section so an integration test pins it. No code change.

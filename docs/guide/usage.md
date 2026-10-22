@@ -48,10 +48,10 @@ The named people for each role, the exception authority and the fast path criter
 Approved documents are frozen; the protect-approved hook blocks edits to them. Create the next version instead:
 
 ```bash
-node tools/sdd/cli.mjs new --next docs/prd/components/PRD-iam-v1.md
+node tools/sdd/cli.mjs new --next docs/prd/components/PRD-tech-v1.md
 ```
 
-This writes `PRD-iam-v2.md` with `status: draft` and `supersedes:` pointing at v1, and updates the doc map. Edit v2, then approve it. ADRs are never versioned: write a new ADR that supersedes the old one.
+This writes `PRD-tech-v2.md` with `status: draft` and `supersedes:` pointing at v1, and updates the doc map. Edit v2, then approve it. ADRs are never versioned: write a new ADR that supersedes the old one.
 
 ## Creating documents
 
@@ -60,10 +60,10 @@ Run `node tools/sdd/cli.mjs new --help` to list the document types and their opt
 ```bash
 node tools/sdd/cli.mjs new vision
 node tools/sdd/cli.mjs new prd
-node tools/sdd/cli.mjs new prd-component --component iam --prefix IAM
+node tools/sdd/cli.mjs new prd-component --component tech --prefix TECH
 node tools/sdd/cli.mjs new adr --name use-postgresql
 node tools/sdd/cli.mjs new spec
-node tools/sdd/cli.mjs new lld --component iam --prefix IAM
+node tools/sdd/cli.mjs new lld --component tech --prefix TECH
 node tools/sdd/cli.mjs new test-plan
 node tools/sdd/cli.mjs new kickoff --milestone M1
 node tools/sdd/cli.mjs new plan --milestone M1
@@ -80,10 +80,10 @@ Skills call these commands for you; you rarely need them by hand.
 Put the annotation on the test that exercises a criterion and on the entry point of the behavior:
 
 ```ts
-// @spec IAM-2
+// @spec TECH-2
 export async function revokeRole(/* ... */) { /* ... */ }
 
-// @spec IAM-2
+// @spec TECH-2
 it("invalidates cached grants within 60 seconds of revocation", async () => { /* ... */ });
 ```
 

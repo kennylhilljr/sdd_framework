@@ -23,10 +23,10 @@ A person approves by setting `status: approved` with `approved_by` and `approved
 | ID | Example | Defined in |
 | --- | --- | --- |
 | Parent requirement | `FR-3`, `NFR-1`, `OUT-1`, `INV-1` | Parent PRD |
-| Acceptance criterion | `IAM-2` | Component PRD; cited by tests and code with `@spec IAM-2` |
-| Story, requirement, NFR, invariant, outcome | `IAM-US-1`, `IAM-FR-1`, `IAM-NFR-1`, `IAM-INV-1`, `IAM-OUT-1` | Component PRD |
+| Acceptance criterion | `TECH-2` | Component PRD; cited by tests and code with `@spec TECH-2` |
+| Story, requirement, NFR, invariant, outcome | `TECH-US-1`, `TECH-FR-1`, `TECH-NFR-1`, `TECH-INV-1`, `TECH-OUT-1` | Component PRD |
 | Decision | `ADR 0002` | `adr/` ([index](adr/README.md)) |
-| Design section | `SPEC 4.2`, `LLD-iam §3` | SPEC and LLDs |
+| Design section | `SPEC 4.2`, `LLD-tech §3` | SPEC and LLDs |
 
 IDs are never renumbered and never reused. An ID that leaves a PRD is recorded in its ID history table.
 
@@ -36,7 +36,7 @@ IDs are never renumbered and never reused. An ID that leaves a PRD is recorded i
 | --- | --- |
 | [Runbook: PostgreSQL primary failover](runbooks/db-failover-v1.md) | Operations runbook |
 | [Postmortem: stale grants after a cache outage](postmortems/2026-03-14-token-cache-outage.md) | S1 postmortem, 2026-03-14 |
-| [IAM-2 audit record](trace/audits/iam/IAM-2.md) | Differential audit of one criterion |
+| [TECH-2 audit record](trace/audits/tech/TECH-2.md) | Differential audit of one criterion |
 | [Evidence](trace/coverage.md) and [audit records](trace/index.yaml) | Derived by trace-check and the verifier |
 
 ## Scope map and artifact index
@@ -49,8 +49,8 @@ From [scope/scope-map.yaml](scope/scope-map.yaml).
 
 | Level | Scope | Name | Parent | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| L0 | `cyber-iam` | Cyber and Cyber IAM direction (illustrative) |  | Strategy owner (to be named) | illustrative |
-| L1 | `access-management` | Access Management domain (illustrative) | `cyber-iam` | Domain owner (to be named) | illustrative |
+| L0 | `enterprise` | Enterprise direction (illustrative) |  | Strategy owner (to be named) | illustrative |
+| L1 | `access-management` | Access Management domain (illustrative) | `enterprise` | Domain owner (to be named) | illustrative |
 | L2 | `example-capability` | Example capability: role-based access and revocation (illustrative, not the pilot selection) | `access-management` | Avery Chen (product owner) | illustrative |
 | L3 | `example-application` | Example business application: the sample access platform (synthetic) | `example-capability` | Avery Chen (product owner) | illustrative |
 
@@ -59,17 +59,17 @@ From [scope/scope-map.yaml](scope/scope-map.yaml).
 | Artifact type | Latest document | Version | Status | Scope | Derives from | Owner |
 | --- | --- | --- | --- | --- | --- | --- |
 | Vision and direction | [Vision: one place to decide who can do what](vision/vision-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
-| Research | [Research: where to keep grants and how to revoke them fast](research/iam-token-storage-v1.md) | v1 | approved | `example-application` |  | Riley Park (architect) |
+| Research | [Research: where to keep grants and how to revoke them fast](research/tech-token-storage-v1.md) | v1 | approved | `example-application` |  | Riley Park (architect) |
 | Product specification (parent PRD) | [Access platform: parent PRD](prd/PRD-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
 | Product specification (component PRD) | [Billing: usage metering and internal invoices](prd/components/PRD-billing-v1.md) | v1 | draft | `example-application` | [PRD-v1.md](prd/PRD-v1.md) | Jordan Ellis (finance lead) |
-| Product specification (component PRD) | [IAM: roles, access checks and revocation](prd/components/PRD-iam-v1.md) | v1 | approved | `example-application` | [PRD-v1.md](prd/PRD-v1.md) | Avery Chen (product owner) |
+| Product specification (component PRD) | [TECH: roles, access checks and revocation](prd/components/PRD-tech-v1.md) | v1 | approved | `example-application` | [PRD-v1.md](prd/PRD-v1.md) | Avery Chen (product owner) |
 | High level design (SPEC) | [Access platform: system design](spec/SPEC-v1.md) | v1 | approved | `example-application` | [PRD-v1.md](prd/PRD-v1.md) | Riley Park (architect) |
 | Low level design (LLD) | [Billing low-level design](lld/LLD-billing-v1.md) | v1 | draft | `example-application` | [SPEC-v1.md](spec/SPEC-v1.md) | Riley Park (architect) |
-| Low level design (LLD) | [IAM low-level design](lld/LLD-iam-v1.md) | v1 | approved | `example-application` | [SPEC-v1.md](spec/SPEC-v1.md) | Riley Park (architect) |
+| Low level design (LLD) | [TECH low-level design](lld/LLD-tech-v1.md) | v1 | approved | `example-application` | [SPEC-v1.md](spec/SPEC-v1.md) | Riley Park (architect) |
 | Test strategy | [Test plan](test/test-plan-v1.md) | v1 | approved | `example-application` |  | Morgan Lee (QA lead) |
-| Plan | [M1 kickoff: IAM revocation](build/M1-kickoff-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
-| Plan | [M1 plan: IAM revocation](build/M1-plan-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
-| Handoff | [M1 handoff: IAM revocation](build/M1-handoff-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
+| Plan | [M1 kickoff: TECH revocation](build/M1-kickoff-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
+| Plan | [M1 plan: TECH revocation](build/M1-plan-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
+| Handoff | [M1 handoff: TECH revocation](build/M1-handoff-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
 | Operations | [Runbook: PostgreSQL primary failover](runbooks/db-failover-v1.md) | v1 | approved | `example-application` |  | Sam Ortiz (SRE lead) |
 | Standard | [Persona standard](standards/agent-personas-v2.md) | v2 | draft |  |  | Framework owner |
 | Standard | [Spec-driven development standard](standards/spec-driven-development-v2.md) | v2 | in-review |  |  | Framework owner |

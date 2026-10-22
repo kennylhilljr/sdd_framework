@@ -34,7 +34,7 @@ An adopting organization takes the portable core as is and adapts the local choi
 | --- | --- |
 | Templates with a decision owner on every section (H, C, A) | Folder layout under `docs/` |
 | Human approval at Gates 1 to 3 | Who approves each gate, exception authority, fast path criteria |
-| Stable IDs and their lifecycle (Section 10) | ID syntax (`IAM-2` by default; a richer form is configurable) |
+| Stable IDs and their lifecycle (Section 10) | ID syntax (`TECH-2` by default; a richer form is configurable) |
 | Structural trace checks from criteria to tests and code | The intake checkpoint as a named control (Section 8) |
 | Frozen approved versions and change control | One combined queue for priority and severity (Section 15) |
 | Organizational scope recorded separately from the artifact chain | The L1 domain and its scope map (Access Management in this profile) |
@@ -56,7 +56,7 @@ Gate 1, Gate 2 and Gate 3 are approval checkpoints. They do not correspond to or
 
 | Level | Meaning |
 | --- | --- |
-| L0 | Cyber and Cyber IAM strategy, declarations and imperatives |
+| L0 | Enterprise strategy, declarations and imperatives |
 | L1 | Domain. Access Management is the example domain in this reference profile |
 | L2 | Solution or capability, such as entitlement management or access certification |
 | L3 | Business Application |
@@ -134,7 +134,7 @@ The intake checkpoint is a local control of this reference profile. It is not on
 
 **Recording an approval.** A person sets `status: approved` and records who and when: `approved_by: "<name> (<role>)"` and `approved: <date>`. With `approvals.requireApprover: true`, spec-lint requires both. Agents never set `status: approved`.
 
-**Binding.** Each gate applies to a specific component. The gate hook checks the component the skill is working on: `sdd-lld iam` needs the SPEC and the `iam` component PRD approved; `sdd-tasks iam` needs the `iam` LLD approved; `sdd-implement M1` needs the M1 plan and the approved LLD of every component that plan covers. When a repository has more than one component and none is named, the hook asks for it.
+**Binding.** Each gate applies to a specific component. The gate hook checks the component the skill is working on: `sdd-lld tech` needs the SPEC and the `tech` component PRD approved; `sdd-tasks tech` needs the `tech` LLD approved; `sdd-implement M1` needs the M1 plan and the approved LLD of every component that plan covers. When a repository has more than one component and none is named, the hook asks for it.
 
 **Limits of enforcement.** Front matter is self-asserted: a hook can read `approved_by` but cannot prove who that person is or that they hold the role. Approver authority comes from repository controls: a `CODEOWNERS` file that names the owners of `docs/`, branch protection that requires their review, and the approval record in the pull request. The gate hook is an adapter for Claude Code; other agents follow the gates procedurally unless an equivalent adapter is installed.
 
@@ -162,10 +162,10 @@ Every H section maps to one of these questions. The `sdd-intake` skill asks them
 | ID | Pattern | Example | Defined in |
 | --- | --- | --- | --- |
 | Parent requirement | `FR-<n>`, `NFR-<n>`, `OUT-<n>`, `INV-<n>` | `FR-3` | Parent PRD |
-| Acceptance criterion | `<PREFIX>-<n>` | `IAM-2` | Component PRD |
-| Story | `<PREFIX>-US-<n>` | `IAM-US-1` | Component PRD |
-| Component requirement | `<PREFIX>-FR-<n>` | `IAM-FR-1` | Component PRD |
-| Component NFR, invariant, outcome | `<PREFIX>-NFR-<n>`, `<PREFIX>-INV-<n>`, `<PREFIX>-OUT-<n>` | `IAM-INV-1` | Component PRD |
+| Acceptance criterion | `<PREFIX>-<n>` | `TECH-2` | Component PRD |
+| Story | `<PREFIX>-US-<n>` | `TECH-US-1` | Component PRD |
+| Component requirement | `<PREFIX>-FR-<n>` | `TECH-FR-1` | Component PRD |
+| Component NFR, invariant, outcome | `<PREFIX>-NFR-<n>`, `<PREFIX>-INV-<n>`, `<PREFIX>-OUT-<n>` | `TECH-INV-1` | Component PRD |
 | Decision | four-digit number | ADR 0002 | `docs/adr/` |
 
 `<PREFIX>` is two to ten uppercase letters or digits, starts with a letter, is unique in the repository, and is declared in the component PRD's `prefix` and in `sdd.config.json`. `FR`, `NFR`, `OUT`, `INV`, `US`, `AC`, `ADR`, `SPEC`, `LLD` and `PRD` are reserved. IDs are defined in the first column of a table whose first header is `ID`.
@@ -220,7 +220,7 @@ spec-lint checks across every version of each PRD: an ID defined in two document
 
 ## 13. Traceability and evidence
 
-**Annotations.** A test cites the criterion it verifies in a comment of the form `@spec IAM-2`, and its title names the ID. The entry point of the behavior in code carries the same annotation: the topmost function or handler that owns the behavior, not every helper.
+**Annotations.** A test cites the criterion it verifies in a comment of the form `@spec TECH-2`, and its title names the ID. The entry point of the behavior in code carries the same annotation: the topmost function or handler that owns the behavior, not every helper.
 
 **What the checks prove.** The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove semantic equivalence or coverage of every line, so accountable human review remains required. Checks across the rest of the chain (L0 direction, L1 translation, design, tasks and handoff) are planned; today the doc map shows those links and spec-lint checks that `derives_from` paths exist.
 

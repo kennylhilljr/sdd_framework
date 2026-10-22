@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.internal/schemas/session-event.schema.json",
   "title": "Session event",
-  "description": "Events the authorization service emits when access changes. A role.revoked event is emitted after the revocation commits (LLD-iam §3).",
+  "description": "Events the authorization service emits when access changes. A role.revoked event is emitted after the revocation commits (LLD-tech §3).",
   "type": "object",
   "required": ["type", "eventId", "at", "userId"],
   "properties": {
@@ -11,7 +11,7 @@
     "at": { "type": "string", "format": "date-time" },
     "userId": { "type": "string", "minLength": 1 },
     "role": { "type": "string", "minLength": 1 },
-    "actor": { "type": "string", "minLength": 1, "description": "Who made the change (IAM-4)" }
+    "actor": { "type": "string", "minLength": 1, "description": "Who made the change (TECH-4)" }
   },
   "allOf": [
     {

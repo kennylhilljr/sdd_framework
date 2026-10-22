@@ -3,18 +3,18 @@
 # scope names an entry in docs/scope/scope-map.yaml. drift is a list of criterion IDs, or null.
 schema_version: 2
 components:
-  iam:
+  tech:
     status: AUDITED
     scope: example-application
     owner: Morgan Lee (QA lead)
     sampled: 2026-10-15
     audited: 2026-10-20
     audited_sha: null
-    findings: IAM-1 to IAM-4 linked to tests and entry points; IAM-5 deferred by the owner
+    findings: TECH-1 to TECH-4 linked to tests and entry points; TECH-5 deferred by the owner
     disposition: accepted
     drift: null
-    next: Plan IAM-5 (bulk revocation) at the M2 kickoff
-    artifacts: [docs/lld/LLD-iam-v1.md@approved, docs/prd/PRD-v1.md@approved, docs/prd/components/PRD-iam-v1.md@approved, docs/spec/SPEC-v1.md@approved, docs/test/test-plan-v1.md@approved]
+    next: Plan TECH-5 (bulk revocation) at the M2 kickoff
+    artifacts: [docs/lld/LLD-tech-v1.md@approved, docs/prd/PRD-v1.md@approved, docs/prd/components/PRD-tech-v1.md@approved, docs/spec/SPEC-v1.md@approved, docs/test/test-plan-v1.md@approved]
     criteria: 5
     linked: 4
     passing: 0

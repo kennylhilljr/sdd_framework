@@ -7,7 +7,7 @@
 From anywhere, point the CLI of a clone of this framework at a new folder:
 
 ```bash
-node <path-to-framework>/tools/sdd/cli.mjs init ../my-service --components iam:IAM,billing:BILL --git
+node <path-to-framework>/tools/sdd/cli.mjs init ../my-service --components tech:TECH,billing:BILL --git
 ```
 
 | Option | Meaning |

@@ -52,4 +52,4 @@ Aligns the toolkit with the white paper's operating model, keeps it reusable, an
 - `sdd` CLI: `init`, `adopt`, `doctor`, `check`, `new`, `docmap`, `catalog`, `version`.
 - `sdd adopt` for running applications: dry run by default, never changes existing files, writes an inventory and a list of missing information.
 - Plugin and marketplace manifests, a dev container, and CI on Linux, macOS and Windows.
-- A worked example: an IAM component traced from vision to code, and a draft billing component.
+- A worked example: an TECH component traced from vision to code, and a draft billing component.

@@ -20,8 +20,8 @@ export const GATES = {
 const OFF = "Turn the gate off with features.gateHook=false in sdd.config.json.";
 const approved = (d) => docStatus(d) === "approved";
 
-// Words right after the skill name: component names or prefixes (iam, IAM) and milestones (M1).
-// Reading stops at the first other word, so "/sdd-lld iam, then leave billing alone" names only iam.
+// Words right after the skill name: component names or prefixes (tech, TECH) and milestones (M1).
+// Reading stops at the first other word, so "/sdd-lld tech, then leave billing alone" names only tech.
 export function parseGateArgs(cfg, args) {
   const words = (Array.isArray(args) ? args : String(args || "").split(/[\s,]+/)).filter(Boolean);
   const components = [];

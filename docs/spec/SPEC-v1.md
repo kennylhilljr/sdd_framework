@@ -42,7 +42,7 @@ flowchart LR
 
 | Component | Responsibility | LLD |
 | --- | --- | --- |
-| IAM (authorization service) | Access checks, grants, revocation, audit log | [LLD-iam-v1](../lld/LLD-iam-v1.md) |
+| TECH (authorization service) | Access checks, grants, revocation, audit log | [LLD-tech-v1](../lld/LLD-tech-v1.md) |
 | Billing | Usage metering and monthly invoices | [LLD-billing-v1](../lld/LLD-billing-v1.md) (draft) |
 
 ## 4. Data flow
@@ -55,7 +55,7 @@ The caller sends a token and an action. The service validates the token, reads t
 
 ### 4.2 Role revocation
 
-An administrator revokes a role. In one database transaction the service deletes the role assignment and appends an audit record. After the commit it deletes the user's grant-cache entry, so the next access check reads current grants. Cache entries also expire after 30 seconds, which bounds the effect of a lost invalidation (ADR 0002). Covers FR-2, FR-3, IAM-2, IAM-3 and IAM-4. Detail: [LLD-iam §3](../lld/LLD-iam-v1.md).
+An administrator revokes a role. In one database transaction the service deletes the role assignment and appends an audit record. After the commit it deletes the user's grant-cache entry, so the next access check reads current grants. Cache entries also expire after 30 seconds, which bounds the effect of a lost invalidation (ADR 0002). Covers FR-2, FR-3, TECH-2, TECH-3 and TECH-4. Detail: [LLD-tech §3](../lld/LLD-tech-v1.md).
 
 ```mermaid
 sequenceDiagram
@@ -128,10 +128,10 @@ Unit tests cover each acceptance criterion and cite it with `@spec`. An integrat
 
 | Requirement | SPEC section | LLD |
 | --- | --- | --- |
-| FR-1 | 4.1 | LLD-iam §2 |
-| FR-2 | 4.2 | LLD-iam §3 |
-| FR-3 | 4.2, 5 | LLD-iam §4 |
+| FR-1 | 4.1 | LLD-tech §2 |
+| FR-2 | 4.2 | LLD-tech §3 |
+| FR-3 | 4.2, 5 | LLD-tech §4 |
 | FR-4 | 4.3 | LLD-billing (draft) |
 | FR-5 | 4.3 | LLD-billing (draft) |
-| NFR-1 | 7 | LLD-iam §6 |
-| INV-2 | 6 | LLD-iam §4 |
+| NFR-1 | 7 | LLD-tech §6 |
+| INV-2 | 6 | LLD-tech §4 |

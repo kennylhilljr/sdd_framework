@@ -30,7 +30,7 @@ Every product team in the example company builds its own permission checks. Each
 
 ## Strategy
 
-Start with identity and access management (IAM): roles, grants, revocation and audit. Add usage billing once the IAM component is stable. Keep the service small: it decides and records; it does not manage user profiles or passwords.
+Start with the TECH component: roles, grants, revocation and audit. Add usage billing once the TECH component is stable. Keep the service small: it decides and records; it does not manage user profiles or passwords.
 
 ## Out of scope for the whole product
 

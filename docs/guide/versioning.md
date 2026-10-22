@@ -53,7 +53,7 @@ CI fails when the catalog is out of date.
 
 ## Documents
 
-Documents are versioned by file name (`PRD-iam-v2.md`). An approved version is frozen; `node tools/sdd/cli.mjs new --next <path>` creates the next one. ADRs are numbered once and superseded, never versioned. See the [standard](../standards/spec-driven-development-v2.md).
+Documents are versioned by file name (`PRD-tech-v2.md`). An approved version is frozen; `node tools/sdd/cli.mjs new --next <path>` creates the next one. ADRs are numbered once and superseded, never versioned. See the [standard](../standards/spec-driven-development-v2.md).
 
 ## Upgrading a repository to a new framework release
 

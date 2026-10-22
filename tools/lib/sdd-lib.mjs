@@ -11,8 +11,8 @@ export const FRAMEWORK_VERSION = "1.1.0";
 // ---------------------------------------------------------------------------
 // Requirement IDs
 // ---------------------------------------------------------------------------
-// Acceptance criteria:      IAM-2           (what tests and code cite with @spec)
-// Typed component IDs:      IAM-US-1, IAM-FR-1, IAM-NFR-1, IAM-INV-1, IAM-OUT-1
+// Acceptance criteria:      TECH-2           (what tests and code cite with @spec)
+// Typed component IDs:      TECH-US-1, TECH-FR-1, TECH-NFR-1, TECH-INV-1, TECH-OUT-1
 // Parent PRD IDs:           FR-3, NFR-1, OUT-1, INV-1
 export const RESERVED_PREFIXES = new Set(["FR", "NFR", "OUT", "INV", "US", "AC", "ADR", "SPEC", "LLD", "PRD", "M", "S", "P"]);
 export const CRITERION_RE = /^([A-Z][A-Z0-9]{1,9})-(\d+)$/;
@@ -483,7 +483,7 @@ export function resolveComponent(cfg, word) {
   return null;
 }
 
-// Does this document belong to the component? By its prefix in front matter, or by its file name (LLD-iam-v1.md).
+// Does this document belong to the component? By its prefix in front matter, or by its file name (LLD-tech-v1.md).
 export function docIsForComponent(d, cfg, name) {
   const prefix = prefixOfComponent(cfg, name);
   if (d.data.prefix) return String(d.data.prefix) === prefix;

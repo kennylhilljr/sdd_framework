@@ -15,12 +15,12 @@ node tools/trace-check/trace-check.mjs --advisory --json
 Tests and code cite the acceptance criteria they satisfy in a comment, in any language:
 
 ```ts
-// @spec IAM-2
-it("IAM-2: invalidates cached grants when a role is revoked", () => { /* ... */ });
+// @spec TECH-2
+it("TECH-2: invalidates cached grants when a role is revoked", () => { /* ... */ });
 ```
 
 ```python
-# @spec IAM-2, IAM-4
+# @spec TECH-2, TECH-4
 def revoke_role(user_id, role): ...
 ```
 

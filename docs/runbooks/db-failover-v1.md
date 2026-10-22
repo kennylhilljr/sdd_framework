@@ -12,11 +12,11 @@ owner: "Sam Ortiz (SRE lead)"
 
 ## When to use it
 
-The `iam.db.primary_unreachable` alert has fired for more than two minutes, or the managed database console reports the primary as failed.
+The `tech.db.primary_unreachable` alert has fired for more than two minutes, or the managed database console reports the primary as failed.
 
 ## Impact while the primary is down
 
-Access checks keep working from the grant cache and fall back to the replica on a miss. Grants and revocations fail with HTTP 503 until a new primary is promoted. Treat this as S1: revocation is unavailable (IAM-2).
+Access checks keep working from the grant cache and fall back to the replica on a miss. Grants and revocations fail with HTTP 503 until a new primary is promoted. Treat this as S1: revocation is unavailable (TECH-2).
 
 ## Steps
 

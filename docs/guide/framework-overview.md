@@ -10,7 +10,7 @@ The rules are in the [standard](../standards/spec-driven-development-v2.md). Thi
 
 The repository is a reusable toolkit. Its **portable core** is the same for everyone: templates with decision owners, human gates, stable IDs and their lifecycle, structural trace checks and change control. Each adopting organization adapts the **local choices**: approvers, ID syntax, folder layout, the intake checkpoint, whether priority and severity share one queue, and the agent tooling.
 
-It ships with an **Access Management reference profile**. Access Management is the example L1 domain under Cyber IAM where the toolkit is piloted and iterated. The worked example inside the repository is synthetic: it shows the mechanics and does not select the pilot's capability or application. This is a reference implementation, not a finished enterprise standard.
+It ships with an **Access Management reference profile**. Access Management is the example L1 domain where the toolkit is piloted and iterated. The worked example inside the repository is synthetic: it shows the mechanics and does not select the pilot's capability or application. This is a reference implementation, not a finished enterprise standard.
 
 ## Three separate concepts
 
@@ -22,7 +22,7 @@ It ships with an **Access Management reference profile**. Access Management is t
 
 Gates 1, 2 and 3 do not correspond to scope levels L1, L2 and L3. HLD and LLD are artifact types, not organizational levels.
 
-**Organizational scope.** L0 is Cyber and Cyber IAM strategy, declarations and imperatives. L1 is a domain (Access Management in the reference profile). L2 is a solution or capability, such as entitlement management or access certification. L3 is a Business Application. The [scope map](../scope/scope-map.yaml) records each scope, its parent and its owner, and documents carry `scope_level` and `scope_name`.
+**Organizational scope.** L0 is Enterprise strategy, declarations and imperatives. L1 is a domain (Access Management in the reference profile). L2 is a solution or capability, such as entitlement management or access certification. L3 is a Business Application. The [scope map](../scope/scope-map.yaml) records each scope, its parent and its owner, and documents carry `scope_level` and `scope_name`.
 
 **The delivery artifact chain.**
 
@@ -32,7 +32,7 @@ Gates 1, 2 and 3 do not correspond to scope levels L1, L2 and L3. HLD and LLD ar
 flowchart TB
     subgraph SCOPE["Organizational scope (scope map)"]
       direction LR
-      S0["L0 Cyber and Cyber IAM direction"] --> S1["L1 Domain"] --> S2["L2 Capability"] --> S3["L3 Business Application"]
+      S0["L0 Enterprise direction"] --> S1["L1 Domain"] --> S2["L2 Capability"] --> S3["L3 Business Application"]
     end
     VIS["Vision (H)"] --> PF["Problem framing (H)"] --> PS["Product specification: PRDs (H, C)"]
     PS --> HLD["High level design: SPEC and ADRs (C)"] --> LLD["Low level design: LLD, contracts, test strategy (C, A)"]
@@ -40,7 +40,7 @@ flowchart TB
     S3 -. "scope_name" .-> PS
 ```
 
-Each artifact derives from the one above, and every requirement ID cites its parent. In the worked example, parent requirement `FR-3` becomes acceptance criterion `IAM-2` in the IAM component PRD, which the design covers in `SPEC 4.2` and `LLD-iam §3`. A milestone task builds it, and both the test and the code entry point carry `@spec IAM-2`.
+Each artifact derives from the one above, and every requirement ID cites its parent. In the worked example, parent requirement `FR-3` becomes acceptance criterion `TECH-2` in the TECH component PRD, which the design covers in `SPEC 4.2` and `LLD-tech §3`. A milestone task builds it, and both the test and the code entry point carry `@spec TECH-2`.
 
 ## Who decides what
 
@@ -69,7 +69,7 @@ Six human personas decide and approve: Product, Engineering, the Business Applic
 
 ## Traceability and evidence
 
-Every requirement keeps one ID for life; a change in behavior gets a new ID, and the old one is recorded as superseded. Tests and code entry points cite acceptance criteria with `@spec IAM-2`, so every hop is one text search.
+Every requirement keeps one ID for life; a change in behavior gets a new ID, and the old one is recorded as superseded. Tests and code entry points cite acceptance criteria with `@spec TECH-2`, so every hop is one text search.
 
 The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove that a test checks what the criterion means, or that every line is covered, so human review remains required. Each criterion has an evidence state: `planned` (mapped in the test strategy), `test linked`, `passing` or `failing` (from a test report), `deferred`, `excepted`, `drifted` or `gap`. Tests are required once a milestone plan exists for a component; before that, a criterion only needs planned evidence.
 

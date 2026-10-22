@@ -14,7 +14,7 @@ Produce the build detail for one component. Agents prepare most of the LLD from 
 
 ## When to use
 
-- The SPEC is approved (Gate 2) and the component's PRD is approved (Gate 1). The gate hook blocks this skill otherwise; name the component, for example `/sdd-lld iam`.
+- The SPEC is approved (Gate 2) and the component's PRD is approved (Gate 1). The gate hook blocks this skill otherwise; name the component, for example `/sdd-lld tech`.
 - A component's design must change within the component (changes that cross components go back to `sdd-hld`).
 
 ## Inputs

@@ -30,9 +30,9 @@ Product owns the problem, outcomes, scope, priorities, constraints and acceptanc
 ## Rules
 
 - **Approved versions are frozen.** Never edit a document whose status is `approved`; create the next version with `node tools/sdd/cli.mjs new --next <path>`. ADRs are superseded by a new ADR.
-- **Approvals are human.** The intake checkpoint approves the problem framing (PRD Section 1); Gate 1 the Product specification; Gate 2 the SPEC (HLD); Gate 3 the LLD for one component. Agents never set `status: approved`, `approved_by` or `approved`. Name the component when you run a gated skill (`/sdd-lld iam`).
-- **Every requirement has a stable ID**, never renumbered and never reused. Acceptance criteria use `<PREFIX>-<n>` (for example `IAM-2`) unless `ids.criterionPattern` allows a richer form. A change of actor, trigger, response, target or test obligation gets a new ID; the old one goes in the PRD's ID history table.
-- **Tests and code cite the criteria they satisfy** with a comment such as `// @spec IAM-2`: on the test that exercises the behavior and on the entry point of the behavior in code, not on every helper. A link is structural evidence; it does not prove meaning.
+- **Approvals are human.** The intake checkpoint approves the problem framing (PRD Section 1); Gate 1 the Product specification; Gate 2 the SPEC (HLD); Gate 3 the LLD for one component. Agents never set `status: approved`, `approved_by` or `approved`. Name the component when you run a gated skill (`/sdd-lld tech`).
+- **Every requirement has a stable ID**, never renumbered and never reused. Acceptance criteria use `<PREFIX>-<n>` (for example `TECH-2`) unless `ids.criterionPattern` allows a richer form. A change of actor, trigger, response, target or test obligation gets a new ID; the old one goes in the PRD's ID history table.
+- **Tests and code cite the criteria they satisfy** with a comment such as `// @spec TECH-2`: on the test that exercises the behavior and on the entry point of the behavior in code, not on every helper. A link is structural evidence; it does not prove meaning.
 - **Drift is decided by a person.** Verification reports a disagreement. The named owner determines the first artifact in the delivery trace that no longer reflects approved intent; correct that artifact, then update or regenerate what depends on it.
 - **A change that crosses components stops for a person** and goes into the next SPEC version, with an ADR when the system's shape changes.
 - **Never verify your own work.** The `verifier` persona checks work it did not produce.
@@ -77,7 +77,7 @@ A change is done when tests pass, `node tools/sdd/cli.mjs check` passes, every n
 
 ## Working on the framework itself
 
-This repository is a reusable toolkit and a synthetic worked example (an IAM component and a draft billing component under docs/, src/ and test/). The example's names identify software components, not organizational scopes, and do not select the Access Management pilot.
+This repository is a reusable toolkit and a synthetic worked example (an TECH component and a draft billing component under docs/, src/ and test/). The example's names identify software components, not organizational scopes, and do not select the Access Management pilot.
 
 - **Tools stay portable.** Everything in tools/ runs on Node 20 or later with no dependencies, on macOS, Linux and Windows. Never depend on anything installed on one machine.
 - **Tool changes ship with tests** in test/tools/. sdd adopt must never modify or delete an existing file in the target repository; the tests prove it.

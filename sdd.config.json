@@ -26,11 +26,11 @@
     "requireApprover": false
   },
   "components": {
-    "iam": {
-      "prefix": "IAM",
+    "tech": {
+      "prefix": "TECH",
       "paths": [
-        "src/iam",
-        "test/iam"
+        "src/tech",
+        "test/tech"
       ],
       "scope": "example-application"
     },

@@ -5,12 +5,12 @@ version: 1
 status: approved
 owner: "Avery Chen (product owner)"
 approved: 2026-02-16
-components: [iam, billing]
+components: [tech, billing]
 ---
 
 # Access platform: parent PRD (v1)
 
-> Parent PRD for the worked example. Component PRDs: [IAM](components/PRD-iam-v1.md) and [billing](components/PRD-billing-v1.md). Vision: [vision-v1](../vision/vision-v1.md).
+> Parent PRD for the worked example. Component PRDs: [TECH](components/PRD-tech-v1.md) and [billing](components/PRD-billing-v1.md). Vision: [vision-v1](../vision/vision-v1.md).
 
 ## 1.1 Problem and why now
 
@@ -83,9 +83,9 @@ Product teams each run their own permission checks. Revoked roles keep working f
 
 | ID | Requirement | Component |
 | --- | --- | --- |
-| FR-1 | Answer whether a user may perform an action | IAM |
-| FR-2 | Grant and revoke roles, with revocation taking effect within 60 seconds | IAM |
-| FR-3 | Record every grant and revocation in an audit log | IAM |
+| FR-1 | Answer whether a user may perform an action | TECH |
+| FR-2 | Grant and revoke roles, with revocation taking effect within 60 seconds | TECH |
+| FR-3 | Record every grant and revocation in an audit log | TECH |
 | FR-4 | Meter access checks per calling team | Billing |
 | FR-5 | Produce a monthly internal invoice per team | Billing |
 
@@ -115,4 +115,4 @@ Product teams each run their own permission checks. Revoked roles keep working f
 
 > **Owner:** H
 
-The IAM release is done when every P1 IAM criterion has a passing test, the load test meets NFR-1, OUT-2 is measurable on the dashboard, and the pilot teams have run for two weeks without an S0 or S1.
+The TECH release is done when every P1 TECH criterion has a passing test, the load test meets NFR-1, OUT-2 is measurable on the dashboard, and the pilot teams have run for two weeks without an S0 or S1.

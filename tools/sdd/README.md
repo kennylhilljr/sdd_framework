@@ -9,7 +9,7 @@ Boolean flags (`--apply`, `--force`, `--dry-run` and the like) never consume the
 
 | Command | What it does |
 | --- | --- |
-| `init [DIR]` | Set up the framework in a new repository. Options: `--name`, `--components iam:IAM,billing:BILL`, `--owner`, `--git`, `--dry-run`, `--force` (existing files that differ are proposed under `.sdd-proposed/<path>`) |
+| `init [DIR]` | Set up the framework in a new repository. Options: `--name`, `--components tech:TECH,billing:BILL`, `--owner`, `--git`, `--dry-run`, `--force` (existing files that differ are proposed under `.sdd-proposed/<path>`) |
 | `adopt [DIR]` | Analyze an existing repository and plan the framework files. Dry run by default; `--apply` writes. Never modifies or deletes existing files; a framework file that would replace an existing one is written to `.sdd-proposed/<path>`. Refuses a repository that already has `sdd.config.json` (use `upgrade`). `--json` prints the analysis; `--allow-dirty` skips the clean working tree check |
 | `upgrade [DIR]` | Bring a repository's framework-owned files (skills, personas, commands, tools, templates, standards, guides, framework diagrams) to this release. Dry run by default; `--apply` writes new files and puts changed ones in `.sdd-proposed/<path>`; `--apply --overwrite` replaces them; `--allow-dirty` skips the clean working tree check. Never touches project documents, code, `AGENTS.md`, `CLAUDE.md`, settings or config |
 | `doctor [DIR]` | Check the local environment: Node, git, Claude Code, hooks, skills, personas, spec-lint, trace-check |

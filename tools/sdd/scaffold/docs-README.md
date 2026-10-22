@@ -23,10 +23,10 @@ A person approves by setting `status: approved` with `approved_by` and `approved
 | ID | Example | Defined in |
 | --- | --- | --- |
 | Parent requirement | `FR-3`, `NFR-1`, `OUT-1`, `INV-1` | Parent PRD |
-| Acceptance criterion | `IAM-2` | Component PRD; cited by tests and code with `@spec IAM-2` |
-| Story, requirement, NFR, invariant, outcome | `IAM-US-1`, `IAM-FR-1`, `IAM-NFR-1`, `IAM-INV-1`, `IAM-OUT-1` | Component PRD |
+| Acceptance criterion | `TECH-2` | Component PRD; cited by tests and code with `@spec TECH-2` |
+| Story, requirement, NFR, invariant, outcome | `TECH-US-1`, `TECH-FR-1`, `TECH-NFR-1`, `TECH-INV-1`, `TECH-OUT-1` | Component PRD |
 | Decision | `ADR 0002` | `adr/` ([index](adr/README.md)) |
-| Design section | `SPEC 4.2`, `LLD-iam §3` | SPEC and LLDs |
+| Design section | `SPEC 4.2`, `LLD-tech §3` | SPEC and LLDs |
 
 IDs are never renumbered and never reused. An ID that leaves a PRD is recorded in its ID history table.
 

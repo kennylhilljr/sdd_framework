@@ -95,10 +95,10 @@ Questions 9 and 10 are usually answered once in the constitution.
 | ID | Pattern | Example | Defined in |
 | --- | --- | --- | --- |
 | Parent requirement | `FR-<n>`, `NFR-<n>`, `OUT-<n>`, `INV-<n>` | `FR-3` | Parent PRD |
-| Acceptance criterion | `<PREFIX>-<n>` | `IAM-2` | Component PRD |
-| Story | `<PREFIX>-US-<n>` | `IAM-US-1` | Component PRD |
-| Component requirement | `<PREFIX>-FR-<n>` | `IAM-FR-1` | Component PRD |
-| Component NFR, invariant, outcome | `<PREFIX>-NFR-<n>`, `<PREFIX>-INV-<n>`, `<PREFIX>-OUT-<n>` | `IAM-INV-1` | Component PRD |
+| Acceptance criterion | `<PREFIX>-<n>` | `TECH-2` | Component PRD |
+| Story | `<PREFIX>-US-<n>` | `TECH-US-1` | Component PRD |
+| Component requirement | `<PREFIX>-FR-<n>` | `TECH-FR-1` | Component PRD |
+| Component NFR, invariant, outcome | `<PREFIX>-NFR-<n>`, `<PREFIX>-INV-<n>`, `<PREFIX>-OUT-<n>` | `TECH-INV-1` | Component PRD |
 | Decision | four-digit number | ADR 0002 | `docs/adr/` |
 
 Rules:
@@ -142,7 +142,7 @@ Rules:
 
 ## 10. Linking and tracking intent
 
-**Annotations.** A test cites the criterion it verifies in a comment of the form `@spec IAM-2` (several IDs are separated by commas). The entry point of the behavior in code carries the same annotation: the topmost function or handler that owns the behavior, not every helper. A behavior that spans subsystems gets one annotation per subsystem entry point. References to SPEC or LLD sections go in the handoff, not in code.
+**Annotations.** A test cites the criterion it verifies in a comment of the form `@spec TECH-2` (several IDs are separated by commas). The entry point of the behavior in code carries the same annotation: the topmost function or handler that owns the behavior, not every helper. A behavior that spans subsystems gets one annotation per subsystem entry point. References to SPEC or LLD sections go in the handoff, not in code.
 
 **Checks.** `tools/trace-check` runs in CI on every pull request. It fails the build when:
 

@@ -6,7 +6,7 @@
 
 SDD creates a controlled bridge from Product intent to Engineering delivery. Product owns the problem, outcomes, scope, priorities, constraints and acceptance. Engineering contributes feasibility and risk input while intent is formed, then owns architecture and implementation choices. Shared templates, named decision owners, approval gates and stable identifiers keep that connection from requirements through tests, code and evidence.
 
-This repository is a **reusable toolkit**. Any team can install its portable core: the templates, decision ownership, gates, identifiers, trace checks and change control. Each team adapts the local choices (approvers, tools, paths, roles and workflow) to its own governance. The toolkit ships with an **Access Management reference profile**: Access Management is the example L1 domain under Cyber IAM where the toolkit is being piloted and iterated. The worked example is synthetic and does not select the pilot's capability or application.
+This repository is a **reusable toolkit**. Any team can install its portable core: the templates, decision ownership, gates, identifiers, trace checks and change control. Each team adapts the local choices (approvers, tools, paths, roles and workflow) to its own governance. The toolkit ships with an **Access Management reference profile**: Access Management is the example L1 domain where the toolkit is being piloted and iterated. The worked example is synthetic and does not select the pilot's capability or application.
 
 This is a reference implementation, not a finished enterprise standard. Agents support the workflow by preparing bounded, traceable material from approved inputs. They do not replace accountable Product, Engineering, Security or business decisions.
 
@@ -24,11 +24,11 @@ This is a reference implementation, not a finished enterprise standard. Agents s
 | **An executive** | This page, then the [framework overview](docs/guide/framework-overview.md): the value, the scope hierarchy, the risks and the [open decisions](docs/standards/spec-driven-development-v2.md#18-open-decisions) |
 | **A Product Manager** | The [usage guide](docs/guide/usage.md) from intake to Gate 1, the [seed questions](docs/standards/spec-driven-development-v2.md#9-the-twelve-seed-questions) and the [PRD templates](docs/templates/) |
 | **In Engineering or Security** | The [standard](docs/standards/spec-driven-development-v2.md): design gates, scope metadata, trace checks, change control and evidence; then the [tools guide](docs/guide/tools.md) |
-| **Adopting it in another IAM or Cyber organization** | [Portable core and local choices](docs/standards/spec-driven-development-v2.md#2-portable-core-and-local-choices), then [new repository](docs/guide/new-repository.md) or [existing repository](docs/guide/existing-repository.md) |
+| **Adopting it in another organization** | [Portable core and local choices](docs/standards/spec-driven-development-v2.md#2-portable-core-and-local-choices), then [new repository](docs/guide/new-repository.md) or [existing repository](docs/guide/existing-repository.md) |
 
 ## How it works
 
-**1. Three things are kept separate.** Organizational scope uses **L0 to L3** (L0 Cyber and Cyber IAM direction, L1 domain, L2 capability, L3 Business Application), recorded in a [scope map](docs/scope/scope-map.yaml). Documents form an unnumbered **delivery artifact chain**: Product specification, high level design, low level design, plans, code, tests, handoff and evidence. **Gates 1, 2 and 3** are approval checkpoints; they do not correspond to scope levels L1, L2 and L3.
+**1. Three things are kept separate.** Organizational scope uses **L0 to L3** (L0 Enterprise direction, L1 domain, L2 capability, L3 Business Application), recorded in a [scope map](docs/scope/scope-map.yaml). Documents form an unnumbered **delivery artifact chain**: Product specification, high level design, low level design, plans, code, tests, handoff and evidence. **Gates 1, 2 and 3** are approval checkpoints; they do not correspond to scope levels L1, L2 and L3.
 
 <p align="center">
   <img src="docs/assets/diagrams/sdd-doc-layers.svg" alt="The delivery artifact chain from vision to evidence, with its decision owners and gates, beside the separate L0 to L3 organizational scope map" width="760">
@@ -62,8 +62,8 @@ When `sdd-verify` reports a disagreement, the owner names the first artifact tha
 **4. Links are plain text that a script checks.** Every acceptance criterion has a stable ID. The test that exercises it and the code entry point that implements it cite the ID in a comment:
 
 ```ts
-// @spec IAM-2
-it("IAM-2: invalidates cached grants when a role is revoked", () => { /* ... */ });
+// @spec TECH-2
+it("TECH-2: invalidates cached grants when a role is revoked", () => { /* ... */ });
 ```
 
 The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove that a test checks what a criterion means, or that every line is covered, so accountable human review remains required. Each criterion carries an evidence state: planned, test linked, passing, failing, deferred, excepted, drifted or gap. Tests are required once a milestone plan exists for a component, not before.
@@ -81,18 +81,18 @@ You need [Node.js 20 or later](https://nodejs.org) and git. Claude Code is optio
 ```bash
 git clone <this repository> sdd_framework && cd sdd_framework
 npm run setup          # installs dev dependencies, then runs: node tools/sdd/cli.mjs doctor
-npm test               # the sample IAM code and the framework's own tool tests
+npm test               # the sample TECH code and the framework's own tool tests
 npm run sdd:check      # spec-lint and trace-check over the example documents
 ```
 
-> **This is a synthetic mechanics example.** The `iam` and `billing` names identify software components in the sample application, not L1 or L2 organizational scopes. They do not select the Access Management pilot's L2 capability or L3 Business Application.
+> **This is a synthetic mechanics example.** The `tech` and `billing` names identify software components in the sample application, not L1 or L2 organizational scopes. They do not select the Access Management pilot's L2 capability or L3 Business Application.
 
-The example's full path is: L0 Cyber and Cyber IAM direction, then the L1 Access Management domain, then an illustrative L2 capability, then an unnamed L3 Business Application ([scope map](docs/scope/scope-map.yaml)), then tests, code and evidence. Inside the application, one requirement runs the whole delivery chain: parent requirement `FR-3`, criterion `IAM-2` in the [IAM component PRD](docs/prd/components/PRD-iam-v1.md), [SPEC](docs/spec/SPEC-v1.md) section 4.2, [LLD-iam](docs/lld/LLD-iam-v1.md) §3, milestone task [M1-3](docs/build/M1-plan-v1.md), and finally the [test](test/iam/revoke-role.test.ts) and [code](src/iam/revoke-role.ts) that carry `@spec IAM-2`, with its evidence in [coverage](docs/trace/coverage.md).
+The example's full path is: L0 Enterprise direction, then the L1 Access Management domain, then an illustrative L2 capability, then an unnamed L3 Business Application ([scope map](docs/scope/scope-map.yaml)), then tests, code and evidence. Inside the application, one requirement runs the whole delivery chain: parent requirement `FR-3`, criterion `TECH-2` in the [TECH component PRD](docs/prd/components/PRD-tech-v1.md), [SPEC](docs/spec/SPEC-v1.md) section 4.2, [LLD-tech](docs/lld/LLD-tech-v1.md) §3, milestone task [M1-3](docs/build/M1-plan-v1.md), and finally the [test](test/tech/revoke-role.test.ts) and [code](src/tech/revoke-role.ts) that carry `@spec TECH-2`, with its evidence in [coverage](docs/trace/coverage.md).
 
 ### Start a brand-new repository
 
 ```bash
-node sdd_framework/tools/sdd/cli.mjs init ../my-app --components iam:IAM,billing:BILL --git
+node sdd_framework/tools/sdd/cli.mjs init ../my-app --components tech:TECH,billing:BILL --git
 cd ../my-app
 node tools/sdd/cli.mjs doctor
 claude          # then type: /sdd-new <what you want to build>

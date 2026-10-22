@@ -58,7 +58,7 @@
       <text x="740" y="104">Parent PRD</text><text x="958" y="104" text-anchor="end" fill="#9cb3dd" font-size="12">FR-3</text>
 
       <rect x="748" y="124" width="250" height="34" rx="9" fill="url(#card)" stroke="#9cc3ff" stroke-opacity="0.6"/>
-      <text x="764" y="146">Component PRD</text><text x="982" y="146" text-anchor="end" fill="#9cb3dd" font-size="12">IAM-2</text>
+      <text x="764" y="146">Component PRD</text><text x="982" y="146" text-anchor="end" fill="#9cb3dd" font-size="12">TECH-2</text>
 
       <rect x="772" y="166" width="250" height="34" rx="9" fill="url(#card)" stroke="#9cc3ff" stroke-opacity="0.6"/>
       <text x="788" y="188">High level design</text><text x="1006" y="188" text-anchor="end" fill="#9cb3dd" font-size="12">4.2</text>
@@ -73,7 +73,7 @@
     <!-- code card -->
     <rect x="844" y="296" width="300" height="72" rx="11" fill="#0b1430" fill-opacity="0.85" stroke="#4be3b0" stroke-width="1.5"/>
     <text x="862" y="322" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="14" fill="#6f86b3">code and tests</text>
-    <text x="862" y="350" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="16" fill="#4be3b0">// @spec IAM-2</text>
+    <text x="862" y="350" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="16" fill="#4be3b0">// @spec TECH-2</text>
     <circle cx="1116" cy="332" r="16" fill="#4be3b0"/>
     <path d="M1108 332 l6 6 l11 -12" fill="none" stroke="#0b1430" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   </g>

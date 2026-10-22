@@ -5,7 +5,7 @@
 //   node tools/sdd/cli.mjs <command> [options]
 //
 // Commands:
-//   init [DIR]      set up the framework in a new repository        --name --components iam:IAM,billing:BILL --git --dry-run --force
+//   init [DIR]      set up the framework in a new repository        --name --components tech:TECH,billing:BILL --git --dry-run --force
 //   adopt [DIR]     analyze an existing repository and add the framework without changing anything that exists
 //                   (dry run by default)                             --apply --allow-dirty --json
 //   upgrade [DIR]   bring a newer framework release into a repository (dry run by default)

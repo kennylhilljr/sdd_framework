@@ -1,8 +1,8 @@
-// Access check for the worked example (LLD-iam §2).
-import type { IamDeps } from "./revoke-role.js";
+// Access check for the worked example (LLD-tech §2).
+import type { TechDeps } from "./revoke-role.js";
 
-// @spec IAM-1
-export function authorize(deps: Pick<IamDeps, "store" | "cache">, userId: string, action: string): boolean {
+// @spec TECH-1
+export function authorize(deps: Pick<TechDeps, "store" | "cache">, userId: string, action: string): boolean {
   if (!deps.store.hasUser(userId)) return false;
   let actions = deps.cache.get(userId);
   if (!actions) {

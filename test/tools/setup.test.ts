@@ -17,21 +17,21 @@ const quiet = () => {};
 describe("sdd init", () => {
   it("creates a working framework in an empty folder", () => {
     const dir = tempDir("init");
-    expect(runInit(dir, { components: "iam:IAM" }, quiet)).toBe(0);
+    expect(runInit(dir, { components: "tech:TECH" }, quiet)).toBe(0);
     for (const f of ["AGENTS.md", "CLAUDE.md", "sdd.config.json", ".claude/settings.json", "docs/README.md", "docs/test/test-plan-v1.md",
       "docs/trace/index.yaml", "tools/spec-lint/spec-lint.mjs", "tools/trace-check/trace-check.mjs", "tools/hooks/gate.mjs",
       ".claude/skills/sdd-intake/SKILL.md", ".claude/agents/verifier.md", "docs/templates/PRD-component-template.md",
       ".github/workflows/ci.yml", "package.json"])
       expect(isFile(dir, f), f).toBe(true);
     expect(existsSync(join(dir, "docs/prd/components/.gitkeep"))).toBe(true);
-    expect(JSON.parse(read(dir, "sdd.config.json")).components.iam.prefix).toBe("IAM");
+    expect(JSON.parse(read(dir, "sdd.config.json")).components.tech.prefix).toBe("TECH");
     expect(lint(dir).errors).toEqual([]);
     expect(analyze(dir).errors).toEqual([]);
   });
 
   it("installs files whose relative links all resolve, and a scope map that passes lint", () => {
     const dir = tempDir("init-links");
-    runInit(dir, { components: "iam:IAM" }, quiet);
+    runInit(dir, { components: "tech:TECH" }, quiet);
     const broken: string[] = [];
     for (const f of walk(dir, { exts: [".md"] } as any) as string[]) {
       const r = rel(dir, f);
@@ -66,17 +66,17 @@ describe("sdd init", () => {
   it("creates documents from templates and next versions of frozen documents", () => {
     const dir = tempDir("init-new");
     runInit(dir, {}, quiet);
-    const p = newDoc(dir, "prd-component", { component: "iam", prefix: "IAM" });
-    expect(p).toBe("docs/prd/components/PRD-iam-v1.md");
+    const p = newDoc(dir, "prd-component", { component: "tech", prefix: "TECH" });
+    expect(p).toBe("docs/prd/components/PRD-tech-v1.md");
     const text = read(dir, p);
-    expect(text).toMatch(/prefix: IAM/);
+    expect(text).toMatch(/prefix: TECH/);
     expect(text).not.toMatch(/\{\{[A-Z_]+\}\}/);
     const adr = newDoc(dir, "adr", { name: "use-postgres" });
     expect(adr).toBe("docs/adr/0001-use-postgres.md");
     const next = nextDoc(dir, p);
-    expect(next).toBe("docs/prd/components/PRD-iam-v2.md");
+    expect(next).toBe("docs/prd/components/PRD-tech-v2.md");
     expect(read(dir, next)).toMatch(/version: 2/);
-    expect(read(dir, next)).toMatch(/supersedes: docs\/prd\/components\/PRD-iam-v1.md/);
+    expect(read(dir, next)).toMatch(/supersedes: docs\/prd\/components\/PRD-tech-v1.md/);
   });
 });
 
@@ -165,7 +165,7 @@ describe("sdd adopt", () => {
 describe("sdd upgrade", () => {
   it("adds missing framework files, proposes changed ones and never touches project files", () => {
     const dir = tempDir("upgrade");
-    runInit(dir, { components: "iam:IAM" }, quiet);
+    runInit(dir, { components: "tech:TECH" }, quiet);
     writeFileSync(join(dir, ".claude/skills/sdd-verify/SKILL.md"), "customized\n");
     writeFileSync(join(dir, "AGENTS.md"), "# my rules\n");
     const before = snapshot(dir);

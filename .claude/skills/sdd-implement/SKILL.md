@@ -51,7 +51,7 @@ Code review by a person. Verification by the `verifier` persona through `sdd-ver
 ## Rules
 
 - No code without a failing test first.
-- Cite acceptance criteria (`IAM-2`), not stories or requirements.
+- Cite acceptance criteria (`TECH-2`), not stories or requirements.
 - If the code needs behavior no criterion states, stop and raise a spec gap; do not add untraced behavior.
 - If the design is wrong, stop: the owner names the first artifact that lost intent, and the fix starts there.
 - Never edit approved documents; never change `status`.

@@ -43,21 +43,21 @@ export function isFile(root: string, path: string): boolean {
 
 export const CONFIG = JSON.stringify({
   paths: { docs: "docs", codeRoots: ["src"], testRoots: ["test"], testPlan: "docs/test/test-plan-v1.md", traceIndex: "docs/trace/index.yaml" },
-  components: { iam: { prefix: "IAM", paths: ["src/iam"] } },
+  components: { tech: { prefix: "TECH", paths: ["src/tech"] } },
   features: { reachReport: false },
 });
 
 export function componentPrd(status: string, rows: string): string {
   return `---
-title: "IAM"
+title: "TECH"
 type: prd-component
 version: 1
 status: ${status}
 owner: "Test Owner"
-prefix: IAM
+prefix: TECH
 ---
 
-# Component PRD: IAM (v1)
+# Component PRD: TECH (v1)
 
 ## Acceptance criteria
 

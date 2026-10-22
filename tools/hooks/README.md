@@ -14,5 +14,5 @@ Feature flags live in `sdd.config.json`. Switching a hook off loses no data and 
 - A document is approved when a person sets `status: approved` (with `approved_by` and `approved`) in its front matter. Agents never do this. The hook reads status only; who approved is proved by code review and `CODEOWNERS`, not by the hook.
 - These hooks are Claude Code adapters. Other agents follow the gates procedurally unless an equivalent adapter is installed; both scripts read JSON on stdin and exit 2 to block, so they can be wired into another agent's hooks.
 - `gate.mjs` reads the skill name from `tool_input.skill`, falling back to `name` or `command`; it does not search free text. Typed slash commands (`/sdd-lld ...`) are caught by the `UserPromptSubmit` hook.
-- To test a hook by hand (bash): `echo '{"tool_name":"Skill","tool_input":{"skill":"sdd-lld","args":"iam"}}' | node tools/hooks/gate.mjs; echo $?`
-- In PowerShell: `'{"tool_name":"Skill","tool_input":{"skill":"sdd-lld","args":"iam"}}' | node tools/hooks/gate.mjs; $LASTEXITCODE`
+- To test a hook by hand (bash): `echo '{"tool_name":"Skill","tool_input":{"skill":"sdd-lld","args":"tech"}}' | node tools/hooks/gate.mjs; echo $?`
+- In PowerShell: `'{"tool_name":"Skill","tool_input":{"skill":"sdd-lld","args":"tech"}}' | node tools/hooks/gate.mjs; $LASTEXITCODE`

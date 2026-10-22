@@ -1,4 +1,4 @@
-// Role revocation for the worked example (LLD-iam §3).
+// Role revocation for the worked example (LLD-tech §3).
 // In-memory stores keep the sample small; a real service would use PostgreSQL and a cache (ADR 0001, ADR 0002).
 
 export type Clock = () => Date;
@@ -41,7 +41,7 @@ export class RoleStore {
   }
 }
 
-/** A short-lived copy of each user's grants (LLD-iam §2). */
+/** A short-lived copy of each user's grants (LLD-tech §2). */
 export class GrantCache {
   private readonly entries = new Map<string, { actions: Set<string>; expiresAt: number }>();
   constructor(
@@ -77,19 +77,19 @@ export class AuditLog {
   }
 }
 
-export interface IamDeps {
+export interface TechDeps {
   store: RoleStore;
   cache: GrantCache;
   audit: AuditLog;
   clock: Clock;
 }
 
-// @spec IAM-2, IAM-3, IAM-4
-export function revokeRole(deps: IamDeps, userId: string, role: string, actor: string): void {
+// @spec TECH-2, TECH-3, TECH-4
+export function revokeRole(deps: TechDeps, userId: string, role: string, actor: string): void {
   if (!deps.store.hasUser(userId)) throw new NotFoundError(`user ${userId} does not exist`);
   // The role change and its audit record commit together (one transaction in the real service).
   deps.store.removeRole(userId, role);
   deps.audit.append({ actor, userId, role, action: "revoke", at: deps.clock() });
-  // Invalidate after the commit so a concurrent check cannot re-cache the old grants (LLD-iam §9).
+  // Invalidate after the commit so a concurrent check cannot re-cache the old grants (LLD-tech §9).
   deps.cache.invalidate(userId);
 }

@@ -70,7 +70,7 @@ export function lint(root, cfg = loadConfig(root)) {
   for (const d of docs) {
     if (!d.isLatest) continue;
     const type = String(d.data.type || "");
-    if (type === "prd-component" && !d.data.prefix) errors.push({ file: d.rel, msg: 'component PRD front matter needs "prefix" (for example IAM)' });
+    if (type === "prd-component" && !d.data.prefix) errors.push({ file: d.rel, msg: 'component PRD front matter needs "prefix" (for example TECH)' });
   }
 
   for (const def of defs.values()) {

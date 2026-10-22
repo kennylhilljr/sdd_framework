@@ -66,7 +66,7 @@ Flags that are switches (`--apply`, `--git`, `--json`, `--force`, `--dry-run`, `
 | Component changed since its last audit, or not audited within `trace.staleAfterDays` | warning |
 | Annotation reach below `trace.reachWarnBelow` | warning |
 
-Enforcement follows the latest approved version of each PRD. While a newer version is a draft (for example `PRD-iam-v2.md` while v1 is approved), v1's criteria stay enforced and the IDs that v2 adds are defined but not enforced until v2 is approved.
+Enforcement follows the latest approved version of each PRD. While a newer version is a draft (for example `PRD-tech-v2.md` while v1 is approved), v1's criteria stay enforced and the IDs that v2 adds are defined but not enforced until v2 is approved.
 
 Evidence states are `planned`, `test linked`, `passing`, `failing`, `deferred`, `excepted`, `drifted` and `gap` (see [usage](usage.md#linking-code-to-requirements)). A link is structural: it does not prove that a test checks what the criterion means. Deferred and excepted criteria are read from the `deferred:` and `excepted:` lists in the test plan's front matter. The test plan is the one named by `paths.testPlan`, or by default the latest `docs/test/test-plan-vN.md`, preferring an approved version.
 

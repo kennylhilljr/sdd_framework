@@ -11,15 +11,15 @@ date: 2026-02-24
 
 ## Context
 
-OUT-2 and IAM-2 require a revoked role to stop granting access within 60 seconds. NFR-1 requires access checks under 50 ms at p99. The [token storage research](../research/iam-token-storage-v1.md) compared four ways to combine signed tokens (JWT) and stored grants.
+OUT-2 and TECH-2 require a revoked role to stop granting access within 60 seconds. NFR-1 requires access checks under 50 ms at p99. The [token storage research](../research/tech-token-storage-v1.md) compared four ways to combine signed tokens (JWT) and stored grants.
 
 ## Options
 
 | Option | Benefits | Costs |
 | --- | --- | --- |
-| 1. JWT with grants inside, long expiry | Fastest checks; no lookup | Revocation waits for expiry; fails IAM-2 |
-| 2. Short-lived JWT with grants, 5-minute expiry | Simple | Revocation lag up to 5 minutes; fails IAM-2 |
-| 3. JWT with identity only; grants from a cache that revocation invalidates; 30-second time-to-live as a safety net | Meets IAM-2 and NFR-1; lost invalidations still expire in 30 seconds | One more moving part (the cache) to run and monitor |
+| 1. JWT with grants inside, long expiry | Fastest checks; no lookup | Revocation waits for expiry; fails TECH-2 |
+| 2. Short-lived JWT with grants, 5-minute expiry | Simple | Revocation lag up to 5 minutes; fails TECH-2 |
+| 3. JWT with identity only; grants from a cache that revocation invalidates; 30-second time-to-live as a safety net | Meets TECH-2 and NFR-1; lost invalidations still expire in 30 seconds | One more moving part (the cache) to run and monitor |
 | 4. Read grants from the database on every check | Always current | Fails NFR-1 at peak load |
 
 ## Decision
@@ -28,6 +28,6 @@ Option 3. Tokens identify the caller only. The authorization service reads grant
 
 ## Consequences
 
-- A lost invalidation is bounded by the 30-second time-to-live, inside the 60-second limit of IAM-2.
-- Cache hit rate and invalidation failures need metrics and alerts (LLD-iam §6).
+- A lost invalidation is bounded by the 30-second time-to-live, inside the 60-second limit of TECH-2.
+- Cache hit rate and invalidation failures need metrics and alerts (LLD-tech §6).
 - If the cache is down, checks fall back to the database and are slower; this is an S2 condition, not an outage.

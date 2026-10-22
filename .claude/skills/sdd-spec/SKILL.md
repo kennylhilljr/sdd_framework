@@ -30,7 +30,7 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
 ## Steps
 
 1. Confirm Section 1 of the parent PRD is approved by the owner (the intake checkpoint). If not, stop and say so.
-2. Split the work into components with the owner's help. Each component needs a name and a prefix of 2 to 10 capital letters (for example `iam` and `IAM`). Record them in `sdd.config.json` under `components` and in the parent PRD's component table.
+2. Split the work into components with the owner's help. Each component needs a name and a prefix of 2 to 10 capital letters (for example `tech` and `TECH`). Record them in `sdd.config.json` under `components` and in the parent PRD's component table.
 3. Create each component PRD: `node tools/sdd/cli.mjs new prd-component --component <name> --prefix <PREFIX>`.
 4. Dispatch the `product-writer` persona with the Agent tool, one component at a time. Give it the component name, prefix, the parent requirement IDs in scope and the rules below. It writes:
    - user stories `<PREFIX>-US-n` named by the owner, each with a proposed priority P1, P2 or P3 and a one-line reason (the owner decides priority);

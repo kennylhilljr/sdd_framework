@@ -1,4 +1,4 @@
-%% Role revocation and cache invalidation (SPEC 4.2, LLD-iam §3, IAM-2 to IAM-4)
+%% Role revocation and cache invalidation (SPEC 4.2, LLD-tech §3, TECH-2 to TECH-4)
 sequenceDiagram
     autonumber
     actor Admin as Security admin
@@ -8,12 +8,12 @@ sequenceDiagram
     participant Product as Product service
 
     Admin->>API: DELETE /v1/users/{userId}/roles/{role}
-    alt user does not exist (IAM-3)
+    alt user does not exist (TECH-3)
         API-->>Admin: 404 not_found
     else user exists
-        API->>DB: delete role assignment and insert audit record (one transaction, IAM-4)
+        API->>DB: delete role assignment and insert audit record (one transaction, TECH-4)
         DB-->>API: committed
-        API->>Cache: delete grants for userId (IAM-2)
+        API->>Cache: delete grants for userId (TECH-2)
         API-->>Admin: 204 No Content
     end
 
@@ -23,4 +23,4 @@ sequenceDiagram
     API->>DB: read current roles
     DB-->>API: roles without the revoked role
     API->>Cache: store grants (TTL 30 s)
-    API-->>Product: allowed = false (IAM-1)
+    API-->>Product: allowed = false (TECH-1)
