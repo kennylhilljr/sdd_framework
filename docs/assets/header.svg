@@ -45,7 +45,7 @@
       <rect x="352" width="150" height="34" rx="17" fill="none" stroke="#4be3b0" stroke-width="1.5"/>
       <text x="427" y="22" text-anchor="middle" fill="#bdf5e2">A  agent prepares</text>
     </g>
-    <text x="64" y="350" font-size="14" fill="#9cb3dd">Reusable toolkit · Access Management reference profile · Node 20+, no dependencies</text>
+    <text x="64" y="350" font-size="14" fill="#9cb3dd">Reusable toolkit · Tech domain reference profile · Node 20+, no dependencies</text>
   </g>
 
   <!-- right: the delivery artifact chain, threaded by IDs down to code -->

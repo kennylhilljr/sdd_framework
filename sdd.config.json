@@ -3,7 +3,7 @@
   "frameworkVersion": "1.1.0",
   "project": {
     "name": "sdd_framework",
-    "description": "Spec-driven development toolkit with a synthetic Access Management reference example",
+    "description": "Spec-driven development toolkit with a synthetic Tech domain reference example",
     "scope": "example-application"
   },
   "paths": {

@@ -50,8 +50,8 @@ From [scope/scope-map.yaml](scope/scope-map.yaml).
 | Level | Scope | Name | Parent | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | L0 | `enterprise` | Enterprise direction (illustrative) |  | Strategy owner (to be named) | illustrative |
-| L1 | `access-management` | Access Management domain (illustrative) | `enterprise` | Domain owner (to be named) | illustrative |
-| L2 | `example-capability` | Example capability: role-based access and revocation (illustrative, not the pilot selection) | `access-management` | Avery Chen (product owner) | illustrative |
+| L1 | `tech-domain` | Tech domain (illustrative) | `enterprise` | Domain owner (to be named) | illustrative |
+| L2 | `example-capability` | Example capability: role-based access and revocation (illustrative, not the pilot selection) | `tech-domain` | Avery Chen (product owner) | illustrative |
 | L3 | `example-application` | Example business application: the sample access platform (synthetic) | `example-capability` | Avery Chen (product owner) | illustrative |
 
 ### Delivery artifact index

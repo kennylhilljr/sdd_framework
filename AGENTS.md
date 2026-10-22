@@ -77,7 +77,7 @@ A change is done when tests pass, `node tools/sdd/cli.mjs check` passes, every n
 
 ## Working on the framework itself
 
-This repository is a reusable toolkit and a synthetic worked example (an TECH component and a draft billing component under docs/, src/ and test/). The example's names identify software components, not organizational scopes, and do not select the Access Management pilot.
+This repository is a reusable toolkit and a synthetic worked example (a TECH component and a draft billing component under docs/, src/ and test/). The example's names identify software components, not organizational scopes, and do not select the Tech domain pilot.
 
 - **Tools stay portable.** Everything in tools/ runs on Node 20 or later with no dependencies, on macOS, Linux and Windows. Never depend on anything installed on one machine.
 - **Tool changes ship with tests** in test/tools/. sdd adopt must never modify or delete an existing file in the target repository; the tests prove it.

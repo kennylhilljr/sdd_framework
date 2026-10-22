@@ -10,7 +10,7 @@ The rules are in the [standard](../standards/spec-driven-development-v2.md). Thi
 
 The repository is a reusable toolkit. Its **portable core** is the same for everyone: templates with decision owners, human gates, stable IDs and their lifecycle, structural trace checks and change control. Each adopting organization adapts the **local choices**: approvers, ID syntax, folder layout, the intake checkpoint, whether priority and severity share one queue, and the agent tooling.
 
-It ships with an **Access Management reference profile**. Access Management is the example L1 domain where the toolkit is piloted and iterated. The worked example inside the repository is synthetic: it shows the mechanics and does not select the pilot's capability or application. This is a reference implementation, not a finished enterprise standard.
+It ships with a **Tech domain reference profile**. The Tech domain is the example L1 domain where the toolkit is piloted and iterated. The worked example inside the repository is synthetic: it shows the mechanics and does not select the pilot's capability or application. This is a reference implementation, not a finished enterprise standard.
 
 ## Three separate concepts
 
@@ -22,7 +22,7 @@ It ships with an **Access Management reference profile**. Access Management is t
 
 Gates 1, 2 and 3 do not correspond to scope levels L1, L2 and L3. HLD and LLD are artifact types, not organizational levels.
 
-**Organizational scope.** L0 is Enterprise strategy, declarations and imperatives. L1 is a domain (Access Management in the reference profile). L2 is a solution or capability, such as entitlement management or access certification. L3 is a Business Application. The [scope map](../scope/scope-map.yaml) records each scope, its parent and its owner, and documents carry `scope_level` and `scope_name`.
+**Organizational scope.** L0 is Enterprise strategy, declarations and imperatives. L1 is a domain (the Tech domain in the reference profile). L2 is a solution or capability, such as entitlement management or access certification. L3 is a Business Application. The [scope map](../scope/scope-map.yaml) records each scope, its parent and its owner, and documents carry `scope_level` and `scope_name`.
 
 **The delivery artifact chain.**
 

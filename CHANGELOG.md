@@ -8,7 +8,7 @@ Nothing yet.
 
 ## 1.1.0 (2026-10-22)
 
-Aligns the toolkit with the white paper's operating model, keeps it reusable, and adds an Access Management reference profile.
+Aligns the toolkit with the white paper's operating model, keeps it reusable, and adds a Tech domain reference profile.
 
 ### Changed
 
@@ -52,4 +52,4 @@ Aligns the toolkit with the white paper's operating model, keeps it reusable, an
 - `sdd` CLI: `init`, `adopt`, `doctor`, `check`, `new`, `docmap`, `catalog`, `version`.
 - `sdd adopt` for running applications: dry run by default, never changes existing files, writes an inventory and a list of missing information.
 - Plugin and marketplace manifests, a dev container, and CI on Linux, macOS and Windows.
-- A worked example: an TECH component traced from vision to code, and a draft billing component.
+- A worked example: a TECH component traced from vision to code, and a draft billing component.

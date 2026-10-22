@@ -8,7 +8,6 @@ Domain terms used across this project's documents, defined once. Terms used only
 
 | Term | Definition |
 | --- | --- |
-| Access Management | The example L1 domain of this toolkit's reference profile: how people and systems are given, reviewed and removed access. |
 | Acceptance criterion | A testable statement of behavior in EARS notation, with an ID such as `TECH-2`. Tests and code cite it with `@spec`. |
 | ADR | Architecture decision record: one decision with its options and tradeoffs. Superseded by a new ADR, never edited after acceptance. |
 | Agent role (persona) | A named, scoped role an agent plays when it drafts or reviews part of a document, such as `product-writer` or `verifier`. It prepares material; it never makes an accountable decision. |
@@ -31,6 +30,7 @@ Domain terms used across this project's documents, defined once. Terms used only
 | Severity (S0 to S4) | The urgency and impact of support work, from S0 (critical, immediate) to S4 (negligible, backlog). A separate lens from Product priority (P1 to P3). |
 | Software component | A part of one application's code with its own ID prefix, PRD and LLD, such as `tech` in the worked example. Not an organizational scope. |
 | Strategy | L0 direction for the whole organization, such as the enterprise strategy that domains translate. |
+| Tech domain | The example L1 domain of this toolkit's reference profile, used to show how organizational scope works. |
 | Traceability | Plain-text links from a criterion to the tests and code that cite it, checked by trace-check. Structural: a link does not prove that a test checks what the criterion means. |
 
 ## Domain terms

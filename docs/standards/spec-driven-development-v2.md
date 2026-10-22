@@ -37,7 +37,7 @@ An adopting organization takes the portable core as is and adapts the local choi
 | Stable IDs and their lifecycle (Section 10) | ID syntax (`TECH-2` by default; a richer form is configurable) |
 | Structural trace checks from criteria to tests and code | The intake checkpoint as a named control (Section 8) |
 | Frozen approved versions and change control | One combined queue for priority and severity (Section 15) |
-| Organizational scope recorded separately from the artifact chain | The L1 domain and its scope map (Access Management in this profile) |
+| Organizational scope recorded separately from the artifact chain | The L1 domain and its scope map (the Tech domain in this profile) |
 | | Agent tooling: Claude Code skills, personas and hooks |
 
 ## 3. Three separate concepts
@@ -57,7 +57,7 @@ Gate 1, Gate 2 and Gate 3 are approval checkpoints. They do not correspond to or
 | Level | Meaning |
 | --- | --- |
 | L0 | Enterprise strategy, declarations and imperatives |
-| L1 | Domain. Access Management is the example domain in this reference profile |
+| L1 | Domain. The Tech domain is the example domain in this reference profile |
 | L2 | Solution or capability, such as entitlement management or access certification |
 | L3 | Business Application |
 
@@ -312,7 +312,7 @@ These stay open until their owners decide. The toolkit does not settle them, and
 | Decision | Decided by | Status |
 | --- | --- | --- |
 | Where the controlled standard lives, and which authority approves it | The owning authority | Open |
-| The Access Management pilot's L2 capability and L3 Business Application | Pilot owners | Open |
+| The Tech domain pilot's L2 capability and L3 Business Application | Pilot owners | Open |
 | Named approvers for each gate, the exception authority, the fast path criteria and audit timing | Product and Engineering authorities | Open |
 | Whether the intake checkpoint and the combined queue stay after the pilot | Pilot owners | Open |
 | The license for reuse outside this repository | Repository owner, with legal review | Open |

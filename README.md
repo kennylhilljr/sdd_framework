@@ -6,7 +6,7 @@
 
 SDD creates a controlled bridge from Product intent to Engineering delivery. Product owns the problem, outcomes, scope, priorities, constraints and acceptance. Engineering contributes feasibility and risk input while intent is formed, then owns architecture and implementation choices. Shared templates, named decision owners, approval gates and stable identifiers keep that connection from requirements through tests, code and evidence.
 
-This repository is a **reusable toolkit**. Any team can install its portable core: the templates, decision ownership, gates, identifiers, trace checks and change control. Each team adapts the local choices (approvers, tools, paths, roles and workflow) to its own governance. The toolkit ships with an **Access Management reference profile**: Access Management is the example L1 domain where the toolkit is being piloted and iterated. The worked example is synthetic and does not select the pilot's capability or application.
+This repository is a **reusable toolkit**. Any team can install its portable core: the templates, decision ownership, gates, identifiers, trace checks and change control. Each team adapts the local choices (approvers, tools, paths, roles and workflow) to its own governance. The toolkit ships with a **Tech domain reference profile**: the Tech domain is the example L1 domain where the toolkit is being piloted and iterated. The worked example is synthetic and does not select the pilot's capability or application.
 
 This is a reference implementation, not a finished enterprise standard. Agents support the workflow by preparing bounded, traceable material from approved inputs. They do not replace accountable Product, Engineering, Security or business decisions.
 
@@ -85,9 +85,9 @@ npm test               # the sample TECH code and the framework's own tool tests
 npm run sdd:check      # spec-lint and trace-check over the example documents
 ```
 
-> **This is a synthetic mechanics example.** The `tech` and `billing` names identify software components in the sample application, not L1 or L2 organizational scopes. They do not select the Access Management pilot's L2 capability or L3 Business Application.
+> **This is a synthetic mechanics example.** The `tech` and `billing` names identify software components in the sample application, not L1 or L2 organizational scopes. They do not select the Tech domain pilot's L2 capability or L3 Business Application.
 
-The example's full path is: L0 Enterprise direction, then the L1 Access Management domain, then an illustrative L2 capability, then an unnamed L3 Business Application ([scope map](docs/scope/scope-map.yaml)), then tests, code and evidence. Inside the application, one requirement runs the whole delivery chain: parent requirement `FR-3`, criterion `TECH-2` in the [TECH component PRD](docs/prd/components/PRD-tech-v1.md), [SPEC](docs/spec/SPEC-v1.md) section 4.2, [LLD-tech](docs/lld/LLD-tech-v1.md) §3, milestone task [M1-3](docs/build/M1-plan-v1.md), and finally the [test](test/tech/revoke-role.test.ts) and [code](src/tech/revoke-role.ts) that carry `@spec TECH-2`, with its evidence in [coverage](docs/trace/coverage.md).
+The example's full path is: L0 Enterprise direction, then the L1 Tech domain, then an illustrative L2 capability, then an unnamed L3 Business Application ([scope map](docs/scope/scope-map.yaml)), then tests, code and evidence. Inside the application, one requirement runs the whole delivery chain: parent requirement `FR-3`, criterion `TECH-2` in the [TECH component PRD](docs/prd/components/PRD-tech-v1.md), [SPEC](docs/spec/SPEC-v1.md) section 4.2, [LLD-tech](docs/lld/LLD-tech-v1.md) §3, milestone task [M1-3](docs/build/M1-plan-v1.md), and finally the [test](test/tech/revoke-role.test.ts) and [code](src/tech/revoke-role.ts) that carry `@spec TECH-2`, with its evidence in [coverage](docs/trace/coverage.md).
 
 ### Start a brand-new repository
 
