@@ -71,7 +71,7 @@ From [scope/scope-map.yaml](scope/scope-map.yaml).
 | Plan | [M1 plan: IAM revocation](build/M1-plan-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
 | Handoff | [M1 handoff: IAM revocation](build/M1-handoff-v1.md) | v1 | approved | `example-application` |  | Avery Chen (product owner) |
 | Operations | [Runbook: PostgreSQL primary failover](runbooks/db-failover-v1.md) | v1 | approved | `example-application` |  | Sam Ortiz (SRE lead) |
-| Standard | [Agent persona standard](standards/agent-personas-v1.md) | v1 | approved |  |  | Framework owner |
+| Standard | [Persona standard](standards/agent-personas-v2.md) | v2 | draft |  |  | Framework owner |
 | Standard | [Spec-driven development standard](standards/spec-driven-development-v2.md) | v2 | in-review |  |  | Framework owner |
 | Decision (ADR) | [Use PostgreSQL as the system of record](adr/0001-use-postgresql.md) | 0001 | accepted | `example-application` | | Riley Park (architect) |
 | Decision (ADR) | [Tokens carry identity only; grants come from a cache invalidated on revocation](adr/0002-jwt-token-revocation.md) | 0002 | accepted | `example-application` | | Riley Park (architect) |

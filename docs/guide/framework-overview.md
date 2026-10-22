@@ -65,7 +65,7 @@ Bugs and small changes take a short path. A change that crosses components stops
 
 ## Personas
 
-Eleven personas prepare and review the agent sections: `analyst`, `product-writer`, `architect`, `security-reviewer`, `component-designer`, `test-architect`, `sre`, `planner`, `implementer`, `verifier` and `doc-steward`. A persona never writes a human section, never approves or verifies its own work, and never edits another persona's section. See the [persona standard](../standards/agent-personas-v1.md).
+Six human personas decide and approve: Product, Engineering, the Business Application owner, the component owner, the control owner and the exception authority. Eleven agent personas prepare and review the agent sections: `analyst`, `product-writer`, `architect`, `security-reviewer`, `component-designer`, `test-architect`, `sre`, `planner`, `implementer`, `verifier` and `doc-steward`. An agent persona never writes a human section, never approves or verifies its own work, and never edits another persona's section. A RASCI matrix maps every activity to its personas, with one accountable person per activity and agents never accountable. See the [persona standard](../standards/agent-personas-v2.md).
 
 ## Traceability and evidence
 

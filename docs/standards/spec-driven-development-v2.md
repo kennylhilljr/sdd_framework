@@ -119,6 +119,8 @@ Functional requirements, acceptance criteria, the approved test strategy, public
 | Low level design | Confirms any change to approved behavior | Owns and approves with control owners (Gate 3) | Draft contracts, schema and test strategy for review |
 | Build and evidence | Accepts the outcome | Owns code review | Implement, link tests, regenerate evidence |
 
+The full set of human personas (Product, Engineering, the Business Application owner, component and control owners, and the exception authority), the agent personas and a RASCI matrix for every activity are in the [persona standard](agent-personas-v2.md).
+
 ## 8. The intake checkpoint and the gates
 
 | Checkpoint | What is approved | Approver (default role) | What it unlocks |

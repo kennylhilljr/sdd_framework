@@ -144,12 +144,12 @@ sdd.config.json           components, ID prefixes, scope, paths, approvals and f
 docs/                     what people review: vision, PRDs, ADRs, SPEC, LLDs, contracts, test plan, plans, runbooks
   scope/                  the L0 to L3 organizational scope map
   templates/              one template per artifact; every section tagged H, C or A with its persona
-  standards/              the framework standard and the agent persona standard
+  standards/              the framework standard and the persona standard (human and agent personas, RASCI)
   guide/                  setup, usage, new and existing repositories, tools, other agents, versioning, catalog
   trace/                  derived evidence: coverage and the per-component audit record
 .claude/
   skills/                 ten skills: the eight-step chain plus sdd-adopt and sdd-triage
-  agents/                 eleven personas, from analyst to verifier
+  agents/                 eleven agent personas, from analyst to verifier
   commands/               /sdd-new, /sdd-check, /sdd-status
   settings.json           gate and protect-approved hooks
 .claude-plugin/           packages the skills, personas and hooks as a Claude Code plugin
