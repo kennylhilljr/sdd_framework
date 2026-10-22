@@ -39,14 +39,25 @@ This is a reference implementation, not a finished enterprise standard. Agents s
 **3. People approve; agents prepare.** Product approves the problem framing at an intake checkpoint, then the Product specification at Gate 1. Engineering approves the high level design at Gate 2. Component and control owners approve the low level design at Gate 3. In Claude Code, a hook blocks the next skill until the artifact for that component is approved.
 
 ```mermaid
-flowchart LR
-    H(["Product answers<br/>12 seed questions"]) --> I[sdd-intake] --> K{{"Intake<br/>checkpoint"}} --> S[sdd-spec] --> C[sdd-clarify]
-    C --> G1{{"Gate 1<br/>Product spec"}} --> HLD[sdd-hld] --> G2{{"Gate 2<br/>HLD"}} --> LLD[sdd-lld]
-    LLD --> G3{{"Gate 3<br/>LLD"}} --> T[sdd-tasks] --> IM[sdd-implement] --> V[sdd-verify]
-    V -. "drift: the owner names the first artifact that lost intent" .-> S
+flowchart TB
+    subgraph P["Product"]
+        direction LR
+        H(["Product answers<br/>12 seed questions"]) --> I[sdd-intake] --> K{{"Intake<br/>checkpoint"}} --> S[sdd-spec] --> C[sdd-clarify] --> G1{{"Gate 1<br/>Product spec"}}
+    end
+    subgraph E["Engineering design"]
+        direction LR
+        HLD[sdd-hld] --> G2{{"Gate 2<br/>HLD"}} --> LLD["sdd-lld"] --> G3{{"Gate 3<br/>LLD"}}
+    end
+    subgraph B["Build and verify"]
+        direction LR
+        T[sdd-tasks] --> IM[sdd-implement] --> V[sdd-verify]
+    end
+    P --> E --> B
     classDef human fill:#e6eefb,stroke:#2f6fd6,stroke-width:2px,color:#14306f
     class H,K,G1,G2,G3 human
 ```
+
+When `sdd-verify` reports a disagreement, the owner names the first artifact that no longer reflects approved intent; that artifact is corrected first, then the ones that depend on it.
 
 **4. Links are plain text that a script checks.** Every acceptance criterion has a stable ID. The test that exercises it and the code entry point that implements it cite the ID in a comment:
 
