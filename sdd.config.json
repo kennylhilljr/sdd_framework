@@ -1,0 +1,47 @@
+{
+  "$schema": "./tools/sdd/sdd.config.schema.json",
+  "frameworkVersion": "1.0.0",
+  "project": {
+    "name": "sdd_framework",
+    "description": "Spec-driven development template with a worked IAM example"
+  },
+  "paths": {
+    "docs": "docs",
+    "codeRoots": [
+      "src"
+    ],
+    "testRoots": [
+      "test"
+    ],
+    "traceIndex": "docs/trace/index.yaml",
+    "coverage": "docs/trace/coverage.md",
+    "docMap": "docs/README.md"
+  },
+  "components": {
+    "iam": {
+      "prefix": "IAM",
+      "paths": [
+        "src/iam",
+        "test/iam"
+      ]
+    },
+    "billing": {
+      "prefix": "BILL",
+      "paths": [
+        "src/billing",
+        "test/billing"
+      ]
+    }
+  },
+  "trace": {
+    "staleAfterDays": 30,
+    "reachWarnBelow": 0.8
+  },
+  "features": {
+    "gateHook": true,
+    "protectApprovedDocs": true,
+    "reachReport": true,
+    "divergenceProbe": false,
+    "differentialAudit": false
+  }
+}

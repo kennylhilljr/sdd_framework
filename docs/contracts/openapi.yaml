@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Authorization service
+  version: 1.0.0
+  description: >
+    Access checks, role grants and role revocation for the worked example.
+    Requirement IDs refer to docs/prd/components/PRD-iam-v1.md.
+servers:
+  - url: https://authz.example.internal
+security:
+  - bearerAuth: []
+paths:
+  /v1/authorize:
+    get:
+      operationId: authorize
+      summary: Check whether a user may perform an action (IAM-1)
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: action
+          in: query
+          required: true
+          schema: { type: string, examples: ["invoices:read"] }
+      responses:
+        "200":
+          description: Decision
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [allowed]
+                properties:
+                  allowed: { type: boolean }
+        "401": { $ref: "#/components/responses/Unauthenticated" }
+  /v1/users/{userId}/roles:
+    post:
+      operationId: grantRole
+      summary: Grant a role to a user
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role: { type: string }
+      responses:
+        "201": { description: Role granted }
+        "401": { $ref: "#/components/responses/Unauthenticated" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /v1/users/{userId}/roles/{role}:
+    delete:
+      operationId: revokeRole
+      summary: Revoke a role from a user (IAM-2, IAM-3, IAM-4)
+      parameters:
+        - $ref: "#/components/parameters/userId"
+        - name: role
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204": { description: Role revoked; cached grants invalidated }
+        "401": { $ref: "#/components/responses/Unauthenticated" }
+        "404": { $ref: "#/components/responses/NotFound" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema: { type: string }
+  responses:
+    Unauthenticated:
+      description: Missing or invalid token
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: The user does not exist
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string, examples: ["not_found"] }
+        message: { type: string }
+        requirement: { type: string, description: "Requirement ID that defines this error", examples: ["IAM-3"] }

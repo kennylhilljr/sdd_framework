@@ -1,0 +1,26 @@
+{
+  "name": "sdd-framework",
+  "displayName": "SDD Framework",
+  "version": "1.0.0",
+  "description": "Spec-driven development for Claude Code: ten skills, eleven agent personas, gate hooks and traceability checks.",
+  "author": { "name": "SDD Framework maintainers" },
+  "license": "UNLICENSED",
+  "icon": "./.claude-plugin/icon.png",
+  "keywords": ["spec-driven-development", "sdd", "prd", "ears", "traceability", "agents"],
+  "skills": ["./.claude/skills/"],
+  "commands": ["./.claude/commands/"],
+  "agents": [
+    "./.claude/agents/analyst.md",
+    "./.claude/agents/product-writer.md",
+    "./.claude/agents/architect.md",
+    "./.claude/agents/security-reviewer.md",
+    "./.claude/agents/component-designer.md",
+    "./.claude/agents/test-architect.md",
+    "./.claude/agents/sre.md",
+    "./.claude/agents/planner.md",
+    "./.claude/agents/implementer.md",
+    "./.claude/agents/verifier.md",
+    "./.claude/agents/doc-steward.md"
+  ],
+  "hooks": "./tools/hooks/hooks.json"
+}

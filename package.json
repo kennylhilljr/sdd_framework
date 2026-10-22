@@ -1,0 +1,23 @@
+{
+  "name": "sdd-framework",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Spec-driven development framework: templates, agent skills, personas and checks for Claude Code and other coding agents",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "setup": "npm install && node tools/sdd/cli.mjs doctor",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "sdd": "node tools/sdd/cli.mjs",
+    "sdd:check": "node tools/sdd/cli.mjs check",
+    "sdd:doctor": "node tools/sdd/cli.mjs doctor",
+    "spec-lint": "node tools/spec-lint/spec-lint.mjs",
+    "trace-check": "node tools/trace-check/trace-check.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0"
+  }
+}

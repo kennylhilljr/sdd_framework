@@ -1,0 +1,26 @@
+%% Role revocation and cache invalidation (SPEC 4.2, LLD-iam §3, IAM-2 to IAM-4)
+sequenceDiagram
+    autonumber
+    actor Admin as Security admin
+    participant API as Authorization service
+    participant DB as PostgreSQL
+    participant Cache as Grant cache
+    participant Product as Product service
+
+    Admin->>API: DELETE /v1/users/{userId}/roles/{role}
+    alt user does not exist (IAM-3)
+        API-->>Admin: 404 not_found
+    else user exists
+        API->>DB: delete role assignment and insert audit record (one transaction, IAM-4)
+        DB-->>API: committed
+        API->>Cache: delete grants for userId (IAM-2)
+        API-->>Admin: 204 No Content
+    end
+
+    Product->>API: GET /v1/authorize?userId&action
+    API->>Cache: read grants for userId
+    Cache-->>API: miss
+    API->>DB: read current roles
+    DB-->>API: roles without the revoked role
+    API->>Cache: store grants (TTL 30 s)
+    API-->>Product: allowed = false (IAM-1)

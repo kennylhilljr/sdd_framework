@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Tests (sample code and the framework's own tools)
+        run: npm test
+      - name: spec-lint
+        run: node tools/spec-lint/spec-lint.mjs
+      - name: trace-check
+        run: node tools/trace-check/trace-check.mjs
+      - name: Doc map and catalog are current
+        run: node tools/sdd/cli.mjs docmap --check && node tools/sdd/cli.mjs catalog --check

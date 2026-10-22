@@ -1,0 +1,13 @@
+{
+  "name": "sdd-framework",
+  "owner": { "name": "SDD Framework maintainers" },
+  "description": "Marketplace for the spec-driven development framework plugin.",
+  "plugins": [
+    {
+      "name": "sdd-framework",
+      "source": ".",
+      "description": "Spec-driven development for Claude Code: skills, personas, gate hooks and traceability checks.",
+      "version": "1.0.0"
+    }
+  ]
+}

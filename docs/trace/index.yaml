@@ -1,0 +1,25 @@
+# Trace index: per-component audit state. Derived; maintained by the verifier and trace-check --write.
+schema_version: 1
+components:
+  iam:
+    status: AUDITED
+    sampled: 2026-10-15
+    audited: 2026-10-20
+    audited_sha: null
+    drift: null
+    next: Plan IAM-5 (bulk revocation) at the M2 kickoff
+    criteria: 5
+    covered: 4
+    deferred: 1
+    gaps: 0
+  billing:
+    status: MAPPED
+    sampled: 2026-10-15
+    audited: null
+    audited_sha: null
+    drift: null
+    next: "Resolve the open pricing questions, then take PRD-billing to Gate 1"
+    criteria: 3
+    covered: 0
+    deferred: 0
+    gaps: 3

@@ -1,0 +1,30 @@
+{
+  "description": "Tool definitions that let a coding or operations agent call the authorization service. Each tool maps to an operation in openapi.yaml.",
+  "tools": [
+    {
+      "name": "check_access",
+      "description": "Check whether a user may perform an action. Read only.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "string", "description": "The user to check" },
+          "action": { "type": "string", "description": "Action name, for example invoices:read" }
+        },
+        "required": ["user_id", "action"]
+      }
+    },
+    {
+      "name": "revoke_role",
+      "description": "Revoke a role from a user. Changes access within 60 seconds and is audited. Requires the access-admin role and a human confirmation.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "string", "description": "The user who loses the role" },
+          "role": { "type": "string", "description": "The role to revoke" },
+          "reason": { "type": "string", "description": "Why the role is revoked; stored in the audit log" }
+        },
+        "required": ["user_id", "role", "reason"]
+      }
+    }
+  ]
+}

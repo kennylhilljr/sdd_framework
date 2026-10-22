@@ -1,0 +1,3 @@
+# Trace index: per-component audit state. Derived; maintained by the verifier and trace-check --write.
+schema_version: 1
+components:
