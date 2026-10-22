@@ -3,7 +3,7 @@ name: sdd-spec
 description: "Turn an approved problem framing into requirements: user stories with priority, functional requirements and EARS acceptance criteria with stable IDs, in the parent and component PRDs. Use after sdd-intake, or when a bug or small change needs its criteria updated."
 argument-hint: "[component name]"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-spec
@@ -14,7 +14,7 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
 
 ## When to use
 
-- Section 1 of the parent PRD has passed Gate 0.
+- Section 1 of the parent PRD has passed the intake checkpoint.
 - A new component needs a component PRD.
 - A bug or small change needs a new or corrected acceptance criterion (the short path of the size router).
 
@@ -29,7 +29,7 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
 
 ## Steps
 
-1. Confirm Section 1 of the parent PRD is approved by the owner (Gate 0). If not, stop and say so.
+1. Confirm Section 1 of the parent PRD is approved by the owner (the intake checkpoint). If not, stop and say so.
 2. Split the work into components with the owner's help. Each component needs a name and a prefix of 2 to 10 capital letters (for example `iam` and `IAM`). Record them in `sdd.config.json` under `components` and in the parent PRD's component table.
 3. Create each component PRD: `node tools/sdd/cli.mjs new prd-component --component <name> --prefix <PREFIX>`.
 4. Dispatch the `product-writer` persona with the Agent tool, one component at a time. Give it the component name, prefix, the parent requirement IDs in scope and the rules below. It writes:
@@ -67,4 +67,5 @@ Hand over to `sdd-clarify`. Gate 1 (the owner approves the PRDs) happens after c
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Intake checkpoint replaces Gate 0; requirements and criteria are drafted as C (owner selects and approves) |
 | 1.0.0 | 2026-10-22 | First release |

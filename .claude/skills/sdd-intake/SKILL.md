@@ -3,14 +3,14 @@ name: sdd-intake
 description: "Interview the owner with the twelve seed questions and turn the answers into Section 1 of the parent PRD. Use when starting a new product, feature or initiative, or when someone asks for a new spec, a new PRD or to capture requirements."
 argument-hint: "<one-line idea or problem>"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-intake
 
 ## Purpose
 
-Capture what only people can supply: the problem, the outcomes, the scope and what must never happen. Every human-owned (H) section of the PRD maps to one of twelve seed questions. This skill asks them, records the answers in the owner's words, and stops for the owner to approve the problem framing (Gate 0) before any requirements are written.
+Capture what only people can supply: the problem, the outcomes, the scope and what must never happen. Every human-owned (H) section of the PRD maps to one of twelve seed questions. This skill asks them, records the answers in the owner's words, and stops for the owner to approve the problem framing (the intake checkpoint) before any requirements are written.
 
 ## When to use
 
@@ -22,17 +22,18 @@ Do not use it for bugs or small changes; those take the short path through `sdd-
 
 ## Inputs
 
-1. `AGENTS.md` (constitution: standing rules, approved stack, owners).
+1. `AGENTS.md` (repository instructions: standing rules, approved stack, owners).
 2. `docs/README.md` (doc map) to see whether a parent PRD already exists.
-3. `docs/standards/spec-driven-development-v1.md` (layers, tags, ID scheme).
-4. `docs/templates/PRD-template.md`.
-5. The idea passed as the argument, if any.
+3. `docs/standards/spec-driven-development-v2.md` (artifact chain, scope, decision owners, ID scheme).
+4. `docs/scope/scope-map.yaml`: the organizational scope (L0 to L3) the work serves. Ask the owner which scope it is if the map does not say.
+5. `docs/templates/PRD-template.md`.
+6. The idea passed as the argument, if any.
 
 ## Steps
 
 1. Read the inputs. If a parent PRD exists, work on its next draft version instead of a new one (`node tools/sdd/cli.mjs new --next docs/prd/PRD-vN.md` only if the current one is approved; otherwise edit the draft).
 2. Dispatch the `analyst` persona with the Agent tool to prepare the interview: prior art in `docs/research/`, existing systems, and any answers already settled in `AGENTS.md`. The analyst never writes H content; it only prepares questions and context.
-3. Ask the owner the twelve seed questions, one or two at a time, skipping any the constitution already answers (usually 9 and 10):
+3. Ask the owner the twelve seed questions, one or two at a time, skipping any `AGENTS.md` already answers (usually 9 and 10):
    1. What problem are we solving, for whom, and why now?
    2. What does success look like in numbers, and by when?
    3. What are the top three things users must be able to do, in priority order?
@@ -59,7 +60,7 @@ Do not use it for bugs or small changes; those take the short path through `sdd-
 
 ## Stop and gate
 
-Stop after Section 1. The owner approves the problem framing (Gate 0) before `sdd-spec` writes requirements. Present a short summary: the problem, the outcomes, the invariants and the open questions. Agents never set `status: approved`; the owner does.
+Stop after Section 1. The owner approves the problem framing at the intake checkpoint before `sdd-spec` writes requirements. Present a short summary: the problem, the outcomes, the invariants and the open questions. Agents never set `status: approved`; the owner does.
 
 ## Rules
 
@@ -73,4 +74,5 @@ Stop after Section 1. The owner approves the problem framing (Gate 0) before `sd
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Intake checkpoint replaces Gate 0; reads the v2 standard and the scope map; records the scope; AGENTS.md is called repository instructions |
 | 1.0.0 | 2026-10-22 | First release |

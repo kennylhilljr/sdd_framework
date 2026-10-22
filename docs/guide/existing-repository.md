@@ -56,7 +56,9 @@
 `docs/adoption/missing-information-v1.md` is the checklist of what people must supply before the framework can run fully. Typical items:
 
 - answers to seed questions that code cannot reveal: outcomes and targets, non-goals, invariants, NFR targets, data classification, rollout tolerance;
-- the owner and approver for each gate;
+- the approvers for the intake checkpoint and each gate, the exception authority and the fast path criteria;
+- the organizational scope the repository serves (the L1 domain, L2 capability and L3 Business Application in `docs/scope/scope-map.yaml`);
+- who owns `docs/` for review in `CODEOWNERS` (adopt never adds or edits one, because it can change how existing pull requests are reviewed);
 - confirmation of component names and ID prefixes;
 - the real test, typecheck and build commands for `AGENTS.md`;
 - where CI should run the checks;

@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="SDD Framework: spec-driven development for people and coding agents">
-  <title>SDD Framework: spec-driven development for people and coding agents</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="SDD Framework: a controlled bridge from Product intent to Engineering delivery">
+  <title>SDD Framework: a controlled bridge from Product intent to Engineering delivery</title>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0b1430"/>
@@ -34,45 +34,45 @@
   <g font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
     <text x="64" y="92" font-size="15" font-weight="600" fill="#9cc3ff" letter-spacing="3">SPEC-DRIVEN DEVELOPMENT</text>
     <text x="62" y="160" font-size="64" font-weight="800" fill="#ffffff">SDD Framework</text>
-    <text x="64" y="206" font-size="22" fill="#d6e4ff">People write the intent. Agents derive the rest.</text>
-    <text x="64" y="236" font-size="22" fill="#d6e4ff">Checks keep every line of code linked to a requirement.</text>
+    <text x="64" y="206" font-size="22" fill="#d6e4ff">From Product intent to Engineering delivery, traced.</text>
+    <text x="64" y="236" font-size="22" fill="#d6e4ff">People decide. Agents prepare. Checks keep the links.</text>
 
     <g transform="translate(64,272)" font-size="14" font-weight="600">
       <rect width="118" height="34" rx="17" fill="#e6eefb"/>
-      <text x="59" y="22" text-anchor="middle" fill="#14306f">H  human</text>
-      <rect x="130" width="148" height="34" rx="17" fill="none" stroke="#9cc3ff" stroke-width="1.5"/>
-      <text x="204" y="22" text-anchor="middle" fill="#d6e4ff">C  co-authored</text>
-      <rect x="290" width="112" height="34" rx="17" fill="none" stroke="#4be3b0" stroke-width="1.5"/>
-      <text x="346" y="22" text-anchor="middle" fill="#bdf5e2">A  agent</text>
+      <text x="59" y="22" text-anchor="middle" fill="#14306f">H  decide</text>
+      <rect x="130" width="210" height="34" rx="17" fill="none" stroke="#9cc3ff" stroke-width="1.5"/>
+      <text x="235" y="22" text-anchor="middle" fill="#d6e4ff">C  agent drafts, you decide</text>
+      <rect x="352" width="150" height="34" rx="17" fill="none" stroke="#4be3b0" stroke-width="1.5"/>
+      <text x="427" y="22" text-anchor="middle" fill="#bdf5e2">A  agent prepares</text>
     </g>
-    <text x="64" y="350" font-size="14" fill="#9cb3dd">Claude Code today · Codex and other agents through AGENTS.md · Node 20+, no dependencies</text>
+    <text x="64" y="350" font-size="14" fill="#9cb3dd">Reusable toolkit · Access Management reference profile · Node 20+, no dependencies</text>
   </g>
 
-  <!-- right: the stack of layers, threaded by IDs down to code -->
+  <!-- right: the delivery artifact chain, threaded by IDs down to code -->
   <g font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" filter="url(#soft)">
     <g font-size="14" font-weight="600" fill="#ffffff">
       <rect x="700" y="40" width="250" height="34" rx="9" fill="url(#card)" stroke="#9cc3ff" stroke-opacity="0.6"/>
-      <text x="716" y="62">L0  Vision</text><text x="934" y="62" text-anchor="end" fill="#e6eefb" font-size="12">H</text>
+      <text x="716" y="62">Vision and framing</text><text x="934" y="62" text-anchor="end" fill="#e6eefb" font-size="12">H</text>
 
       <rect x="724" y="82" width="250" height="34" rx="9" fill="url(#card)" stroke="#9cc3ff" stroke-opacity="0.6"/>
-      <text x="740" y="104">L1  Parent PRD</text><text x="958" y="104" text-anchor="end" fill="#9cb3dd" font-size="12">FR-3</text>
+      <text x="740" y="104">Parent PRD</text><text x="958" y="104" text-anchor="end" fill="#9cb3dd" font-size="12">FR-3</text>
 
       <rect x="748" y="124" width="250" height="34" rx="9" fill="url(#card)" stroke="#9cc3ff" stroke-opacity="0.6"/>
-      <text x="764" y="146">L2  Component PRD</text><text x="982" y="146" text-anchor="end" fill="#9cb3dd" font-size="12">IAM-2</text>
+      <text x="764" y="146">Component PRD</text><text x="982" y="146" text-anchor="end" fill="#9cb3dd" font-size="12">IAM-2</text>
 
       <rect x="772" y="166" width="250" height="34" rx="9" fill="url(#card)" stroke="#9cc3ff" stroke-opacity="0.6"/>
-      <text x="788" y="188">L3  SPEC (HLD)</text><text x="1006" y="188" text-anchor="end" fill="#9cb3dd" font-size="12">4.2</text>
+      <text x="788" y="188">High level design</text><text x="1006" y="188" text-anchor="end" fill="#9cb3dd" font-size="12">4.2</text>
 
       <rect x="796" y="208" width="250" height="34" rx="9" fill="url(#card)" stroke="#4be3b0" stroke-opacity="0.6"/>
-      <text x="812" y="230">L4  LLD</text><text x="1030" y="230" text-anchor="end" fill="#9cb3dd" font-size="12">§3</text>
+      <text x="812" y="230">Low level design</text><text x="1030" y="230" text-anchor="end" fill="#9cb3dd" font-size="12">§3</text>
 
       <rect x="820" y="250" width="250" height="34" rx="9" fill="url(#card)" stroke="#4be3b0" stroke-opacity="0.6"/>
-      <text x="836" y="272">L5  Plan</text><text x="1054" y="272" text-anchor="end" fill="#9cb3dd" font-size="12">M1-3</text>
+      <text x="836" y="272">Plan</text><text x="1054" y="272" text-anchor="end" fill="#9cb3dd" font-size="12">M1-3</text>
     </g>
 
     <!-- code card -->
     <rect x="844" y="296" width="300" height="72" rx="11" fill="#0b1430" fill-opacity="0.85" stroke="#4be3b0" stroke-width="1.5"/>
-    <text x="862" y="322" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="14" fill="#6f86b3">L6  code and tests</text>
+    <text x="862" y="322" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="14" fill="#6f86b3">code and tests</text>
     <text x="862" y="350" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="16" fill="#4be3b0">// @spec IAM-2</text>
     <circle cx="1116" cy="332" r="16" fill="#4be3b0"/>
     <path d="M1108 332 l6 6 l11 -12" fill="none" stroke="#0b1430" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>

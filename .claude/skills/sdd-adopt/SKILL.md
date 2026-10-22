@@ -3,7 +3,7 @@ name: sdd-adopt
 description: "Bring the SDD framework into an existing, running application without breaking it: analyze the repository, add the framework files, list the information people still need to supply, and draft specs for existing behavior. Use for brownfield repositories, adopt SDD, map this codebase, or add the framework to this repo."
 argument-hint: "[path to the repository, default .]"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-adopt
@@ -33,9 +33,9 @@ For a new, empty repository use `node <framework>/tools/sdd/cli.mjs init <path>`
 2. Run the dry run: `node <framework>/tools/sdd/cli.mjs adopt <path>`. Show the owner the plan: files to create, proposals in `.sdd-proposed/` for files that already exist, detected components and prefixes, and where the doc map goes (`docs/DOCMAP.md` when `docs/README.md` already exists).
 3. Ask the owner to confirm the plan and the component names and prefixes. Only then run `node <framework>/tools/sdd/cli.mjs adopt <path> --apply`. From here on the framework's tools exist in the repository, so the later steps use `node tools/sdd/cli.mjs`.
 4. Dispatch the `analyst` persona to read `docs/adoption/inventory-v1.md` and confirm or correct it against the code.
-5. Interview the owner for every "Missing" item in `docs/adoption/missing-information-v1.md`, starting with the twelve seed questions and the gate approvers. Record answers in the PRD sections the table names; leave anything unanswered as `- [ ] Q:`.
+5. Interview the owner for every "Missing" item in `docs/adoption/missing-information-v1.md`, starting with the twelve seed questions, the gate approvers and the organizational scope (fill in `docs/scope/scope-map.yaml` and `project.scope` with the owner). Record answers in the PRD sections the table names; leave anything unanswered as `- [ ] Q:`.
 6. Help the owner merge each file in `.sdd-proposed/` into its original by hand (for example adding `@AGENTS.md` to an existing `CLAUDE.md`, or the hooks into an existing `.claude/settings.json`), then delete `.sdd-proposed/`. Never overwrite the original yourself. Show the owner the lint, format and type check exclusions the missing-information file lists (`tools/`, `.sdd-proposed/`); the owner edits those configs.
-7. For one component at a time, starting with the one changing soonest, dispatch the `product-writer` persona to turn existing behavior into draft criteria `<PREFIX>-<n>` tagged `[inferred]`, citing the tests that show the behavior. Dispatch the `architect` persona to confirm the SPEC and LLD drafts, keeping `[inferred]` on unconfirmed rationale.
+7. For one component at a time, starting with the one changing soonest, dispatch the `product-writer` persona to draft existing behavior as candidate criteria `<PREFIX>-<n>` tagged `[inferred]` for the owner to select and approve (C), citing the tests that show the behavior. Dispatch the `architect` persona to confirm the SPEC and LLD drafts, keeping `[inferred]` on unconfirmed rationale.
 8. Propose `@spec` annotations on existing tests that exercise each draft criterion. Add them only with the owner's agreement; a comment is the only change allowed in existing code.
 9. Run `node tools/sdd/cli.mjs check` (advisory) and `node tools/sdd/cli.mjs docmap`. The doc map is written to `paths.docMap`: `docs/DOCMAP.md` when the repository already had a `docs/README.md`, so the existing file is never touched.
 10. Agree with the owner when CI should stop being advisory, usually once the first components reach AUDITED in `docs/trace/index.yaml`.
@@ -62,4 +62,5 @@ Stop after the dry run for the owner's go-ahead, and again after the missing-inf
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Interview covers the scope map; criteria from existing behavior are drafted as C; adopt never adds CODEOWNERS |
 | 1.0.0 | 2026-10-22 | First release |

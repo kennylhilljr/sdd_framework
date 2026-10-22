@@ -1,12 +1,13 @@
 // Tests for `sdd init` (new repositories) and `sdd adopt` (existing repositories).
 import { describe, it, expect } from "vitest";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { join, dirname, resolve } from "node:path";
+import { walk, rel } from "../../tools/lib/sdd-lib.mjs";
 import { planInit, runInit } from "../../tools/sdd/init.mjs";
 import { analyzeRepo, planAdopt, runAdopt, missingInformation } from "../../tools/sdd/adopt.mjs";
 import { lint } from "../../tools/spec-lint/spec-lint.mjs";
 import { analyze } from "../../tools/trace-check/trace-check.mjs";
-import { newDoc, nextDoc } from "../../tools/sdd/docs.mjs";
+import { newDoc, nextDoc, writeDocmap } from "../../tools/sdd/docs.mjs";
 import { runUpgrade } from "../../tools/sdd/upgrade.mjs";
 import { writeFileSync } from "node:fs";
 import { tempDir, writeFiles, read, snapshot, isFile } from "./helpers.js";
@@ -26,6 +27,27 @@ describe("sdd init", () => {
     expect(JSON.parse(read(dir, "sdd.config.json")).components.iam.prefix).toBe("IAM");
     expect(lint(dir).errors).toEqual([]);
     expect(analyze(dir).errors).toEqual([]);
+  });
+
+  it("installs files whose relative links all resolve, and a scope map that passes lint", () => {
+    const dir = tempDir("init-links");
+    runInit(dir, { components: "iam:IAM" }, quiet);
+    const broken: string[] = [];
+    for (const f of walk(dir, { exts: [".md"] } as any) as string[]) {
+      const r = rel(dir, f);
+      if (r.startsWith("tools/sdd/scaffold/")) continue; // source files: their links resolve where they are installed
+      const text = readFileSync(f, "utf8").replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
+      for (const m of text.matchAll(/\]\(([^)\s]+)\)/g)) {
+        const target = m[1].split("#")[0];
+        if (!target || /^(https?:|mailto:)/.test(target)) continue;
+        if (!existsSync(resolve(dirname(f), decodeURIComponent(target)))) broken.push(`${r} -> ${m[1]}`);
+      }
+    }
+    expect(broken).toEqual([]);
+    for (const f of ["docs/scope/scope-map.yaml", "docs/adr/README.md", ".github/CODEOWNERS"]) expect(isFile(dir, f), f).toBe(true);
+    expect(read(dir, ".github/CODEOWNERS").split("\n").every((l) => !l.trim() || l.startsWith("#"))).toBe(true); // inert until filled in
+    expect(read(dir, "docs/README.md")).not.toMatch(/\bL[4-6]\b/);
+    expect(writeDocmap(dir, { check: true })).toBe(true); // CI's doc map check passes on the first run
   });
 
   it("refuses a folder that already has files, unless forced", () => {

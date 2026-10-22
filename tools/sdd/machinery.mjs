@@ -39,6 +39,8 @@ export const SCAFFOLD_FILES = {
   "docs/trace/index.yaml": "trace-index.yaml",
   "docs/trace/coverage.md": "coverage.md",
   "docs/test/test-plan-v1.md": "test-plan-v1.md",
+  "docs/scope/scope-map.yaml": "scope-map.yaml",
+  "docs/adr/README.md": "adr-README.md",
 };
 export const EMPTY_DIRS = [
   "docs/vision", "docs/research", "docs/prd/components", "docs/adr", "docs/spec", "docs/lld", "docs/contracts",

@@ -7,7 +7,11 @@
     "frameworkVersion": { "type": "string", "description": "Framework version the repository was set up with." },
     "project": {
       "type": "object",
-      "properties": { "name": { "type": "string" }, "description": { "type": "string" } }
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "scope": { "type": ["string", "null"], "description": "Default organizational scope (a key in the scope map) for documents without scope_name." }
+      }
     },
     "adoption": {
       "type": "object",
@@ -26,7 +30,25 @@
         "testPlan": { "type": ["string", "null"], "default": null, "description": "Test plan to read deferred criteria from; null finds the latest docs/test/test-plan-vN.md." },
         "coverage": { "type": "string", "default": "docs/trace/coverage.md", "description": "Generated coverage report (derived status)." },
         "docMap": { "type": "string", "default": "docs/README.md", "description": "File that holds the generated doc map." },
-        "traceIndex": { "type": "string", "default": "docs/trace/index.yaml" }
+        "traceIndex": { "type": "string", "default": "docs/trace/index.yaml" },
+        "scopeMap": { "type": "string", "default": "docs/scope/scope-map.yaml", "description": "Organizational scope map: L0 to L3 units, their parents and owners." },
+        "testResults": { "type": ["string", "null"], "default": null, "description": "Optional JUnit XML test report; linked criteria become passing or failing." }
+      }
+    },
+    "ids": {
+      "type": "object",
+      "properties": {
+        "criterionPattern": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Optional regular expression for a richer acceptance criterion ID (for example ^(?<prefix>AM)-[A-Z]+-\\d{3}-AC\\d+$). The named group prefix gives the component prefix. The default <PREFIX>-<n> form is always accepted."
+        }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "properties": {
+        "requireApprover": { "type": "boolean", "default": false, "description": "When true, approved documents must record approved_by and approved (date) in front matter." }
       }
     },
     "components": {
@@ -37,7 +59,8 @@
         "required": ["prefix"],
         "properties": {
           "prefix": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{1,9}$" },
-          "paths": { "type": "array", "items": { "type": "string" } }
+          "paths": { "type": "array", "items": { "type": "string" } },
+          "scope": { "type": "string", "description": "The organizational scope (a key in the scope map) the component belongs to." }
         }
       }
     },

@@ -3,7 +3,7 @@ name: sdd-clarify
 description: "Find gaps, conflicts and ambiguous criteria in the PRDs and ask the owner only what is missing, then prepare Gate 1. Use after sdd-spec, before asking the owner to approve the requirements."
 argument-hint: "[component name]"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-clarify
@@ -47,7 +47,7 @@ Make the PRDs safe to design from. Check that every criterion is testable, that 
 
 ## Stop and gate
 
-Stop for **Gate 1**. The owner reviews the PRDs and sets `status: approved` in each one. Agents never set it. No approved PRD means `sdd-hld` is blocked by the gate hook.
+Stop for **Gate 1**. The Product authority, with the feasibility and control reviewers, reviews the PRDs; the approver sets `status: approved` and records `approved_by` and `approved` in each one. Agents never set them. No approved PRD means `sdd-hld` is blocked by the gate hook.
 
 ## Rules
 
@@ -66,4 +66,5 @@ Stop for **Gate 1**. The owner reviews the PRDs and sets `status: approved` in e
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Gate 1 approval records approved_by and approved |
 | 1.0.0 | 2026-10-22 | First release |

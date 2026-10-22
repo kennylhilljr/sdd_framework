@@ -1,0 +1,33 @@
+# Organizational scope map. L0 to L3 name organizational scope only; they are not document
+# stages and not gates. Every name below is illustrative: the worked example is synthetic and
+# does not select a real capability or application. Owners replace this file with their own map.
+#   L0  Cyber and Cyber IAM strategy, declarations and imperatives
+#   L1  Domain (Access Management in the reference profile)
+#   L2  Solution or capability (for example entitlement management or access certification)
+#   L3  Business Application
+schema_version: 1
+scopes:
+  cyber-iam:
+    level: L0
+    name: "Cyber and Cyber IAM direction (illustrative)"
+    parent: null
+    owner: "Strategy owner (to be named)"
+    status: illustrative
+  access-management:
+    level: L1
+    name: "Access Management domain (illustrative)"
+    parent: cyber-iam
+    owner: "Domain owner (to be named)"
+    status: illustrative
+  example-capability:
+    level: L2
+    name: "Example capability: role-based access and revocation (illustrative, not the pilot selection)"
+    parent: access-management
+    owner: "Avery Chen (product owner)"
+    status: illustrative
+  example-application:
+    level: L3
+    name: "Example business application: the sample access platform (synthetic)"
+    parent: example-capability
+    owner: "Avery Chen (product owner)"
+    status: illustrative

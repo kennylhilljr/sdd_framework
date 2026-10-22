@@ -5,6 +5,9 @@ version: {{VERSION}}
 status: draft
 owner: "[Name]"
 parent: docs/prd/PRD-v1.md
+artifact_type: high-level-design
+scope_level: L3
+scope_name: "[scope key from docs/scope/scope-map.yaml]"
 date: {{DATE}}
 ---
 
@@ -18,7 +21,7 @@ date: {{DATE}}
 
 > **Owner:** H · **Persona:** none · **Seed question:** 9
 
-*Link the constitution. List only what is specific to this system.*
+*Link `AGENTS.md` and the standard. List only what is specific to this system.*
 
 ## 2. System context and boundaries
 
@@ -80,7 +83,7 @@ date: {{DATE}}
 
 ## 11. Testing strategy
 
-> **Owner:** A · **Persona:** `test-architect`
+> **Owner:** C · **Persona:** `test-architect` drafts; the owner approves at Gate 2
 
 *Test layers and tooling. The test plan says how each criterion is verified; per-criterion coverage is generated in `docs/trace/coverage.md`.*
 

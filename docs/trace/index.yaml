@@ -1,25 +1,47 @@
 # Trace index: per-component audit state. Derived; maintained by the verifier and trace-check --write.
-schema_version: 1
+# The verifier keeps the audit record (status to next); trace-check --write regenerates artifacts and the counts.
+# scope names an entry in docs/scope/scope-map.yaml. drift is a list of criterion IDs, or null.
+schema_version: 2
 components:
   iam:
     status: AUDITED
+    scope: example-application
+    owner: Morgan Lee (QA lead)
     sampled: 2026-10-15
     audited: 2026-10-20
     audited_sha: null
+    findings: IAM-1 to IAM-4 linked to tests and entry points; IAM-5 deferred by the owner
+    disposition: accepted
     drift: null
     next: Plan IAM-5 (bulk revocation) at the M2 kickoff
+    artifacts: [docs/lld/LLD-iam-v1.md@approved, docs/prd/PRD-v1.md@approved, docs/prd/components/PRD-iam-v1.md@approved, docs/spec/SPEC-v1.md@approved, docs/test/test-plan-v1.md@approved]
     criteria: 5
-    covered: 4
+    linked: 4
+    passing: 0
+    failing: 0
+    planned: 0
     deferred: 1
+    excepted: 0
+    drifted: 0
     gaps: 0
   billing:
     status: MAPPED
+    scope: example-application
+    owner: Morgan Lee (QA lead)
     sampled: 2026-10-15
     audited: null
     audited_sha: null
+    findings: null
+    disposition: null
     drift: null
     next: "Resolve the open pricing questions, then take PRD-billing to Gate 1"
+    artifacts: [docs/lld/LLD-billing-v1.md@draft, docs/prd/PRD-v1.md@approved, docs/prd/components/PRD-billing-v1.md@draft, docs/spec/SPEC-v1.md@approved, docs/test/test-plan-v1.md@approved]
     criteria: 3
-    covered: 0
+    linked: 0
+    passing: 0
+    failing: 0
+    planned: 3
     deferred: 0
-    gaps: 3
+    excepted: 0
+    drifted: 0
+    gaps: 0

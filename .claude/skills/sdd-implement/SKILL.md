@@ -1,9 +1,9 @@
 ---
 name: sdd-implement
 description: "Build one planned task tests first, with @spec annotations that cite the acceptance criteria, then write the handoff. Use when a milestone plan exists and a task is next in the queue."
-argument-hint: "<task reference, for example M1 task 4>"
+argument-hint: "<milestone and task, for example M1 task 4>"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-implement
@@ -14,7 +14,7 @@ Turn one task into working, traced code. Tests come first and must fail for the 
 
 ## When to use
 
-- A milestone plan exists in `docs/build/` and its LLDs are approved (Gate 3). The gate hook blocks this skill otherwise.
+- A milestone plan exists in `docs/build/` and the LLD of every component it covers is approved (Gate 3). The gate hook checks the plan you name (`/sdd-implement M1`), or every open plan when none is named.
 - A fix on the short path has its criterion and task ready.
 
 ## Inputs
@@ -34,8 +34,8 @@ Turn one task into working, traced code. Tests come first and must fail for the 
    - "a criterion that admits two readings comes back as a question, never as a silently chosen reading";
    - the commands from `AGENTS.md` to run tests and type checks.
 3. When the implementer returns, run the tests and `node tools/sdd/cli.mjs check` yourself. Fix or send back until both pass.
-4. Run `node tools/trace-check/trace-check.mjs --write` to regenerate `docs/trace/coverage.md`.
-5. Write or update the handoff: `node tools/sdd/cli.mjs new handoff --milestone M<n>` (first task of the milestone) recording what was built, the criterion IDs, the commands run and their results, and anything left open.
+4. Run `node tools/trace-check/trace-check.mjs --write` to regenerate `docs/trace/coverage.md`. To record passing and failing evidence, produce a JUnit XML report with the project's test runner and add `--results <file>` (do not commit a report from a local run as release evidence).
+5. Write or update the handoff: `node tools/sdd/cli.mjs new handoff --milestone M<n>` (first task of the milestone) recording what was built, the criterion IDs, the commands run and their results (which criteria passed, failed, were deferred or excepted), the code review, and anything left open.
 6. Hand over to `sdd-verify`. The implementer never verifies its own work.
 
 ## Outputs
@@ -53,11 +53,12 @@ Code review by a person. Verification by the `verifier` persona through `sdd-ver
 - No code without a failing test first.
 - Cite acceptance criteria (`IAM-2`), not stories or requirements.
 - If the code needs behavior no criterion states, stop and raise a spec gap; do not add untraced behavior.
-- If the design is wrong, the fix starts in the LLD or SPEC, not in the code.
+- If the design is wrong, stop: the owner names the first artifact that lost intent, and the fix starts there.
 - Never edit approved documents; never change `status`.
 
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Gate checks the named plan and the approved LLD of each component it covers; handoff records test results and review |
 | 1.0.0 | 2026-10-22 | First release |

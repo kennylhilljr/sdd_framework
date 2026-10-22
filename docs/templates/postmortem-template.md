@@ -11,7 +11,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*Every S0 and S1 incident gets a postmortem. The `sre` drafts it and the owner approves it. It is blameless: it names the layer where intent was lost, not a person.*
+*Every S0 and S1 incident gets a postmortem. The `sre` drafts it and the owner approves it. It is blameless: it names the first artifact that no longer reflected approved intent, as the owner confirms, not a person.*
 
 ## Summary
 
@@ -41,11 +41,11 @@ date: {{DATE}}
 | --- | --- |
 | | |
 
-## Root cause and the layer where intent was lost
+## Root cause and the first artifact that lost intent
 
 > **Owner:** C · **Persona:** `sre` with `verifier`
 
-| Layer | What was wrong |
+| Artifact | What was wrong |
 | --- | --- |
 | PRD, SPEC, LLD, test, code or operations | |
 
@@ -55,6 +55,6 @@ date: {{DATE}}
 
 > **Owner:** C · **Persona:** `sre` drafts; the owner assigns
 
-| Action | Layer | Owner | Severity or priority | Due |
+| Action | Artifact | Owner | Severity or priority | Due |
 | --- | --- | --- | --- | --- |
 | | | | | |

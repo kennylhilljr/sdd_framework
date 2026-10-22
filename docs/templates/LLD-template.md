@@ -7,6 +7,9 @@ owner: "[Name]"
 prefix: {{PREFIX}}
 component: {{COMPONENT}}
 parent: docs/spec/SPEC-v1.md
+artifact_type: low-level-design
+scope_level: L3
+scope_name: "[scope key from docs/scope/scope-map.yaml]"
 date: {{DATE}}
 ---
 
@@ -14,7 +17,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*One LLD per component. Almost entirely agent-written; humans review only what is costly to reverse: public contracts, persisted schema and authorization. Approved at Gate 3. Link back to the SPEC section and the requirement IDs this component satisfies. Rationale inferred from existing code is tagged `[inferred]` until the owner confirms it.*
+*One LLD per component. Agents prepare most of it from the approved SPEC. Decisions that are costly to reverse are C: public contracts, persisted schema, authorization enforcement and the test strategy are drafted as options and approved by the owners at Gate 3. Link back to the SPEC section and the requirement IDs this component satisfies. Rationale inferred from existing code is tagged `[inferred]` until the owner confirms it.*
 
 ## 1. Scope and requirements
 
@@ -26,17 +29,17 @@ date: {{DATE}}
 
 ## 2. Contracts
 
-> **Owner:** A · **Persona:** `component-designer` · **Human review:** yes for any public or cross-team contract
+> **Owner:** C · **Persona:** `component-designer` drafts; the contract owner approves public and cross-team contracts
 
 *Link the machine-readable contract in `docs/contracts/`.*
 
 ## 3. Data model, schema and migrations
 
-> **Owner:** A · **Persona:** `component-designer` · **Human review:** yes for anything persisted
+> **Owner:** C · **Persona:** `component-designer` drafts; the owner approves anything persisted
 
 ## 4. Authentication and authorization enforcement points
 
-> **Owner:** A · **Persona:** `security-reviewer` · **Human review:** always
+> **Owner:** C · **Persona:** `security-reviewer` drafts; the control owner approves
 
 ## 5. Module structure, interfaces and algorithms
 
@@ -60,11 +63,15 @@ date: {{DATE}}
 
 *Metrics, logs and alerts. Thresholds trace to NFR IDs.*
 
-## 9. Test plan for this component
+## 9. Test strategy for this component
 
-> **Owner:** A · **Persona:** `test-architect`
+> **Owner:** C · **Persona:** `test-architect` drafts; the owner approves at Gate 3
 
-*Which tests cover which criteria. The coverage report itself is generated in `docs/trace/coverage.md` by trace-check.*
+*Planned evidence: map every criterion of the component to the tests that will verify it. A criterion named here is `planned` until a test cites it. The evidence report itself is generated in `docs/trace/coverage.md` by trace-check.*
+
+| Criterion | Planned tests | Level |
+| --- | --- | --- |
+| [PREFIX]-1 | | Unit |
 
 ## 10. Decisions and alternatives
 

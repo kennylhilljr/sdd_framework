@@ -1,16 +1,16 @@
 ---
 name: sdd-triage
-description: "Classify support work (failures, bugs, spec gaps, blockers and drift), assign a severity from S0 to S4, cite the affected criteria and place it in the merged queue. Use for incidents, bug reports, broken builds, blocked work or verifier findings."
+description: "Classify support work (failures, bugs, spec gaps, blockers and drift), assign a severity from S0 to S4, cite the affected criteria and place it in the queue. Use for incidents, bug reports, broken builds, blocked work or verifier findings."
 argument-hint: "<short description of the problem>"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-triage
 
 ## Purpose
 
-Give support work the same discipline as delivery work. Every item gets a type, a severity, the criterion IDs it affects and a starting layer for the fix. Severity labels (S0 to S4) are separate from story priority (P1 to P3), and both feed one queue.
+Give support work the same discipline as delivery work. Every item gets a type, a severity, the criterion IDs it affects and the artifact where the fix is likely to start, which the owner confirms. Severity labels (S0 to S4) are separate from story priority (P1 to P3); this reference profile places both in one combined queue, a local choice.
 
 ## When to use
 
@@ -32,11 +32,11 @@ Give support work the same discipline as delivery work. Every item gets a type, 
 
 | Type | What it is | Triaged by | Fix starts at |
 | --- | --- | --- | --- |
-| Failure | Outage, degradation or failed deploy | `sre` | Runbook first, then the layer that caused it |
+| Failure | Outage, degradation or failed deploy | `sre` | Runbook first, then the first artifact that lost intent |
 | Bug | Behavior violates an existing criterion | `verifier` | Code, with a reproducing test citing the criterion |
 | Spec gap | No criterion covers the behavior, or a criterion is wrong | `verifier` | The PRD or LLD; new capability becomes delivery work with a P rank |
 | Blocker | Something stops delivery | `planner` | Whoever owns the blocking item |
-| Drift | Code and spec disagree | `verifier` | The layer the owner says is wrong |
+| Drift | Two artifacts in the trace disagree | `verifier` | The first artifact the owner says no longer reflects approved intent |
 
 2. Dispatch that persona with the Agent tool to find the affected criterion IDs (search for `@spec` and the PRDs).
 3. Assign severity from urgency and impact:
@@ -51,12 +51,12 @@ Give support work the same discipline as delivery work. Every item gets a type, 
 
 4. Apply the overrides: a breach of an invariant or a security criterion is S0 or S1 whatever its reach; a blocker takes the severity of the work it blocks (blocking P1 work makes it S1).
 5. For S0 and S1, ask the owner to confirm the severity. S0 interrupts work in flight; S1 goes ahead of P1 work at the next task boundary. Both take the fast path: one combined human review, but the trace still applies (a reproducing test citing the criterion, then the fix).
-6. Place the item in the merged queue: S0 > S1 > P1 > S2 = P2 > S3 = P3 > S4. Equal ranks are ordered by dependency. Record it in the issue tracker with type, severity and criterion IDs.
+6. Place the item in the queue. Priority and severity are separate lenses; this reference profile tests a combined ordering, S0 > S1 > P1 > S2 = P2 > S3 = P3 > S4, with equal ranks ordered by dependency. A repository that maps both lenses into its own portfolio and incident processes follows those instead. Record it in the issue tracker with type, severity and criterion IDs.
 7. For S0 and S1, create a postmortem once the incident is over: `node tools/sdd/cli.mjs new postmortem --name <short-name>`. The `sre` drafts it; the owner approves it.
 
 ## Outputs
 
-- A triage record: type, severity, criterion IDs, starting layer, owner, queue position.
+- A triage record: type, severity, criterion IDs, starting artifact, owner, queue position.
 - A postmortem in `docs/postmortems/` for S0 and S1.
 
 ## Stop and gate
@@ -65,7 +65,7 @@ The owner confirms every S0 and S1 and may override any severity. Agents never c
 
 ## Rules
 
-- Every fix starts at the layer where behavior left intent.
+- The owner names the first artifact in the delivery trace that no longer reflects approved intent; the fix starts there. A bug against an unchanged criterion starts in code, with a reproducing test.
 - A bug without a criterion is a spec gap: fix the spec first.
 - Never weaken a test to make it pass.
 
@@ -73,4 +73,5 @@ The owner confirms every S0 and S1 and may override any severity. Agents never c
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Priority and severity are separate lenses; combined queue is a local choice; drift rule names the first artifact that lost intent; "starting layer" becomes the starting artifact |
 | 1.0.0 | 2026-10-22 | First release |

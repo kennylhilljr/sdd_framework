@@ -5,6 +5,7 @@ version: {{VERSION}}
 status: draft
 owner: "[Name]"
 milestone: {{MILESTONE}}
+artifact_type: handoff
 date: {{DATE}}
 ---
 
@@ -12,7 +13,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*The handoff records what was built and the evidence that it works. It is the L6 record a reviewer reads before approving the change.*
+*The handoff records what was built and the evidence that it works. It is the record a reviewer reads before approving the change. Evidence at handoff means the linked tests ran and passed, and the review is recorded.*
 
 ## What changed
 
@@ -28,16 +29,18 @@ date: {{DATE}}
 
 | Check | Result |
 | --- | --- |
-| Tests | |
+| Tests (command, run, result) | |
 | Typecheck or lint | |
 | spec-lint | |
-| trace-check | |
+| trace-check, with the test report (`--results`) | |
+| Criteria passing, failing, deferred or excepted | |
+| Code review (reviewer, link) | |
 
 ## Verification
 
 > **Owner:** A · **Persona:** `verifier` (independent of the implementer)
 
-*Traceability and drift findings. Every finding names the layer it starts at.*
+*Traceability and drift findings. For each disagreement, the owner names the first artifact that no longer reflects approved intent.*
 
 ## Follow-ups
 

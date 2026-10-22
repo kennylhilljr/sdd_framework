@@ -2,7 +2,7 @@
 name: sdd-hld
 description: "Draft the system high-level design (the SPEC) and ADR options with tradeoffs from approved PRDs. Use after Gate 1, when the requirements are approved and the system shape needs designing or changing."
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-hld
@@ -33,9 +33,9 @@ Design the shape of the solution. The architect drafts options for every decisio
 4. Dispatch the `security-reviewer` persona to draft trust boundaries and the threat model (C sections; the owner decides).
 5. Dispatch the `sre` persona to draft the rollout and migration strategy from the owner's risk tolerance (PRD 2.9).
 6. The architect then writes the A sections: component breakdown, data flow and sequence diagrams (Mermaid), capacity estimates from NFR targets, risks and mitigations, and the PRD-to-SPEC traceability table (every FR and criterion ID mapped to a SPEC section).
-7. Dispatch the `test-architect` persona for the testing strategy section.
+7. Dispatch the `test-architect` persona to draft the testing strategy section (C: the owner approves it at Gate 2).
 8. Cut anything that restates the PRD in different words.
-9. Run `node tools/sdd/cli.mjs check` and `node tools/sdd/cli.mjs docmap`.
+9. Run `node tools/sdd/cli.mjs check` and `node tools/sdd/cli.mjs docmap`. Approved criteria without tests are not errors yet: tests are required once a milestone plan exists for the component.
 
 ## Outputs
 
@@ -49,9 +49,9 @@ Stop for **Gate 2**. The owner chooses among ADR options (ADR status `accepted` 
 
 ## Rules
 
-- Never write H content: architecture principles and the approved stack live in the constitution.
+- Never write H content: architecture principles and the approved stack live in `AGENTS.md`.
 - Present choices as options with consequences, not as the agent's best guess.
-- A decision lives at the lowest layer that covers everything it affects.
+- A decision lives in the lowest artifact (SPEC, ADR or LLD) that covers everything it affects.
 - An ADR is never edited after acceptance; a new ADR supersedes it.
 - Ambiguity in a PRD goes back to the owner as `- [ ] Q:`; do not design around it silently.
 
@@ -59,4 +59,5 @@ Stop for **Gate 2**. The owner chooses among ADR options (ADR status `accepted` 
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Testing strategy drafted as C; check no longer blocks design on missing tests; AGENTS.md is called repository instructions; decisions live in the lowest artifact that covers them |
 | 1.0.0 | 2026-10-22 | First release |

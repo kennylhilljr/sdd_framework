@@ -53,7 +53,7 @@ CI fails when the catalog is out of date.
 
 ## Documents
 
-Documents are versioned by file name (`PRD-iam-v2.md`). An approved version is frozen; `node tools/sdd/cli.mjs new --next <path>` creates the next one. ADRs are numbered once and superseded, never versioned. See the [standard](../standards/spec-driven-development-v1.md).
+Documents are versioned by file name (`PRD-iam-v2.md`). An approved version is frozen; `node tools/sdd/cli.mjs new --next <path>` creates the next one. ADRs are numbered once and superseded, never versioned. See the [standard](../standards/spec-driven-development-v2.md).
 
 ## Upgrading a repository to a new framework release
 
@@ -72,3 +72,16 @@ node <path-to-new-framework>/tools/sdd/cli.mjs upgrade . --apply --overwrite  # 
 - `--apply` refuses to run with uncommitted changes; `--allow-dirty` overrides that.
 
 Afterwards, set `frameworkVersion` in `sdd.config.json` to the new release, delete `.sdd-proposed/`, then run `node tools/sdd/cli.mjs catalog` and `node tools/sdd/cli.mjs check`. The release notes are in the framework repository's `CHANGELOG.md`.
+
+### From 1.0.0 to 1.1.0
+
+`upgrade` brings the new tools, skills, personas, templates, standard v2, guides and diagrams. These steps are yours, because `upgrade` never touches project files:
+
+1. Copy `tools/sdd/scaffold/scope-map.yaml` to `docs/scope/scope-map.yaml` and name your L0 to L3 scopes. Add `paths.scopeMap`, `project.scope` and, if you want them, `approvals.requireApprover`, `ids.criterionPattern` and `paths.testResults` to `sdd.config.json` (the defaults work without them).
+2. Compare your `AGENTS.md` with `tools/sdd/scaffold/AGENTS.md` and merge what you want: the intake checkpoint replaces Gate 0, the three separate concepts, the new decision owner definitions and the drift rule. The same goes for `docs/README.md` against `scaffold/docs-README.md`.
+3. Add `excepted: []` to the test plan's front matter and a planned evidence table, in the next version of the test plan. Add `components:` to new milestone plans.
+4. Optionally copy `scaffold/adr-README.md` to `docs/adr/README.md` and `scaffold/CODEOWNERS` to `.github/CODEOWNERS`, then fill it in.
+5. Run `node tools/trace-check/trace-check.mjs --write`. It renames `covered` to `test linked` in the evidence report and moves the trace index counts to the new fields.
+6. Review gated skill calls: with more than one component, `/sdd-lld`, `/sdd-tasks` and `/sdd-implement` now need the component or milestone named.
+
+Behavior changes to expect: an approved criterion without a test is an error only once a milestone plan exists for its component (before that, a warning when nothing is planned), and the gate hook checks the specific component instead of any approved document of the right type.

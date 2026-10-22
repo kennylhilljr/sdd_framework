@@ -7,6 +7,9 @@ owner: "[Name]"
 decision_makers: "[Name]"
 prefix: {{PREFIX}}
 parent: docs/prd/PRD-v1.md
+artifact_type: product-specification
+scope_level: L3
+scope_name: "[scope key from docs/scope/scope-map.yaml]"
 date: {{DATE}}
 ---
 
@@ -14,13 +17,13 @@ date: {{DATE}}
 
 ## How to use this template
 
-*Every section has an owner tag. **H** human-authored: the owner writes it; an agent may interview but never invents it. **C** co-authored: the named persona drafts; the owner decides. **A** agent-generated: the named persona writes it from the H and C sections; the owner reviews at the gate.*
+*Every section has a decision owner tag. **H** human decision: a person supplies and approves it; an agent may interview, organize and edit but never invents it. **C** human decision with agent draft: the named persona drafts options and exposes assumptions and tradeoffs; a person selects and approves. **A** agent prepared from approved inputs: the named persona prepares it; it cannot change approved intent and must pass the checks.*
 
 *This PRD states the what and why, never the how. Solution options, architecture, rollout plans, system monitoring and test plans belong in the SPEC, ADRs, LLDs and the milestone plan.*
 
-*Section 1 is approved at Gate 0 (problem approved) before Section 2 begins. Section 2 is approved at Gate 1 (requirements approved). Each approval produces a new version; an approved version is never edited.*
+*Section 1 is approved at the intake checkpoint (problem approved) before Section 2 begins. Section 2 is approved at Gate 1 (requirements approved). Each approval produces a new version; an approved version is never edited.*
 
-*IDs never change and are never reused: acceptance criteria `[PREFIX]-1` (what tests and code cite with `@spec`), stories `[PREFIX]-US-1`, functional requirements `[PREFIX]-FR-1`, NFRs `[PREFIX]-NFR-1`, invariants `[PREFIX]-INV-1`, outcomes `[PREFIX]-OUT-1`.*
+*Scope: `scope_level` and `scope_name` record the organizational scope (L0 to L3) this PRD serves; they are not document stages. IDs never change and are never reused: acceptance criteria `[PREFIX]-1` (what tests and code cite with `@spec`), stories `[PREFIX]-US-1`, functional requirements `[PREFIX]-FR-1`, NFRs `[PREFIX]-NFR-1`, invariants `[PREFIX]-INV-1`, outcomes `[PREFIX]-OUT-1`.*
 
 ---
 
@@ -86,7 +89,7 @@ date: {{DATE}}
 | --- | --- | --- |
 | | | |
 
-### Gate 0: Problem approved
+### Intake checkpoint: Problem approved
 
 | Approver | Date | Notes |
 | --- | --- | --- |
@@ -118,7 +121,7 @@ date: {{DATE}}
 
 ## 2.4 Functional requirements and acceptance criteria
 
-> **Owner:** A · **Persona:** `product-writer` · **Seed questions:** 3, 12
+> **Owner:** C · **Persona:** `product-writer` drafts requirements and criteria as options; the owner selects and approves · **Seed questions:** 3, 12
 
 | ID | Requirement | Story | Parent |
 | --- | --- | --- | --- |
@@ -210,6 +213,15 @@ date: {{DATE}}
 | Term | Definition |
 | --- | --- |
 | | |
+
+## 2.15 ID history
+
+> **Owner:** C · **Persona:** `product-writer` records; the owner confirms
+
+*IDs that left this PRD. A change to the actor, trigger, response, target, control obligation or test obligation gets a new ID, and the old one is recorded here as superseded. An editorial change keeps the ID. Rows in this table are not definitions.*
+
+| ID | Status | Replaced by | Reason |
+| --- | --- | --- | --- |
 
 ### Gate 1: Requirements approved
 

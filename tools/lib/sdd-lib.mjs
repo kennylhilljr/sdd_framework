@@ -6,7 +6,7 @@ import { join, relative, dirname, resolve, sep } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-export const FRAMEWORK_VERSION = "1.0.0";
+export const FRAMEWORK_VERSION = "1.1.0";
 
 // ---------------------------------------------------------------------------
 // Requirement IDs
@@ -20,8 +20,29 @@ export const TYPED_RE = /^([A-Z][A-Z0-9]{1,9})-(US|FR|NFR|INV|OUT)-(\d+)$/;
 export const PARENT_RE = /^(FR|NFR|OUT|INV)-(\d+)$/;
 export const SPEC_ANNOTATION_RE = /@spec\s+([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*(?:\s*,\s*[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)*)/g;
 
+// A project may allow a richer criterion form (for example AM-PRIV-001-AC1) with
+// ids.criterionPattern in sdd.config.json: a regular expression whose named group "prefix"
+// gives the component prefix. The default <PREFIX>-<n> form is always accepted.
+let extraCriterionRe = null;
+export function setCriterionPattern(pattern) {
+  extraCriterionRe = null;
+  if (!pattern) return;
+  try {
+    extraCriterionRe = new RegExp(pattern);
+  } catch (e) {
+    throw new Error(`ids.criterionPattern in sdd.config.json is not a valid regular expression: ${e.message}`);
+  }
+}
+
 export function classifyId(raw) {
   const id = cleanCell(raw);
+  if (extraCriterionRe) {
+    const x = extraCriterionRe.exec(id);
+    if (x && x[0] === id) {
+      const prefix = x.groups?.prefix || id.split("-")[0];
+      if (!RESERVED_PREFIXES.has(prefix)) return { id, kind: "criterion", prefix };
+    }
+  }
   let m = TYPED_RE.exec(id);
   if (m && !RESERVED_PREFIXES.has(m[1])) return { id, kind: m[2].toLowerCase(), prefix: m[1] };
   m = PARENT_RE.exec(id);
@@ -40,7 +61,7 @@ export function cleanCell(s) {
 // ---------------------------------------------------------------------------
 export const DEFAULT_CONFIG = {
   frameworkVersion: FRAMEWORK_VERSION,
-  project: { name: "", description: "" },
+  project: { name: "", description: "", scope: null },
   paths: {
     docs: "docs",
     codeRoots: ["src"],
@@ -49,7 +70,11 @@ export const DEFAULT_CONFIG = {
     traceIndex: "docs/trace/index.yaml",
     coverage: "docs/trace/coverage.md",
     docMap: "docs/README.md",
+    scopeMap: "docs/scope/scope-map.yaml",
+    testResults: null, // optional JUnit XML report; gives passing and failing states
   },
+  ids: { criterionPattern: null },
+  approvals: { requireApprover: false },
   components: {},
   trace: { staleAfterDays: 30, reachWarnBelow: 0.8 },
   features: {
@@ -75,15 +100,19 @@ export function loadConfig(root) {
   const file = join(root, "sdd.config.json");
   let user = {};
   if (existsSync(file)) user = JSON.parse(readFileSync(file, "utf8"));
-  return {
+  const cfg = {
     ...DEFAULT_CONFIG,
     ...user,
     project: { ...DEFAULT_CONFIG.project, ...(user.project || {}) },
     paths: { ...DEFAULT_CONFIG.paths, ...(user.paths || {}) },
+    ids: { ...DEFAULT_CONFIG.ids, ...(user.ids || {}) },
+    approvals: { ...DEFAULT_CONFIG.approvals, ...(user.approvals || {}) },
     components: { ...(user.components || {}) },
     trace: { ...DEFAULT_CONFIG.trace, ...(user.trace || {}) },
     features: { ...DEFAULT_CONFIG.features, ...(user.features || {}) },
   };
+  setCriterionPattern(cfg.ids.criterionPattern);
+  return cfg;
 }
 
 // ---------------------------------------------------------------------------
@@ -364,7 +393,7 @@ export function collectDefinitions(docs) {
   for (const { d, extraOnly } of selected) {
     const type = String(d.data.type || "");
     for (const t of parseTables(d.body, d.bodyStart)) {
-      if (t.headers[0] !== "id") continue;
+      if (t.headers[0] !== "id" || isHistoryTable(t)) continue;
       for (const row of t.rows) {
         const c = classifyId(row._cells[0]);
         if (!c) continue;
@@ -393,12 +422,102 @@ export function collectDefinitions(docs) {
   return { defs, duplicates };
 }
 
+// The "ID history" table of a PRD records withdrawn, superseded, split and merged IDs.
+// Its rows are not definitions.
+export const ID_HISTORY_STATUSES = new Set(["withdrawn", "superseded", "split", "merged"]);
+export function isHistoryTable(t) {
+  return t.headers[0] === "id" && t.headers.includes("replaced by");
+}
+
+// Every ID each version of a PRD defines, and its ID history rows: used to check the ID lifecycle.
+export function idVersions(docs) {
+  const out = [];
+  for (const d of docs) {
+    const type = String(d.data.type || "");
+    if (!(type === "prd" || type === "prd-component")) continue;
+    const ids = new Map();
+    const history = new Map();
+    for (const t of parseTables(d.body, d.bodyStart)) {
+      if (t.headers[0] !== "id") continue;
+      for (const row of t.rows) {
+        const c = classifyId(row._cells[0]);
+        if (!c) continue;
+        if (isHistoryTable(t)) history.set(c.id, { status: cleanCell(row.status).toLowerCase(), replacedBy: cleanCell(row["replaced by"]), line: row._line });
+        else ids.set(c.id, { text: cleanCell(row.criterion || row.requirement || row.story || row._cells[1] || ""), line: row._line });
+      }
+    }
+    out.push({ d, family: d.family || d.rel, version: d.fileVersion || 0, ids, history });
+  }
+  return out;
+}
+
 // The test plan: the configured path, or the latest docs/test/test-plan-vN.md (approved first).
 export function findTestPlan(root, cfg, docs = loadDocs(root, cfg)) {
   if (cfg.paths.testPlan) return cfg.paths.testPlan;
   const plans = docs.filter((d) => String(d.data.type || "") === "test-plan" && d.family).sort((a, b) => b.fileVersion - a.fileVersion);
   const pick = plans.find((d) => docStatus(d) === "approved") || plans[0];
   return pick ? pick.rel : `${cfg.paths.docs}/test/test-plan-v1.md`;
+}
+
+// ---------------------------------------------------------------------------
+// Components, plans and the artifacts that govern them
+// ---------------------------------------------------------------------------
+// The component a criterion belongs to: the configured component with that prefix,
+// or the lowercased prefix when the component is not configured.
+export function componentOfPrefix(cfg, prefix) {
+  for (const [name, c] of Object.entries(cfg.components)) if (c.prefix && c.prefix === prefix) return name;
+  return prefix ? String(prefix).toLowerCase() : null;
+}
+
+export function prefixOfComponent(cfg, name) {
+  return cfg.components[name]?.prefix || String(name).toUpperCase();
+}
+
+// Resolve a word typed by a person or passed as a skill argument to a component name.
+export function resolveComponent(cfg, word) {
+  const w = String(word || "").trim();
+  if (!w) return null;
+  for (const [name, c] of Object.entries(cfg.components)) {
+    if (name.toLowerCase() === w.toLowerCase() || (c.prefix && c.prefix.toLowerCase() === w.toLowerCase())) return name;
+  }
+  return null;
+}
+
+// Does this document belong to the component? By its prefix in front matter, or by its file name (LLD-iam-v1.md).
+export function docIsForComponent(d, cfg, name) {
+  const prefix = prefixOfComponent(cfg, name);
+  if (d.data.prefix) return String(d.data.prefix) === prefix;
+  if (d.data.component) return String(d.data.component).toLowerCase() === name.toLowerCase();
+  return new RegExp(`-${name}-v\\d+\\.md$`, "i").test(d.name);
+}
+
+// The components a milestone plan covers: front matter "components" or "component",
+// otherwise the components whose criteria the plan cites.
+export function planComponents(d, cfg) {
+  const fm = d.data.components ?? d.data.component;
+  if (fm && !(Array.isArray(fm) && !fm.length)) return (Array.isArray(fm) ? fm : [fm]).map((x) => resolveComponent(cfg, x) || String(x).toLowerCase());
+  // Any token that classifies as an acceptance criterion counts, so a configured richer
+  // ID form (ids.criterionPattern) is recognized as well as <PREFIX>-<n>.
+  const out = new Set();
+  const known = new Set(Object.values(cfg.components).map((c) => c.prefix).filter(Boolean));
+  for (const [token] of d.body.matchAll(/[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+/g)) {
+    const c = classifyId(token);
+    if (!c || c.kind !== "criterion" || /^M\d+$/.test(c.prefix)) continue;
+    if (known.size && !known.has(c.prefix)) continue;
+    out.add(componentOfPrefix(cfg, c.prefix));
+  }
+  return [...out];
+}
+
+// The organizational scope map: L0 to L3. These levels describe organizational scope only;
+// they are not document stages and not gates.
+export const SCOPE_LEVELS = ["L0", "L1", "L2", "L3"];
+
+export function loadScopeMap(root, cfg) {
+  const p = join(root, cfg.paths.scopeMap || "");
+  if (!cfg.paths.scopeMap || !existsSync(p)) return { scopes: {}, path: null };
+  const data = parseYaml(readFileSync(p, "utf8").replace(/\r\n/g, "\n"));
+  return { scopes: data.scopes || {}, path: cfg.paths.scopeMap };
 }
 
 // ---------------------------------------------------------------------------

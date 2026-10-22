@@ -226,13 +226,15 @@ export function missingInformation(a) {
     [6, "What are the latency, availability, scale and residency targets?", "PRD 2.5 Non-functional requirements", "Missing"],
     [7, "What data does it touch, and how is it classified?", "PRD 2.6 Data and classification", yes(a.dataFiles.length, `${a.dataFiles.length} schema or migration file(s); classification is not inferable`)],
     [8, "What systems must it integrate with or replace, and who owns them?", "PRD 2.7 Integrations and owners; SPEC", yes(a.integrations.length, a.integrations.join(", ") + " (owners and SLAs missing)")],
-    [9, "What is already fixed (stack, vendors, platforms, budget)?", "AGENTS.md (constitution)", yes(Object.keys(a.languages).length, Object.keys(a.languages).join(", ") + (a.frameworks.length ? "; " + a.frameworks.join(", ") : "") + " (budget and vendor limits missing)")],
+    [9, "What is already fixed (stack, vendors, platforms, budget)?", "AGENTS.md (repository instructions)", yes(Object.keys(a.languages).length, Object.keys(a.languages).join(", ") + (a.frameworks.length ? "; " + a.frameworks.join(", ") : "") + " (budget and vendor limits missing)")],
     [10, "Which decisions are already made, and which are open?", "docs/adr/", yes(a.adrs.length, `${a.adrs.length} existing ADR(s)`)],
     [11, "What is the rollout risk tolerance, and who responds when it fails?", "PRD 2.9 Rollout risk tolerance and support", yes(a.infra.length, "deployment files found; risk tolerance and on-call owner missing")],
     [12, "How will we know it is done?", "PRD 2.11 Definition of done", yes(a.testFiles.length, `${a.testFiles.length} existing test file(s); acceptance criteria missing`)],
   ];
   const framework = [
-    ["Document owner and approver for Gates 0 to 3", "AGENTS.md, PRD header", "Missing"],
+    ["Approvers for the intake checkpoint and Gates 1 to 3, the exception authority and the fast path criteria", "AGENTS.md, CODEOWNERS, approved_by in front matter", "Missing"],
+    ["Organizational scope: the L1 domain, L2 capability and L3 Business Application this repository serves", "docs/scope/scope-map.yaml, project.scope in sdd.config.json", "Missing: the scope map has placeholders"],
+    ["Who owns docs/ for review (CODEOWNERS) and whether branch protection requires that review", "Your repository settings (adopt never adds CODEOWNERS)", [".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"].some((f) => existsSync(join(a.root, f))) ? "Found a CODEOWNERS file: check that it covers docs/" : "Missing"],
     ["Confirm component names and requirement ID prefixes", "sdd.config.json components", a.components.length ? `Proposed: ${a.components.map((c) => `${c.name}=${c.prefix}`).join(", ")}` : "Missing: no components detected"],
     ["Test command", "AGENTS.md Commands", a.scripts.test ? `Inferred: npm test (${a.scripts.test})` : a.testFrameworks.length ? `Inferred framework: ${a.testFrameworks.join(", ")}; command missing` : "Missing"],
     ["Typecheck or lint command", "AGENTS.md Commands", a.scripts.typecheck || a.scripts.lint ? `Inferred: ${a.scripts.typecheck ? "npm run typecheck" : "npm run lint"}` : "Missing"],
@@ -329,7 +331,7 @@ function componentPrd(a, c) {
   L.push("## What exists today", "", "> **Owner:** A · **Persona:** `analyst`", "", `[inferred] ${c.files.length} source file(s) in \`${c.path}\`, ${c.tests.length} related test file(s).`, "");
   for (const e of c.exports.slice(0, 15)) L.push(`- [inferred] \`${e.file}\`: ${e.names.join(", ")}`);
   L.push("", "## User stories and priority", "", "> **Owner:** C for stories (`product-writer`), H for priority", "", "| ID | As a... I want... so that... | Priority | Why this priority |", "| --- | --- | --- | --- |", "", "- [ ] Q: What are the top things users must be able to do with this component, in priority order?", "");
-  L.push("## Acceptance criteria", "", "> **Owner:** A · **Persona:** `product-writer`", "", "| ID | Criterion | Requirement | Priority |", "| --- | --- | --- | --- |", "", "- [ ] Q: Which existing behaviors should become acceptance criteria first?", "");
+  L.push("## Acceptance criteria", "", "> **Owner:** C · **Persona:** `product-writer` drafts; the owner selects and approves", "", "| ID | Criterion | Requirement | Priority |", "| --- | --- | --- | --- |", "", "- [ ] Q: Which existing behaviors should become acceptance criteria first?", "");
   return L.join("\n");
 }
 
@@ -362,8 +364,8 @@ function lldDoc(a, c) {
 function traceIndex(a) {
   const comps = {};
   for (const c of a.components)
-    comps[c.name] = { status: "MAPPED", sampled: today(), audited: null, audited_sha: null, drift: null, next: "Write acceptance criteria for existing behavior, then annotate tests" };
-  return "# Trace index: per-component audit state. Derived; maintained by the verifier and trace-check --write.\n" + toYaml({ schema_version: 1, components: comps });
+    comps[c.name] = { status: "MAPPED", scope: null, owner: null, sampled: today(), audited: null, audited_sha: null, findings: null, disposition: null, drift: null, next: "Write acceptance criteria for existing behavior, then annotate tests" };
+  return "# Trace index: per-component audit state. Derived; maintained by the verifier and trace-check --write.\n" + toYaml({ schema_version: 2, components: comps });
 }
 
 export function planAdopt(target, a = analyzeRepo(target)) {
@@ -381,7 +383,9 @@ export function planAdopt(target, a = analyzeRepo(target)) {
   const testPlan = scaffoldText("test-plan-v1.md", vars);
   const testSection = "\n## Existing tests\n\n> **Owner:** A · **Persona:** `test-architect`\n\n" +
     (a.testFiles.length ? a.testFiles.slice(0, 60).map((t) => `- \`${t}\``).join("\n") : "- None found") + "\n";
-  plan.file("docs/test/test-plan-v1.md", testPlan.replace(/\n## Deferred criteria/, testSection + "\n## Deferred criteria"), keep);
+  plan.file("docs/test/test-plan-v1.md", testPlan.replace(/\n## Deferrals and exceptions/, testSection + "\n## Deferrals and exceptions"), keep);
+  plan.file("docs/scope/scope-map.yaml", scaffoldText("scope-map.yaml", vars), keep);
+  plan.file("docs/adr/README.md", scaffoldText("adr-README.md", vars), keep);
   plan.file("docs/trace/index.yaml", traceIndex(a), keep);
   plan.file("docs/trace/coverage.md", scaffoldText("coverage.md", vars), keep);
   plan.file(
@@ -390,7 +394,7 @@ export function planAdopt(target, a = analyzeRepo(target)) {
       {
         $schema: "./tools/sdd/sdd.config.schema.json",
         frameworkVersion: FRAMEWORK_VERSION,
-        project: { name: vars.PROJECT, description: a.packageDescription || "" },
+        project: { name: vars.PROJECT, description: a.packageDescription || "", scope: null },
         adoption: { mode: "advisory", adopted: today() },
         paths: {
           docs: "docs",
@@ -399,7 +403,9 @@ export function planAdopt(target, a = analyzeRepo(target)) {
           traceIndex: "docs/trace/index.yaml",
           coverage: "docs/trace/coverage.md",
           docMap,
+          scopeMap: "docs/scope/scope-map.yaml",
         },
+        approvals: { requireApprover: false },
         components: Object.fromEntries(a.components.map((c) => [c.name, { prefix: c.prefix, paths: [c.path] }])),
         trace: { staleAfterDays: 30, reachWarnBelow: 0.8 },
         features: { gateHook: true, protectApprovedDocs: true, reachReport: true, divergenceProbe: false, differentialAudit: false },

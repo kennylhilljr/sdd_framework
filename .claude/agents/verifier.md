@@ -3,7 +3,7 @@ name: verifier
 description: "Use as an independent check at any gate: trace criteria to tests to code, flag drift from the spec, report annotation reach, and review work it did not produce."
 tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # verifier
@@ -25,7 +25,7 @@ The verifier is the framework's independent reader. It checks that every link ex
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. `docs/trace/index.yaml` and `sdd.config.json`
 3. Approved PRDs, SPEC and LLDs in scope
 4. The test plan and the latest handoff
@@ -35,7 +35,7 @@ The verifier is the framework's independent reader. It checks that every link ex
 
 - A findings report ranked by severity
 - Regenerated `docs/trace/coverage.md` and coverage counts through `node tools/trace-check/trace-check.mjs --write`
-- Updated `docs/trace/index.yaml` (status, audited, audited_sha, drift, next), edited directly
+- Updated `docs/trace/index.yaml` audit record (status, scope, owner, audited, audited_sha, findings, disposition, drift as a list of criterion IDs, next), edited directly
 - `docs/trace/audits/<component>/<ID>.md` when the differential runs
 - Always a draft or a new version: never an edit to a document whose status is `approved`.
 
@@ -65,7 +65,7 @@ Every gate, independently.
 
 Stops and asks the owner when:
 
-- Code and spec disagree and the right layer is unclear.
+- Code and spec disagree. The verifier reports the disagreement; the owner names the first artifact that no longer reflects approved intent.
 - An invariant appears violated.
 - Anything would be irreversible (data loss, a public contract change, an external effect).
 
@@ -73,4 +73,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Audit record fields; drift is a list of IDs; reports what structural checks cannot prove; AGENTS.md is called repository instructions |
 | 1.0.0 | 2026-10-22 | First release |

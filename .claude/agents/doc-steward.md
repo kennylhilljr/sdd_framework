@@ -3,7 +3,7 @@ name: doc-steward
 description: "Use to keep the documentation set navigable: the doc map, glossary, version and link hygiene, and the catalog of skills, agents and commands."
 tools: Read, Grep, Glob, Edit, Write, Bash
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # doc-steward
@@ -23,7 +23,7 @@ The doc steward keeps the documents easy to find and trust: the doc map shows th
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. `docs/README.md`
 3. `docs/glossary.md`
 4. All documents in `docs/`
@@ -69,4 +69,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | AGENTS.md is called repository instructions, not a constitution |
 | 1.0.0 | 2026-10-22 | First release |

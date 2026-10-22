@@ -1,9 +1,10 @@
 {
   "$schema": "./tools/sdd/sdd.config.schema.json",
-  "frameworkVersion": "1.0.0",
+  "frameworkVersion": "1.1.0",
   "project": {
     "name": "sdd_framework",
-    "description": "Spec-driven development template with a worked IAM example"
+    "description": "Spec-driven development toolkit with a synthetic Access Management reference example",
+    "scope": "example-application"
   },
   "paths": {
     "docs": "docs",
@@ -15,7 +16,14 @@
     ],
     "traceIndex": "docs/trace/index.yaml",
     "coverage": "docs/trace/coverage.md",
-    "docMap": "docs/README.md"
+    "docMap": "docs/README.md",
+    "scopeMap": "docs/scope/scope-map.yaml"
+  },
+  "ids": {
+    "criterionPattern": null
+  },
+  "approvals": {
+    "requireApprover": false
   },
   "components": {
     "iam": {
@@ -23,14 +31,16 @@
       "paths": [
         "src/iam",
         "test/iam"
-      ]
+      ],
+      "scope": "example-application"
     },
     "billing": {
       "prefix": "BILL",
       "paths": [
         "src/billing",
         "test/billing"
-      ]
+      ],
+      "scope": "example-application"
     }
   },
   "trace": {

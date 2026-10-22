@@ -3,7 +3,7 @@
 // and the skill and agent catalog current.
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { join, dirname, basename, resolve } from "node:path";
-import { findRoot, loadConfig, loadDocs, parseFrontMatter, readText, walk, rel, VERSIONED_RE, docStatus } from "../lib/sdd-lib.mjs";
+import { findRoot, loadConfig, loadDocs, parseFrontMatter, readText, walk, rel, VERSIONED_RE, docStatus, docIsForComponent, loadScopeMap, SCOPE_LEVELS } from "../lib/sdd-lib.mjs";
 import { today } from "./machinery.mjs";
 
 // type -> template file and destination (relative to the docs folder)
@@ -109,38 +109,64 @@ export function nextDoc(root, path, cwd = process.cwd()) {
   return rel(root, out);
 }
 
-const LAYERS = [
-  ["vision", "L0 Vision and strategy"],
+// The delivery artifact chain, in order. These are artifact types, not organizational scope
+// levels: L0 to L3 are reserved for organizational scope (docs/scope/scope-map.yaml).
+const CHAIN = [
+  ["vision", "Vision and direction"],
   ["research", "Research"],
-  ["prd", "L1 Parent PRD"],
-  ["prd-component", "L2 Component PRDs"],
-  ["spec", "L3 SPEC (system HLD)"],
-  ["lld", "L4 LLDs"],
-  ["test-plan", "L4 Test plan"],
-  ["kickoff", "L5 Milestones"],
-  ["plan", "L5 Milestones"],
-  ["handoff", "L6 Handoffs"],
-  ["runbook", "Runbooks"],
-  ["standard", "Standards"],
+  ["prd", "Product specification (parent PRD)"],
+  ["prd-component", "Product specification (component PRD)"],
+  ["spec", "High level design (SPEC)"],
+  ["lld", "Low level design (LLD)"],
+  ["test-plan", "Test strategy"],
+  ["kickoff", "Plan"],
+  ["plan", "Plan"],
+  ["handoff", "Handoff"],
+  ["runbook", "Operations"],
+  ["standard", "Standard"],
   ["inventory", "Adoption"],
   ["adoption-gaps", "Adoption"],
 ];
 export const DOCMAP_START = "<!-- docmap:start -->";
 export const DOCMAP_END = "<!-- docmap:end -->";
 
+const cell = (v) => String(v ?? "").replace(/\|/g, "/");
+
+// The organizational scope a document belongs to: its own scope_name, its component's scope,
+// or the project's default scope.
+function scopeOf(d, cfg) {
+  if (d.data.scope_name) return String(d.data.scope_name);
+  if (d.data.type === "standard") return ""; // framework standards are not tied to one scope
+  for (const [name, c] of Object.entries(cfg.components)) if (c.scope && d.data.prefix && docIsForComponent(d, cfg, name)) return c.scope;
+  return cfg.project.scope || "";
+}
+
 export function docmapTable(root) {
   const cfg = loadConfig(root);
-  const docs = loadDocs(root, cfg).filter((d) => d.family && d.isLatest);
-  const order = new Map(LAYERS.map(([t], i) => [t, i]));
+  const all = loadDocs(root, cfg);
+  const docs = all.filter((d) => d.family && d.isLatest);
+  const order = new Map(CHAIN.map(([t], i) => [t, i]));
   docs.sort((a, b) => (order.get(a.data.type) ?? 99) - (order.get(b.data.type) ?? 99) || a.rel.localeCompare(b.rel));
-  const lines = [DOCMAP_START, "", "| Layer | Latest document | Version | Status | Owner |", "| --- | --- | --- | --- | --- |"];
+  const link = (r) => r.replace(new RegExp(`^${cfg.paths.docs}/`), "");
+  const lines = [DOCMAP_START, ""];
+
+  const { scopes, path: scopePath } = loadScopeMap(root, cfg);
+  lines.push("### Organizational scope map", "");
+  if (Object.keys(scopes).length) {
+    lines.push(`From [${link(scopePath)}](${link(scopePath)}).`, "", "| Level | Scope | Name | Parent | Owner | Status |", "| --- | --- | --- | --- | --- | --- |");
+    const lvl = (k) => SCOPE_LEVELS.indexOf(String(scopes[k].level));
+    for (const k of Object.keys(scopes).sort((a, b) => lvl(a) - lvl(b) || a.localeCompare(b)))
+      lines.push(`| ${cell(scopes[k].level)} | \`${k}\` | ${cell(scopes[k].name)} | ${scopes[k].parent ? "`" + cell(scopes[k].parent) + "`" : ""} | ${cell(scopes[k].owner)} | ${cell(scopes[k].status)} |`);
+  } else lines.push(`No scope map yet. Create ${cfg.paths.scopeMap} to record the L0 to L3 organizational scopes.`);
+
+  lines.push("", "### Delivery artifact index", "", "| Artifact type | Latest document | Version | Status | Scope | Derives from | Owner |", "| --- | --- | --- | --- | --- | --- | --- |");
   for (const d of docs) {
-    const layer = (LAYERS.find(([t]) => t === d.data.type) || [null, d.data.type || "Other"])[1];
-    const link = d.rel.replace(new RegExp(`^${cfg.paths.docs}/`), "");
-    lines.push(`| ${layer} | [${d.data.title || d.name}](${link}) | v${d.fileVersion} | ${docStatus(d) || "?"} | ${String(d.data.owner || "").replace(/\|/g, "/")} |`);
+    const type = (CHAIN.find(([t]) => t === d.data.type) || [null, d.data.type || "Other"])[1];
+    const upstream = [].concat(d.data.derives_from || d.data.parent || []).map((u) => String(u).startsWith(cfg.paths.docs + "/") ? `[${link(String(u)).split("/").pop()}](${link(String(u))})` : cell(u)).join(", ");
+    lines.push(`| ${type} | [${cell(d.data.title || d.name)}](${link(d.rel)}) | v${d.fileVersion} | ${docStatus(d) || "?"} | ${scopeOf(d, cfg) ? "`" + scopeOf(d, cfg) + "`" : ""} | ${upstream} | ${cell(d.data.owner)} |`);
   }
-  const adrs = loadDocs(root, cfg).filter((d) => d.isAdr);
-  for (const d of adrs) lines.push(`| Decisions | [${d.data.title || d.name}](${d.rel.replace(new RegExp(`^${cfg.paths.docs}/`), "")}) | ${d.name.slice(0, 4)} | ${docStatus(d) || "?"} | ${d.data.owner || ""} |`);
+  for (const d of all.filter((x) => x.isAdr))
+    lines.push(`| Decision (ADR) | [${cell(d.data.title || d.name)}](${link(d.rel)}) | ${d.name.slice(0, 4)} | ${docStatus(d) || "?"} | ${scopeOf(d, cfg) ? "`" + scopeOf(d, cfg) + "`" : ""} | | ${cell(d.data.owner)} |`);
   lines.push("", "Generated by `node tools/sdd/cli.mjs docmap`. Do not edit by hand.", "", DOCMAP_END);
   return lines.join("\n");
 }

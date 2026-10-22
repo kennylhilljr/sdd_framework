@@ -11,7 +11,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*Research feeds L0 to L3. It records what was found, with links, so later layers can cite it. It never makes decisions; those go into ADRs.*
+*Research feeds the problem framing, the Product specification and the designs. It records what was found, with links, so later layers can cite it. It never makes decisions; those go into ADRs.*
 
 ## Question
 

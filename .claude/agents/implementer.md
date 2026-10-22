@@ -3,7 +3,7 @@ name: implementer
 description: "Use to build one planned task: failing tests first, then code, with @spec annotations, then the handoff."
 tools: Read, Grep, Glob, Edit, Write, Bash
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # implementer
@@ -23,7 +23,7 @@ The implementer turns one task into working, traced code without adding behavior
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. The task in `docs/build/M<n>-plan-vN.md`
 3. The criterion text in the component PRD
 4. The approved LLD and contracts
@@ -70,4 +70,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | AGENTS.md is called repository instructions, not a constitution |
 | 1.0.0 | 2026-10-22 | First release |

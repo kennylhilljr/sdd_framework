@@ -5,6 +5,8 @@ version: {{VERSION}}
 status: draft
 owner: "[Name]"
 milestone: {{MILESTONE}}
+artifact_type: plan
+components: [] # the components this plan builds; the gate hook checks each one has an approved LLD
 date: {{DATE}}
 ---
 
@@ -12,7 +14,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*The plan breaks an approved LLD into slices and dependency-ordered tasks. Each task fits in one agent session and cites the requirement IDs it serves. The order follows the one queue: S0, S1, P1, then S2 and P2, then S3 and P3.*
+*The plan breaks an approved LLD into slices and dependency-ordered tasks. Each task fits in one agent session and cites the requirement IDs it serves. Set `components:` in the front matter to the components the plan builds; the gate hook checks that each one has an approved LLD. Order tasks by priority and severity; this reference profile uses the combined ordering S0, S1, P1, then S2 and P2, then S3 and P3 (a local choice).*
 
 ## Slices
 

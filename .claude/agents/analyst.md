@@ -3,7 +3,7 @@ name: analyst
 description: "Use to research prior art or a technical question, to inventory an existing codebase, or to interview the owner and record their answers before a PRD is written."
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # analyst
@@ -25,7 +25,7 @@ The analyst gathers facts so people can decide. It researches prior art, prepare
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. `docs/README.md` (doc map)
 3. The parent PRD Section 1, if it exists
 4. `docs/research/` and `docs/adoption/`
@@ -53,7 +53,7 @@ Read, Grep and Glob for the repository; WebSearch and WebFetch for prior art; Wr
 
 ## Gate and handoff
 
-Before Gate 0 and Gate 1. Hands its findings to the owner and to the `product-writer`.
+Before the intake checkpoint and Gate 1. Hands its findings to the owner and to the `product-writer`.
 
 ## Definition of done
 
@@ -65,7 +65,7 @@ Before Gate 0 and Gate 1. Hands its findings to the owner and to the `product-wr
 
 Stops and asks the owner when:
 
-- An answer conflicts with the constitution or another answer.
+- An answer conflicts with `AGENTS.md` or another answer.
 - A source cannot be verified.
 - Anything would be irreversible (data loss, a public contract change, an external effect).
 
@@ -73,4 +73,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Intake checkpoint replaces Gate 0; AGENTS.md is called repository instructions |
 | 1.0.0 | 2026-10-22 | First release |

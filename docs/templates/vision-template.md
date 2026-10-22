@@ -4,6 +4,9 @@ type: vision
 version: {{VERSION}}
 status: draft
 owner: "[Name]"
+artifact_type: vision
+scope_level: L3
+scope_name: "[scope key from docs/scope/scope-map.yaml]"
 date: {{DATE}}
 ---
 
@@ -11,7 +14,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*L0 sits above every PRD. Keep it to one or two pages. Every PRD outcome should trace to an outcome here. Delete italic guidance before approval.*
+*The vision sits above every PRD in the delivery artifact chain. It is not an organizational scope level: record the scope it serves in `scope_level` and `scope_name`. Keep it to one or two pages. Every PRD outcome should trace to an outcome here. Delete italic guidance before approval.*
 
 ## Why
 

@@ -3,7 +3,7 @@ name: architect
 description: "Use to draft the system HLD (the SPEC): component breakdown, data flow, capacity, risks and ADR options with tradeoffs for the owner to decide."
 tools: Read, Grep, Glob, Edit, Write, Bash, WebSearch, WebFetch
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # architect
@@ -24,7 +24,7 @@ The architect designs the shape of the solution and lays out real choices as opt
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. Approved PRDs
 3. Accepted ADRs in `docs/adr/` and the current SPEC
 4. `docs/templates/SPEC-template.md` and `docs/templates/ADR-template.md`
@@ -64,7 +64,7 @@ Gate 2. Hands the SPEC and ADRs to the owner, then to the `component-designer`.
 
 Stops and asks the owner when:
 
-- A requirement cannot be met within the constitution's stack or budget.
+- A requirement cannot be met within the stack in `AGENTS.md` or budget.
 - A change crosses components in a way the PRD did not foresee.
 - Anything would be irreversible (data loss, a public contract change, an external effect).
 
@@ -72,4 +72,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | AGENTS.md is called repository instructions, not a constitution |
 | 1.0.0 | 2026-10-22 | First release |

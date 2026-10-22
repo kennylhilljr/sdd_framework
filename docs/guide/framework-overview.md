@@ -1,72 +1,94 @@
 # Framework overview
 
-AI coding agents can draft most of the documents and code in a project. Two problems follow. Agents produce more text than people can review, so approvals turn into skims. And the intent behind the work leaks away between the request and the code, because nothing says which decisions a person must make and which an agent may make.
+Spec-driven development (SDD) is a controlled bridge from Product intent to Engineering delivery. Product owns the problem, outcomes, scope, priorities, constraints and acceptance. Engineering contributes feasibility, dependency and risk input while intent is formed, then owns architecture and implementation choices. When implementation reveals a choice that changes approved behavior, the choice goes back to Product.
 
-This framework sets that rule. People write what cannot be derived from anything else: the problem, the outcomes and their targets, the scope, what must never happen, and decisions that are expensive to reverse. Agents derive everything else. People approve the results at fixed gates, and scripts check that the code still matches what was approved.
+Two things tend to go wrong on that bridge, and AI coding agents make both worse. Intent leaks away between the request and the code, because nothing says which decisions a person must make. And agents produce more text than people can review, so approvals turn into skims. SDD answers both: every section names its decision owner, people approve at fixed checkpoints, and scripts check that tests and code still link to what was approved. Agents prepare bounded, traceable material from approved inputs. They do not replace accountable decisions.
 
-The rules themselves are in the [standard](../standards/spec-driven-development-v1.md). This page explains them.
+The rules are in the [standard](../standards/spec-driven-development-v2.md). This page explains them.
 
-## Six parts
+## Reusable toolkit, reference profile
 
-1. **A document stack** of seven layers, from vision to code, under a constitution (`AGENTS.md`).
-2. **Ownership tags** on every section: human-authored (H), co-authored (C) or agent-generated (A). Each agent section names the persona that writes it.
-3. **Twelve seed questions.** Their answers give agents enough to draft the rest.
-4. **A chain of agent skills** with four human entry points: the seed answers with the problem framing (Gate 0), then Gates 1, 2 and 3.
-5. **Checked links.** Tests and code cite the criteria they satisfy with `@spec`, and CI fails when a link is broken or missing.
-6. **One priority model** for delivery (P1 to P3) and support (S0 to S4), feeding one queue.
+The repository is a reusable toolkit. Its **portable core** is the same for everyone: templates with decision owners, human gates, stable IDs and their lifecycle, structural trace checks and change control. Each adopting organization adapts the **local choices**: approvers, ID syntax, folder layout, the intake checkpoint, whether priority and severity share one queue, and the agent tooling.
 
-## The document stack
+It ships with an **Access Management reference profile**. Access Management is the example L1 domain under Cyber IAM where the toolkit is piloted and iterated. The worked example inside the repository is synthetic: it shows the mechanics and does not select the pilot's capability or application. This is a reference implementation, not a finished enterprise standard.
 
-![Document layers](../assets/diagrams/sdd-doc-layers.svg)
+## Three separate concepts
+
+| Concept | Values | Answers |
+| --- | --- | --- |
+| Organizational scope | L0 to L3 | Which part of the organization an artifact serves |
+| Delivery artifact chain | Artifact types, unnumbered | Which artifact derives from which |
+| Gates | Gate 1 to 3, plus the intake checkpoint | Which human approval an artifact needs |
+
+Gates 1, 2 and 3 do not correspond to scope levels L1, L2 and L3. HLD and LLD are artifact types, not organizational levels.
+
+**Organizational scope.** L0 is Cyber and Cyber IAM strategy, declarations and imperatives. L1 is a domain (Access Management in the reference profile). L2 is a solution or capability, such as entitlement management or access certification. L3 is a Business Application. The [scope map](../scope/scope-map.yaml) records each scope, its parent and its owner, and documents carry `scope_level` and `scope_name`.
+
+**The delivery artifact chain.**
+
+![The delivery artifact chain beside the organizational scope map](../assets/diagrams/sdd-doc-layers.svg)
 
 ```mermaid
 flowchart TB
-    CON["Constitution: AGENTS.md (H)"]
-    L0["L0 Vision (H)"] --> L1["L1 Parent PRD (H)"] --> L2["L2 Component PRDs (H/C)"]
-    L2 --> L3["L3 SPEC, system HLD (C)"] --> L4["L4 LLD, contracts, test plan (A)"]
-    L4 --> L5["L5 Milestone plan (A)"] --> L6["L6 Code, tests, handoff (A)"]
-    CON -. governs .-> L0
-    ADR["ADRs (C)"] -.- L3
-    RES["Research (A)"] -.-> L1
+    subgraph SCOPE["Organizational scope (scope map)"]
+      direction LR
+      S0["L0 Cyber and Cyber IAM direction"] --> S1["L1 Domain"] --> S2["L2 Capability"] --> S3["L3 Business Application"]
+    end
+    VIS["Vision (H)"] --> PF["Problem framing (H)"] --> PS["Product specification: PRDs (H, C)"]
+    PS --> HLD["High level design: SPEC and ADRs (C)"] --> LLD["Low level design: LLD, contracts, test strategy (C, A)"]
+    LLD --> PL["Plan (A)"] --> CT["Code and tests (A)"] --> HO["Handoff (A)"] --> EV["Evidence, derived (A)"]
+    S3 -. "scope_name" .-> PS
 ```
 
-Each layer derives from the one above, and every requirement ID cites its parent. One requirement shows the trace: parent requirement `FR-3` becomes acceptance criterion `IAM-2` in the IAM component PRD, which the design covers in `SPEC 4.2` and `LLD-iam §3`. A milestone task builds it, and both the test and the code entry point carry `@spec IAM-2`.
+Each artifact derives from the one above, and every requirement ID cites its parent. In the worked example, parent requirement `FR-3` becomes acceptance criterion `IAM-2` in the IAM component PRD, which the design covers in `SPEC 4.2` and `LLD-iam §3`. A milestone task builds it, and both the test and the code entry point carry `@spec IAM-2`.
 
-## Who writes what
+## Who decides what
 
-| Layer | Mostly | People decide or review | Agents write |
-| --- | --- | --- | --- |
-| PRD (L1, L2) | H | Problem, outcomes, scope, invariants, NFR targets, data classification, story priority | Acceptance criteria, edge cases, open questions, glossary |
-| SPEC (L3) | C | ADR choices, trust boundaries, integrations, rollout risk | Components, data flow, capacity, risks, test strategy |
-| LLD (L4) | A | Public contracts, persisted schema, authorization | Modules, algorithms, errors, config, observability, test plan |
-| Plans, code (L5, L6) | A | Code review | Plans, tasks, code, tests, handoffs |
+| Artifact | People decide | Agents prepare |
+| --- | --- | --- |
+| Problem framing and Product specification | Problem, outcomes, scope, invariants, NFR targets, data classification, story priority (H); requirements and acceptance criteria, selected from drafts (C) | Draft criteria as options, edge cases, open questions, glossary, ID history |
+| High level design | ADR choices, trust boundaries, integrations, rollout risk, testing strategy (C) | Components, data flow, capacity, risks |
+| Low level design | Public contracts, persisted schema, authorization enforcement, test strategy (C) | Modules, algorithms, errors, config, observability |
+| Plans, code, evidence | Code review, acceptance of the outcome | Plans, tasks, code, tests, handoffs, derived evidence |
 
-The human share falls as work moves down the stack, but it never reaches zero where a mistake is hard to reverse.
+**H** means a person supplies and approves the content. **C** means an agent drafts options and exposes assumptions, sources and tradeoffs, and a person selects and approves. **A** means an agent prepares it from approved inputs; it cannot change approved intent and must pass the checks.
 
 ## The skill chain
 
 ![Skill chain](../assets/diagrams/sdd-skill-chain.svg)
 
-People enter the chain at four points: they answer the seed questions and approve the problem framing (Gate 0, checked by `sdd-spec` but not by a hook), approve the PRD (Gate 1), choose ADR options and approve the SPEC (Gate 2), and review contracts, schema and authorization in the LLD (Gate 3). A hook blocks `sdd-hld`, `sdd-lld`, `sdd-tasks` and `sdd-implement` until their input is approved. When `sdd-verify` finds drift, the spec is fixed first and design and tasks are regenerated from it.
+People enter at four points: Product answers the seed questions and approves the problem framing at the intake checkpoint; Product approves the Product specification (Gate 1); Engineering chooses ADR options and approves the SPEC (Gate 2); the component and control owners approve contracts, schema, authorization and the test strategy in the LLD (Gate 3). In Claude Code, a hook blocks `sdd-hld`, `sdd-lld`, `sdd-tasks` and `sdd-implement` until the artifact for the component being advanced is approved.
 
-Bugs and small changes take a short path: spec update, tasks, code. A change that crosses components stops for a person.
+When `sdd-verify` reports a disagreement, the named owner decides which artifact is the first one that no longer reflects approved intent. That artifact is corrected first, then the ones that depend on it. Code can be the first artifact, when it breaks an unchanged criterion.
+
+Bugs and small changes take a short path. A change that crosses components stops for a person.
 
 ## Personas
 
-Eleven personas write the agent sections: `analyst`, `product-writer`, `architect`, `security-reviewer`, `component-designer`, `test-architect`, `sre`, `planner`, `implementer`, `verifier` and `doc-steward`. A persona never writes a human section, never approves or verifies its own work, and never edits another persona's section. See the [persona standard](../standards/agent-personas-v1.md).
+Eleven personas prepare and review the agent sections: `analyst`, `product-writer`, `architect`, `security-reviewer`, `component-designer`, `test-architect`, `sre`, `planner`, `implementer`, `verifier` and `doc-steward`. A persona never writes a human section, never approves or verifies its own work, and never edits another persona's section. See the [persona standard](../standards/agent-personas-v1.md).
 
-## Linking and tracking
+## Traceability and evidence
 
-Every requirement keeps one ID for life. Tests and code entry points cite acceptance criteria with `@spec IAM-2`, so every hop is one text search. `trace-check` fails the build on annotations that cite unknown IDs, on approved criteria without tests, on coverage that `docs/trace/coverage.md` claims but the code does not show, and on deferred P1 criteria. Enforcement follows the latest approved version of each PRD. Status lives only in derived files: `docs/trace/coverage.md` and `docs/trace/index.yaml`.
+Every requirement keeps one ID for life; a change in behavior gets a new ID, and the old one is recorded as superseded. Tests and code entry points cite acceptance criteria with `@spec IAM-2`, so every hop is one text search.
 
-The checks see only annotated code, and the agent that writes the code also places the annotations. Annotation reach is reported on every pull request so a falling number shows up in review.
+The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove that a test checks what the criterion means, or that every line is covered, so human review remains required. Each criterion has an evidence state: `planned` (mapped in the test strategy), `test linked`, `passing` or `failing` (from a test report), `deferred`, `excepted`, `drifted` or `gap`. Tests are required once a milestone plan exists for a component; before that, a criterion only needs planned evidence.
 
-## Priorities
+Status lives only in derived files: `docs/trace/coverage.md` and the audit record in `docs/trace/index.yaml`, which also records the versions of the governing artifacts. Evidence goes stale when code changes, and when a governing PRD, SPEC, LLD or test strategy changes after the last audit.
 
-Delivery ranks stories P1 (MVP), P2 or P3. Support ranks failures, bugs, spec gaps, blockers and drift from S0 (outage or invariant breach, immediate) to S4 (cosmetic, backlog). Both feed one queue: S0, S1, P1, S2 and P2, S3 and P3, S4.
+Checks across the rest of the chain (L0 direction, L1 translation, design, tasks and handoff) are planned. Today the doc map shows those links, and spec-lint checks that the scope map is well formed and that `derives_from` paths exist.
+
+## Priority and severity
+
+Product priority (P1 to P3) ranks new capability. Operational severity (S0 to S4) ranks failures, bugs, spec gaps, blockers and drift. They are separate lenses. The reference profile tests one combined queue, S0, S1, P1, S2 and P2, S3 and P3, S4; the portable core does not require it, and an adopting organization can map both lenses into its own portfolio and incident processes.
 
 ## Limits
 
-- The checks guard only what is annotated. Reach tracking and review narrow the gap without closing it.
+- The checks guard only what is annotated, and a link is not proof of meaning. Reach tracking and review narrow the gap without closing it.
+- Front matter is self-asserted. Approver authority comes from `CODEOWNERS`, branch protection and the review record.
+- The hooks are Claude Code adapters. Other agents follow the gates procedurally unless an equivalent adapter is installed.
 - Agents built on the same model can share blind spots, which is one reason the human gates stay.
 - The framework adds documents. Short artifacts, single owners and the short path keep the cost down. If a design document restates the PRD, cut it.
+
+## Open decisions
+
+The standard lists the decisions the toolkit does not settle: the controlled standard and its owner, the pilot's L2 capability and L3 Business Application, gate approvers and exception authority, whether the local experiments stay, and the license. See [open decisions](../standards/spec-driven-development-v2.md#18-open-decisions).

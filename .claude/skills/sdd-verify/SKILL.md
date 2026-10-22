@@ -3,7 +3,7 @@ name: sdd-verify
 description: "Independently check that tests and code still match the approved spec: run spec-lint and trace-check, regenerate coverage, update the audit index and report drift and annotation reach. Use after implementation, before a merge, or on a schedule."
 argument-hint: "[component name]"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-verify
@@ -29,16 +29,16 @@ Prove the trace holds. Structural checks confirm that every link exists. The aud
 ## Steps
 
 1. Dispatch the `verifier` persona with the Agent tool. It must not be the agent that wrote the work under review. Give it the components in scope and these steps.
-2. Run `node tools/sdd/cli.mjs check`. Every error is a finding: reverse orphans (an `@spec` that cites an undefined ID), uncovered criteria in the latest approved PRDs, hollow status (`docs/trace/coverage.md` claims coverage no test shows), a deferred P1 criterion.
-3. Run `node tools/trace-check/trace-check.mjs --write` to regenerate `docs/trace/coverage.md` and the coverage counts in `docs/trace/index.yaml`. The test plan is never edited.
+2. Run `node tools/sdd/cli.mjs check`. Every error is a finding: reverse orphans (an `@spec` that cites an undefined ID), approved criteria without tests in a component that has a milestone plan, a failing linked test, hollow status (`docs/trace/coverage.md` claims evidence no test shows), a deferred P1 criterion. Warnings include criteria with no planned evidence before build, and governing artifacts approved or changed after the last audit.
+3. Run `node tools/trace-check/trace-check.mjs --write` (with `--results <JUnit file>` when a test report exists) to regenerate `docs/trace/coverage.md` and the evidence counts and governing artifact versions in `docs/trace/index.yaml`. The test plan is never edited.
 4. For a pull request, run `node tools/trace-check/trace-check.mjs --base <base branch>` and report annotation reach for the changed files. A falling number is a review finding.
 5. Re-read each adjacent pair for the changed components (PRD and SPEC, SPEC and LLD, LLD and code) and write one line per pair: "consistent" with a reason, or "needs review" with the tension.
-6. Update each audited component in `docs/trace/index.yaml`: `status` (UNMAPPED, MAPPED, AUDITED, OK, PARTIAL, BROKEN, STALE), `audited` (today), `audited_sha` (`git rev-parse HEAD`), `drift` (one line or null), `next` (one line).
+6. Update the audit record of each audited component in `docs/trace/index.yaml`: `status` (UNMAPPED, MAPPED, AUDITED, OK, PARTIAL, BROKEN, STALE), `scope` (a key in the scope map), `owner` (the accountable reviewer), `audited` (today), `audited_sha` (`git rev-parse HEAD`), `findings` (one line), `disposition` (accepted, fix required or exception), `drift` (a list of criterion IDs, or null) and `next` (one line).
 7. If `features.differentialAudit` is true, run the bidirectional differential per changed criterion:
    - **A direction:** three blind sessions (subagents given only the criterion text and a one-line project description) each write a minimal implementation.
    - **B direction:** three blind sessions receive the annotated code with `@spec` comments, criterion IDs and requirement-echoing names stripped, and tests excluded, and each reconstructs the single EARS criterion the code satisfies.
    - Compare by behavior, not wording. Classify as coherent, B-only drift (code does more than the criterion), A-only drift (the criterion is loose), bidirectional drift, or inconsistent.
-   - Write `docs/trace/audits/<component>/<ID>.md` with the date, commit, classification, findings and a recommended fix that starts at the right layer.
+   - Write `docs/trace/audits/<component>/<ID>.md` with the date, commit, classification, findings and a recommended fix, naming the artifact it would start at for the owner to confirm.
 8. Report findings ranked by severity, with file and line.
 
 ## Outputs
@@ -49,13 +49,13 @@ Prove the trace holds. Structural checks confirm that every link exists. The aud
 
 ## Stop and gate
 
-Findings go to the owner. Drift is never auto-repaired: the owner decides whether the spec or the code is wrong, and the fix walks down from that layer.
+Findings go to the owner. Drift is never auto-repaired. Verification reports the disagreement; the named owner determines the first artifact in the delivery trace that no longer reflects approved intent; the team corrects it, then updates its dependent artifacts.
 
 ## Rules
 
 - Never verify your own work.
 - A clean pass means no counterexample was found; say where you looked hardest.
-- The checks only see annotated code; report reach so gaps are visible.
+- The checks only see annotated code, and a link does not prove meaning; report reach so gaps are visible, and say what the structural checks cannot show.
 - Never edit approved documents and never change `status` on them. The verifier writes only under `docs/trace/`.
 
 ## Feature flags
@@ -69,4 +69,5 @@ Findings go to the owner. Drift is never auto-repaired: the owner decides whethe
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Evidence states, test reports, audit record fields and the drift rule |
 | 1.0.0 | 2026-10-22 | First release |

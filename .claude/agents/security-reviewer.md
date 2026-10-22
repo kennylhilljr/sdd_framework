@@ -3,7 +3,7 @@ name: security-reviewer
 description: "Use to draft trust boundaries and threat models, write the security sections of LLDs for human review, and review any change that touches access, secrets, keys or network exposure."
 tools: Read, Grep, Glob, Edit, Write, Bash
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # security-reviewer
@@ -19,12 +19,12 @@ The security reviewer makes sure invariants and authorization rules are designed
 ## Owned sections
 
 - Trust boundaries and threat model in the SPEC (C)
-- Authentication and authorization enforcement points in LLDs (A, always human-reviewed)
+- Authentication and authorization enforcement points in LLDs, drafted as options for the control owner to decide (C)
 - Never an H section. H sections are written by the owner; this persona may only ask about them and list `- [ ] Q:`.
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. PRD invariants (`INV-n`, `<PREFIX>-INV-n`) and data classification
 3. The SPEC and the LLD under review
 4. Contracts in `docs/contracts/`
@@ -69,4 +69,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Authorization enforcement in the LLD is C; approvals record the control owner; AGENTS.md is called repository instructions |
 | 1.0.0 | 2026-10-22 | First release |

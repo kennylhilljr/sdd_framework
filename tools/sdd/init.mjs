@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join, resolve, basename } from "node:path";
 import { Plan, addMachinery, scaffoldText, EMPTY_DIRS, SCAFFOLD_FILES, FRAMEWORK_ROOT, today, isDirEmpty } from "./machinery.mjs";
 import { FRAMEWORK_VERSION, git } from "../lib/sdd-lib.mjs";
+import { writeDocmap } from "./docs.mjs";
 
 export function parseComponents(spec) {
   // "iam:IAM,billing:BILL" -> { iam: { prefix: "IAM", paths: [...] } }
@@ -25,14 +26,16 @@ export function planInit(target, opts = {}) {
   addMachinery(plan);
   for (const [to, from] of Object.entries(SCAFFOLD_FILES)) plan.file(to, scaffoldText(from, vars));
   plan.file(".github/workflows/ci.yml", scaffoldText("ci.yml", vars));
+  plan.file(".github/CODEOWNERS", scaffoldText("CODEOWNERS", vars));
   plan.file(
     "sdd.config.json",
     JSON.stringify(
       {
         $schema: "./tools/sdd/sdd.config.schema.json",
         frameworkVersion: FRAMEWORK_VERSION,
-        project: { name, description: "" },
-        paths: { docs: "docs", codeRoots: ["src"], testRoots: ["test"], traceIndex: "docs/trace/index.yaml", coverage: "docs/trace/coverage.md", docMap: "docs/README.md" },
+        project: { name, description: "", scope: null },
+        paths: { docs: "docs", codeRoots: ["src"], testRoots: ["test"], traceIndex: "docs/trace/index.yaml", coverage: "docs/trace/coverage.md", docMap: "docs/README.md", scopeMap: "docs/scope/scope-map.yaml" },
+        approvals: { requireApprover: false },
         components,
         trace: { staleAfterDays: 30, reachWarnBelow: 0.8 },
         features: { gateHook: true, protectApprovedDocs: true, reachReport: true, divergenceProbe: false, differentialAudit: false },
@@ -62,6 +65,7 @@ export function runInit(target, opts = {}, log = console.log) {
   plan.print(log);
   if (opts.dryRun) return 0;
   plan.apply();
+  writeDocmap(dir); // fill the generated views so CI's doc map check passes on the first run
   if (opts.git && git(dir, ["rev-parse", "--is-inside-work-tree"]) !== "true") git(dir, ["init", "-q"]);
   log("");
   log("Next steps:");

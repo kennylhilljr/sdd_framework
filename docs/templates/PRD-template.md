@@ -5,6 +5,9 @@ version: {{VERSION}}
 status: draft
 owner: "[Name]"
 decision_makers: "[Name]"
+artifact_type: product-specification
+scope_level: L3
+scope_name: "[scope key from docs/scope/scope-map.yaml]"
 date: {{DATE}}
 ---
 
@@ -12,7 +15,7 @@ date: {{DATE}}
 
 ## How to use this template
 
-*The parent PRD states the what and why for the whole product. It holds the outcomes, the functional requirement index, the NFRs and the invariants. Each component then gets a component PRD (`node tools/sdd/cli.mjs new prd-component --component <name> --prefix <PREFIX>`) with its stories and acceptance criteria. Section 1 is approved at Gate 0 (problem approved); the whole document at Gate 1. Delete italic guidance before approval.*
+*The parent PRD states the what and why for the whole product. It holds the outcomes, the functional requirement index, the NFRs and the invariants. Each component then gets a component PRD (`node tools/sdd/cli.mjs new prd-component --component <name> --prefix <PREFIX>`) with its stories and acceptance criteria. Section 1 is approved at the intake checkpoint (problem approved); the whole document at Gate 1. `scope_level` and `scope_name` record the organizational scope (L0 to L3) the product serves. Delete italic guidance before approval.*
 
 *Parent IDs: outcomes `OUT-n`, functional requirements `FR-n`, NFRs `NFR-n`, invariants `INV-n`. They never change and are never reused.*
 
@@ -68,7 +71,7 @@ date: {{DATE}}
 
 *Constraints specific to this effort, and decisions already settled (link ADRs). Open decisions become ADR options at the HLD; do not argue them here.*
 
-### Gate 0: Problem approved
+### Intake checkpoint: Problem approved
 
 | Approver | Date | Notes |
 | --- | --- | --- |
@@ -86,7 +89,7 @@ date: {{DATE}}
 
 ## 2.2 Functional requirement index
 
-> **Owner:** H · **Persona:** none (`product-writer` may draft wording) · **Seed question:** 3
+> **Owner:** C · **Persona:** `product-writer` drafts wording; the owner selects and approves · **Seed question:** 3
 
 | ID | Requirement | Component | Priority |
 | --- | --- | --- | --- |

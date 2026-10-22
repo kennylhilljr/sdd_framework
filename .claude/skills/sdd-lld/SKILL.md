@@ -3,18 +3,18 @@ name: sdd-lld
 description: "Write one low-level design per component from the approved SPEC: contracts, schema, algorithms, errors, configuration, observability and the test plan. Use after Gate 2, when a component is ready for detailed design."
 argument-hint: "<component name>"
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sdd-lld
 
 ## Purpose
 
-Produce the build detail for one component. The LLD is almost entirely agent-written; the owner reviews only what is expensive to reverse: public contracts, persisted schema, and authentication and authorization enforcement points.
+Produce the build detail for one component. Agents prepare most of the LLD from the approved SPEC. Decisions that are expensive to reverse are drafted as options for people to decide (C): public contracts, persisted schema, authorization enforcement and the test strategy.
 
 ## When to use
 
-- The SPEC is approved (Gate 2). The gate hook blocks this skill otherwise.
+- The SPEC is approved (Gate 2) and the component's PRD is approved (Gate 1). The gate hook blocks this skill otherwise; name the component, for example `/sdd-lld iam`.
 - A component's design must change within the component (changes that cross components go back to `sdd-hld`).
 
 ## Inputs
@@ -33,8 +33,8 @@ Produce the build detail for one component. The LLD is almost entirely agent-wri
 3. After the draft, the component designer runs an edge-case probe on its own gaps: missing state transitions, unstated invariants, unspecified error shapes, ordering assumptions. Gaps go to the owner as `- [ ] Q:` or into the LLD.
 4. Dispatch the `security-reviewer` persona for the authentication and authorization enforcement section. It is always human-reviewed.
 5. Dispatch the `sre` persona for observability: metrics, logs and alerts with thresholds traced to NFR IDs.
-6. Dispatch the `test-architect` persona to update the test plan: map every criterion of the component to planned tests, list deferred P2 or P3 criteria in the test plan front matter `deferred:` only with the owner's approval, then run `node tools/trace-check/trace-check.mjs --write` to regenerate `docs/trace/coverage.md`.
-7. Run `node tools/sdd/cli.mjs check` and `node tools/sdd/cli.mjs docmap`.
+6. Dispatch the `test-architect` persona to draft the test strategy for the owner to approve: map every criterion of the component to planned tests in the LLD's test strategy section and the test plan's planned evidence table (each mapped criterion becomes `planned`), list deferred P2 or P3 criteria in the test plan front matter `deferred:` only with the owner's approval, then run `node tools/trace-check/trace-check.mjs --write` to regenerate `docs/trace/coverage.md`.
+7. Run `node tools/sdd/cli.mjs check` and `node tools/sdd/cli.mjs docmap`. Before build, a criterion without planned evidence is a warning; resolve each one.
 
 ## Outputs
 
@@ -44,7 +44,7 @@ Produce the build detail for one component. The LLD is almost entirely agent-wri
 
 ## Stop and gate
 
-Stop for **Gate 3**. The owner reviews public or cross-team contracts, persisted schema and authorization enforcement, then sets `status: approved` on the LLD. Agents never set it. The rest of the LLD is reviewed through the code.
+Stop for **Gate 3**. The Business Application, component and control owners review public or cross-team contracts, persisted schema, authorization enforcement and the test strategy, then set `status: approved` and record `approved_by` and `approved` on the LLD. Agents never set it. The rest of the LLD is reviewed through the code.
 
 ## Rules
 
@@ -57,4 +57,5 @@ Stop for **Gate 3**. The owner reviews public or cross-team contracts, persisted
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Gate bound to the named component; contracts, schema, authorization and test strategy drafted as C; planned evidence |
 | 1.0.0 | 2026-10-22 | First release |

@@ -15,7 +15,7 @@ date: {{DATE}}
 
 > **Owner:** C · **Persona:** `architect`
 
-*The forces at play, the requirement IDs this decision serves, and the constraints from the constitution.*
+*The forces at play, the requirement IDs this decision serves, and the constraints from `AGENTS.md` and the standard.*
 
 ## Options
 

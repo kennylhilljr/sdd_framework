@@ -17,7 +17,7 @@ Boolean flags (`--apply`, `--force`, `--dry-run` and the like) never consume the
 | `new TYPE` | Create a document from its template. Types: `vision`, `research --name`, `prd`, `prd-component --component --prefix`, `adr --name`, `spec`, `lld --component`, `test-plan`, `kickoff/plan/handoff --milestone M1`, `runbook --name`, `postmortem --name` |
 | `new --help` | List the document types and their options |
 | `new --next PATH` | Copy a frozen document into its next version as a draft |
-| `docmap` | Regenerate the doc map at `paths.docMap` (`docs/README.md`, or `docs/DOCMAP.md` when adopt found an existing `docs/README.md`; `--check` for CI) |
+| `docmap` | Regenerate the organizational scope map and the delivery artifact index in the doc map at `paths.docMap` (`docs/README.md`, or `docs/DOCMAP.md` when adopt found an existing `docs/README.md`; `--check` for CI) |
 | `catalog` | Regenerate the skill, agent and command catalog in `docs/guide/catalog.md` (`--check` for CI) |
 | `version` | Print the framework version |
 
@@ -32,5 +32,5 @@ Boolean flags (`--apply`, `--force`, `--dry-run` and the like) never consume the
 | [`upgrade.mjs`](upgrade.mjs) | Upgrades of framework-owned files |
 | [`doctor.mjs`](doctor.mjs) | Environment checks |
 | [`docs.mjs`](docs.mjs) | `new`, `docmap`, `catalog` |
-| [`scaffold/`](scaffold) | Starting files for a target repository (constitution, settings, CI, doc map) |
+| [`scaffold/`](scaffold) | Starting files for a target repository (repository instructions, settings, CI, doc map, scope map, ADR index, CODEOWNERS). Their links resolve where they are installed |
 | [`sdd.config.schema.json`](sdd.config.schema.json) | Schema for `sdd.config.json` |

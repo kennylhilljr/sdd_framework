@@ -7,7 +7,14 @@ import { existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   findRoot, loadConfig, loadDocs, collectDefinitions, parseTables, parseFrontMatter, readText, walk, rel,
-  classifyId, cleanCell, docStatus, DOC_STATUSES, ADR_STATUSES, parseArgs, report, isMain } from "../lib/sdd-lib.mjs";
+  classifyId, cleanCell, docStatus, DOC_STATUSES, ADR_STATUSES, parseArgs, report, isMain,
+  loadScopeMap, SCOPE_LEVELS, idVersions, ID_HISTORY_STATUSES } from "../lib/sdd-lib.mjs";
+
+// Artifact types in the delivery artifact chain (front matter artifact_type, optional).
+export const ARTIFACT_TYPES = new Set([
+  "strategic-direction", "domain-translation", "vision", "problem-framing", "product-specification", "high-level-design", "low-level-design",
+  "test-strategy", "plan", "handoff", "evidence", "decision", "research", "operations", "standard",
+]);
 
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;
 const EARS_RE = /\bshall\b/i;
@@ -130,6 +137,89 @@ export function lint(root, cfg = loadConfig(root)) {
       if (!/>\s*\*\*Owner:\*\*\s*(H|C|A)\b/.test(s))
         warnings.push({ file: rel(root, f), msg: `section "${title}" has no "> **Owner:** H|C|A" line` });
     });
+  }
+
+  // 8. Organizational scope (L0 to L3) and trace metadata. Scope parents and trace parents
+  // are different relationships: scope_parent is an organizational unit, derives_from is an artifact.
+  const { scopes, path: scopePath } = loadScopeMap(root, cfg);
+  for (const [key, sc] of Object.entries(scopes)) {
+    const lvl = String(sc.level || "");
+    if (!SCOPE_LEVELS.includes(lvl)) {
+      errors.push({ file: scopePath, msg: `scope ${key} has level "${lvl}"; organizational scope levels are ${SCOPE_LEVELS.join(", ")}` });
+      continue;
+    }
+    if (lvl === "L0") {
+      if (sc.parent) errors.push({ file: scopePath, msg: `scope ${key} is L0 and cannot have a parent` });
+    } else if (!sc.parent || !scopes[sc.parent]) {
+      errors.push({ file: scopePath, msg: `scope ${key} (${lvl}) needs a parent scope that exists in the scope map` });
+    } else if (SCOPE_LEVELS.indexOf(String(scopes[sc.parent].level)) !== SCOPE_LEVELS.indexOf(lvl) - 1) {
+      errors.push({ file: scopePath, msg: `scope ${key} (${lvl}) has parent ${sc.parent} (${scopes[sc.parent].level}); a parent is exactly one level up` });
+    }
+  }
+  const asList = (v) => (v === undefined || v === null || v === "" ? [] : Array.isArray(v) ? v : [v]).map(String);
+  for (const d of docs) {
+    const fm = d.data;
+    if (fm.scope_level !== undefined && !SCOPE_LEVELS.includes(String(fm.scope_level)))
+      errors.push({ file: d.rel, msg: `scope_level "${fm.scope_level}" is not one of ${SCOPE_LEVELS.join(", ")} (organizational scope, not a document stage)` });
+    for (const k of ["scope_name", "scope_parent"])
+      if (fm[k] && scopePath && !scopes[String(fm[k])]) warnings.push({ file: d.rel, msg: `${k} "${fm[k]}" is not in ${scopePath}` });
+    if (fm.scope_name && fm.scope_level && scopes[String(fm.scope_name)] && String(scopes[String(fm.scope_name)].level) !== String(fm.scope_level))
+      errors.push({ file: d.rel, msg: `scope_level ${fm.scope_level} does not match ${fm.scope_name} (${scopes[String(fm.scope_name)].level}) in the scope map` });
+    for (const s of asList(fm.affected_scopes)) if (scopePath && !scopes[s]) warnings.push({ file: d.rel, msg: `affected scope "${s}" is not in ${scopePath}` });
+    if (fm.artifact_type && !ARTIFACT_TYPES.has(String(fm.artifact_type)))
+      warnings.push({ file: d.rel, msg: `artifact_type "${fm.artifact_type}" is not one of ${[...ARTIFACT_TYPES].join(", ")}` });
+    for (const src of asList(fm.derives_from))
+      if (/[/.]/.test(src) && !existsSync(join(root, src))) warnings.push({ file: d.rel, msg: `derives_from ${src} does not exist` });
+    for (const id of asList(fm.satisfies)) if (!defs.has(id)) warnings.push({ file: d.rel, msg: `satisfies ${id}, which no PRD defines` });
+    // 9. Approval records: who approved, and when (required when approvals.requireApprover is on)
+    const st = docStatus(d);
+    if ((d.family || d.isAdr) && (st === "approved" || st === "accepted")) {
+      const missing = ["approved_by", d.isAdr ? null : "approved"].filter((k) => k && !fm[k] && !(k === "approved" && fm.date));
+      if (missing.length && cfg.approvals.requireApprover) errors.push({ file: d.rel, msg: `approved document needs ${missing.join(" and ")} in its front matter` });
+    }
+  }
+
+  // 10. ID lifecycle across versions: an ID is never reused for other behavior, and an ID that
+  // leaves a PRD is recorded in its "ID history" table (withdrawn, superseded, split or merged).
+  const versions = idVersions(docs);
+  const familyOf = new Map();
+  for (const v of versions) for (const id of v.ids.keys()) {
+    if (!familyOf.has(id)) familyOf.set(id, v.family);
+    else if (familyOf.get(id) !== v.family) {
+      const other = versions.find((x) => x.family === familyOf.get(id));
+      if (!duplicates.some((x) => x.id === id)) errors.push({ file: v.d.rel, line: v.ids.get(id).line, msg: `${id} is also defined in ${other ? other.d.rel : familyOf.get(id)}; IDs are never reused` });
+    }
+  }
+  const byFamily = new Map();
+  for (const v of versions) {
+    if (!byFamily.has(v.family)) byFamily.set(v.family, []);
+    byFamily.get(v.family).push(v);
+  }
+  for (const list of byFamily.values()) {
+    list.sort((a, b) => a.version - b.version);
+    const latest = list[list.length - 1];
+    for (const [id, h] of latest.history) {
+      if (!ID_HISTORY_STATUSES.has(h.status)) errors.push({ file: latest.d.rel, line: h.line, msg: `ID history status for ${id} must be one of ${[...ID_HISTORY_STATUSES].join(", ")}` });
+      if (latest.ids.has(id)) errors.push({ file: latest.d.rel, line: h.line, msg: `${id} is listed in the ID history but is still defined; a withdrawn or superseded ID is not reused` });
+      for (const r of h.replacedBy.split(/[,\s]+/).filter((x) => classifyId(x))) if (!defs.has(r)) warnings.push({ file: latest.d.rel, line: h.line, msg: `${id} is replaced by ${r}, which no PRD defines` });
+    }
+    // An ID retired in an earlier version (listed in an ID history, or dropped) must not come back.
+    const retired = new Map();
+    list.slice(0, -1).forEach((v, i) => {
+      for (const id of v.history.keys()) retired.set(id, `v${v.version} lists it in its ID history`);
+      const next = list[i + 1];
+      for (const id of v.ids.keys()) if (next && !next.ids.has(id) && !retired.has(id)) retired.set(id, `v${next.version} removed it`);
+    });
+    for (const [id, why] of retired)
+      if (latest.ids.has(id)) errors.push({ file: latest.d.rel, line: latest.ids.get(id).line, msg: `${id} is defined again after it was retired (${why}); IDs are never reused, give the behavior a new ID` });
+    for (const older of list.slice(0, -1)) {
+      for (const [id, o] of older.ids) {
+        if (!latest.ids.has(id) && !latest.history.has(id))
+          warnings.push({ file: latest.d.rel, msg: `${id} was defined in v${older.version} and is gone from v${latest.version}; record it in the ID history table (withdrawn, superseded, split or merged)` });
+        else if (latest.ids.has(id) && latest.ids.get(id).text !== o.text && classifyId(id)?.kind === "criterion")
+          infos.push({ msg: `${id} changed wording between v${older.version} and v${latest.version} of ${latest.family}: keep the ID only if the change is editorial; a change of actor, trigger, response, target or test obligation needs a new ID` });
+      }
+    }
   }
 
   infos.push({ msg: `${docs.length} documents, ${defs.size} requirement IDs, ${versioned.length} skills, agents and commands checked` });

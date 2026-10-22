@@ -39,17 +39,28 @@ Flags that are switches (`--apply`, `--git`, `--json`, `--force`, `--dry-run`, `
 | Component requirements cite a parent that exists | warning |
 | Skills, personas and commands have a `description`, a semver `metadata.version`, and a `## Changelog` row for that version (skills and personas also need `name`) | error |
 | Template sections have an owner line | warning |
+| Scope map levels are L0 to L3, and each parent is exactly one level up | error |
+| `scope_level` is L0 to L3 and matches the scope map | error |
+| `scope_name`, `scope_parent` and `affected_scopes` exist in the scope map; `derives_from` paths exist; `satisfies` IDs are defined; `artifact_type` is known | warning |
+| Approved documents record `approved_by` and `approved` (only with `approvals.requireApprover: true`) | error |
+| An ID is defined in two document families (reused) | error |
+| An ID left a PRD without a row in its ID history table | warning |
+| A criterion's wording changed between versions (confirm the change is editorial) | info |
 
 ## trace-check
 
-`node tools/trace-check/trace-check.mjs [--root DIR] [--write] [--base REF] [--json] [--advisory]`
+`node tools/trace-check/trace-check.mjs [--root DIR] [--write] [--base REF] [--results FILE] [--json] [--advisory]`
 
 | Check | Level |
 | --- | --- |
 | Annotation cites an ID no PRD defines (reverse orphan) | error |
-| Approved criterion has no test citing it and is not deferred | error |
-| `docs/trace/coverage.md` marks a criterion covered, but no test cites it (hollow status) | error |
-| P1 criterion is deferred | error |
+| Approved criterion has no test, is not deferred or excepted, and a milestone plan exists for its component | error |
+| Approved criterion has no test and no planned evidence, before build | warning |
+| A linked test failed in the test report | error |
+| `docs/trace/coverage.md` marks a criterion test linked, passing or failing, but no test cites it (hollow status) | error |
+| P1 criterion is deferred (record an exception instead) | error |
+| Drift is recorded for a criterion in the trace index | warning |
+| A governing artifact was approved, or changed in git, after the component's last audit | warning |
 | Annotation cites a story or requirement instead of a criterion | warning |
 | Criterion has a test but no code entry point | warning |
 | Component changed since its last audit, or not audited within `trace.staleAfterDays` | warning |
@@ -57,11 +68,12 @@ Flags that are switches (`--apply`, `--git`, `--json`, `--force`, `--dry-run`, `
 
 Enforcement follows the latest approved version of each PRD. While a newer version is a draft (for example `PRD-iam-v2.md` while v1 is approved), v1's criteria stay enforced and the IDs that v2 adds are defined but not enforced until v2 is approved.
 
-Deferred criteria are read from the `deferred:` list in the test plan's front matter. The test plan is the one named by `paths.testPlan`, or by default the latest `docs/test/test-plan-vN.md`, preferring an approved version.
+Evidence states are `planned`, `test linked`, `passing`, `failing`, `deferred`, `excepted`, `drifted` and `gap` (see [usage](usage.md#linking-code-to-requirements)). A link is structural: it does not prove that a test checks what the criterion means. Deferred and excepted criteria are read from the `deferred:` and `excepted:` lists in the test plan's front matter. The test plan is the one named by `paths.testPlan`, or by default the latest `docs/test/test-plan-vN.md`, preferring an approved version.
 
 | Option | Effect |
 | --- | --- |
-| `--write` | Regenerates `docs/trace/coverage.md` (derived status) and the coverage counts in `docs/trace/index.yaml`. The test plan is never edited. |
+| `--write` | Regenerates `docs/trace/coverage.md` (derived status) and, in `docs/trace/index.yaml`, the governing artifact versions and the evidence counts. The test plan is never edited. |
+| `--results FILE` | Reads a JUnit XML test report so linked criteria become `passing` or `failing` (also `paths.testResults`) |
 | `--base REF` | Reports reach only for files changed since `REF` (for example `origin/main`) |
 | `--advisory` | Reports problems but always exits 0 |
 | `--json` | Machine-readable output |
@@ -72,7 +84,7 @@ Registered in `.claude/settings.json`. Both exit 0 on any internal error, so a b
 
 | Hook | Event | Blocks |
 | --- | --- | --- |
-| `tools/hooks/gate.mjs` | `PreToolUse` on `Skill`, and `UserPromptSubmit` | `sdd-hld` without an approved PRD, `sdd-lld` without an approved SPEC, `sdd-tasks` without an approved LLD, `sdd-implement` without a plan. The skill name is read from the Skill tool's `skill` field (or `name` or `command`), never from free text, so other skills that mention these names are not blocked. |
+| `tools/hooks/gate.mjs` | `PreToolUse` on `Skill`, and `UserPromptSubmit` | `sdd-hld` without an approved PRD; `sdd-lld <component>` without an approved SPEC and that component's approved PRD; `sdd-tasks <component>` without that component's approved LLD; `sdd-implement <milestone>` without that plan and an approved LLD for every component it covers. With several components and none named, it asks for one. The skill name is read from the Skill tool's `skill` field (or `name` or `command`), never from free text; the component and milestone come from the skill's arguments. It checks document status only: who approved is proved by code review, not by the hook. |
 | `tools/hooks/protect-approved.mjs` | `PreToolUse` on `Edit`, `Write`, `MultiEdit` | Edits to documents in `docs/` whose status is `approved`, `superseded`, `accepted`, `rejected` or `deprecated`. It suggests `new --next` for a versioned document and a new superseding ADR for an ADR. |
 
 To switch a hook off, set its flag in `sdd.config.json`:

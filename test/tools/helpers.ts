@@ -80,3 +80,18 @@ deferred: [${deferred.join(", ")}]
 # Test plan (v1)
 `;
 }
+
+// Any versioned document: front matter with the given type and status, extra front matter lines, and a body.
+export function doc(type: string, status: string, extra = "", body = ""): string {
+  return `---
+title: "${type}"
+type: ${type}
+version: 1
+status: ${status}
+owner: "Test Owner"
+${extra}---
+
+# ${type} (v1)
+
+${body}`;
+}

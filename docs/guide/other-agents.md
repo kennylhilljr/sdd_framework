@@ -1,15 +1,15 @@
 # Using the framework with Codex and other agents
 
-The framework is built for Claude Code today, but nothing in it depends on one tool. The rules live in plain files that any agent can read.
+The rules live in plain files that any agent can read. Claude Code gets the most help today: skills, personas and two hooks that enforce the gates and protect approved documents. Other agents follow the same controls procedurally, unless an equivalent adapter is installed for them.
 
 ## What every agent reads
 
 | File | Role |
 | --- | --- |
-| `AGENTS.md` | The constitution. Canonical for every agent; Claude Code reaches it through `CLAUDE.md` (`@AGENTS.md`). |
+| `AGENTS.md` | The repository instruction adapter. Canonical for every agent; Claude Code reaches it through `CLAUDE.md` (`@AGENTS.md`). It points to the standard; it is not organizational authority by itself. |
 | `.claude/skills/<skill>/SKILL.md` | Step-by-step instructions for each stage of the chain |
 | `.claude/agents/<persona>.md` | Persona definitions: what each role owns, its inputs, limits and definition of done |
-| `docs/standards/` | The normative rules |
+| `docs/standards/` | The rules for this repository |
 | `docs/templates/` | The documents, with an owner and persona on every section |
 
 ## Working without skills or subagents
@@ -21,9 +21,17 @@ An agent that cannot load skills or spawn subagents follows the same chain by ha
 3. For each section the skill writes, read the persona named in the template's owner line and stay inside its limits.
 4. Never write an H section; add a `- [ ] Q:` line instead.
 5. Never approve a document or verify your own work.
-6. Run `node tools/sdd/cli.mjs check` before finishing.
+6. Before each gated step, check the approval yourself: the component's PRD, the SPEC, the component's LLD or the plan, as the [standard](../standards/spec-driven-development-v2.md#8-the-intake-checkpoint-and-the-gates) describes. Never edit a document whose status is `approved`.
+7. Run `node tools/sdd/cli.mjs check` before finishing.
 
-The hooks are Claude Code features, so other agents are not blocked by them. CI enforces the same rules for every agent: spec-lint fails on malformed or incomplete documents, and trace-check fails on broken links.
+| Control | Claude Code | Other agents |
+| --- | --- | --- |
+| Gates | Enforced by the gate hook | Procedural (step 6), unless an adapter is installed |
+| Approved documents frozen | Enforced by the protect-approved hook | Procedural, unless an adapter is installed |
+| spec-lint and trace-check | CI | CI |
+| Code review and CODEOWNERS | Repository settings | Repository settings |
+
+CI and code review apply to every agent: spec-lint fails on malformed or incomplete documents, and trace-check fails on broken links.
 
 ## Adding support for a new agent
 

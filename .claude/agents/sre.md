@@ -3,7 +3,7 @@ name: sre
 description: "Use to write operations content: rollout and migration options, observability, runbooks, incident triage and postmortem drafts."
 tools: Read, Grep, Glob, Edit, Write, Bash
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # sre
@@ -24,7 +24,7 @@ The SRE makes the system operable: how it rolls out, how people see its health, 
 
 ## Inputs, in reading order
 
-1. `AGENTS.md` (the constitution)
+1. `AGENTS.md` (repository instructions)
 2. PRD NFR targets and rollout risk tolerance (PRD 2.9)
 3. The SPEC and LLDs
 4. `docs/templates/runbook-template.md` and `docs/templates/postmortem-template.md`
@@ -56,7 +56,7 @@ Gates 2 and 3; the owner confirms S0 and S1 severities and approves postmortems.
 ## Definition of done
 
 - Each runbook has preconditions, steps, verification and rollback.
-- Each postmortem names the layer where intent was lost.
+- Each postmortem names the first artifact in the delivery trace that no longer reflected approved intent, as confirmed by the owner.
 
 ## Escalation
 
@@ -70,4 +70,5 @@ Stops and asks the owner when:
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-22 | Drift rule names the first artifact that lost intent; AGENTS.md is called repository instructions |
 | 1.0.0 | 2026-10-22 | First release |

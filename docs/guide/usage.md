@@ -1,38 +1,47 @@
 # Using the framework day to day
 
-This guide follows one feature from idea to verified code, then covers changes, support work and the checks. The rules behind each step are in the [standard](../standards/spec-driven-development-v1.md).
+This guide follows one feature from idea to verified code, then covers changes, support work and the checks. The rules behind each step are in the [standard](../standards/spec-driven-development-v2.md). Product owns the steps up to Gate 1; Engineering owns the design gates and the build; agents prepare the material in between.
 
 ## The chain
 
 ```mermaid
 flowchart TB
-    HIN(["Owner answers the seed questions"]) --> S1["sdd-intake"] --> G0{{"Gate 0: approve the problem framing"}} --> S2["sdd-spec"] --> S3["sdd-clarify"]
-    S3 --> G1{{"Gate 1: approve PRD"}} --> S4["sdd-hld"] --> G2{{"Gate 2: choose ADRs, approve SPEC"}}
-    G2 --> S5["sdd-lld"] --> G3{{"Gate 3: contracts, schema, authZ"}} --> S6["sdd-tasks"] --> S7["sdd-implement"] --> S8["sdd-verify"]
-    S8 -. "drift: fix the spec, regenerate design and tasks" .-> S2
+    HIN(["Product answers the seed questions"]) --> S1["sdd-intake"] --> G0{{"Intake checkpoint: approve the problem framing"}} --> S2["sdd-spec"] --> S3["sdd-clarify"]
+    S3 --> G1{{"Gate 1: approve the Product specification"}} --> S4["sdd-hld"] --> G2{{"Gate 2: choose ADRs, approve SPEC"}}
+    G2 --> S5["sdd-lld component"] --> G3{{"Gate 3: contracts, schema, authZ, test strategy"}} --> S6["sdd-tasks component"] --> S7["sdd-implement milestone"] --> S8["sdd-verify"]
+    S8 -. "drift: the owner names the first artifact that lost intent" .-> S2
     classDef human fill:#e6eefb,stroke:#2f6fd6,stroke-width:2px
     class HIN,G0,G1,G2,G3 human
 ```
 
 | Step | Run | Writes | You do |
 | --- | --- | --- | --- |
-| Intake | `/sdd-new <idea>` or `/sdd-intake` | Section 1 of the parent PRD from your answers | Answer the twelve seed questions, then approve the problem framing (Gate 0) |
-| Spec | `/sdd-spec` | Parent and component PRDs | Write or confirm every H section |
-| Clarify | `/sdd-clarify` | Answers to open questions; optional divergence probe | Resolve every `- [ ] Q:`, then approve (Gate 1) |
+| Intake | `/sdd-new <idea>` or `/sdd-intake` | Section 1 of the parent PRD from your answers, with its scope | Answer the twelve seed questions, then approve the problem framing (intake checkpoint) |
+| Spec | `/sdd-spec` | Parent and component PRDs; criteria drafted as options | Write or confirm every H section; select and approve the criteria (C) |
+| Clarify | `/sdd-clarify` | Answers to open questions; optional divergence probe | Resolve every `- [ ] Q:`, then approve the Product specification (Gate 1) |
 | HLD | `/sdd-hld` | SPEC, ADR options, threat model draft | Choose ADR options, approve the SPEC (Gate 2) |
-| LLD | `/sdd-lld` | One LLD per component, contracts, test plan | Review contracts, schema and authorization (Gate 3) |
-| Tasks | `/sdd-tasks` | Milestone kickoff and plan | Skim the plan |
-| Implement | `/sdd-implement` | Tests first, then code, both with `@spec`; handoff | Review the code |
-| Verify | `/sdd-verify` | Trace findings, audit index updates | Decide where drift is fixed |
+| LLD | `/sdd-lld <component>` | One LLD, contracts, the test strategy with planned evidence | Approve contracts, schema, authorization and the test strategy (Gate 3) |
+| Tasks | `/sdd-tasks <component>` | Milestone kickoff and plan, naming its components | Skim the plan |
+| Implement | `/sdd-implement <milestone>` | Tests first, then code, both with `@spec`; handoff with test results | Review the code |
+| Verify | `/sdd-verify` | Trace findings, the audit record | Name the first artifact that lost intent, for each disagreement |
 
 ## Approving a document
 
 1. Read the document. Check every H section is yours and every C section reflects your choice.
 2. Make sure no `- [ ] Q:` lines and no template placeholders remain; spec-lint fails an approved document that still has them.
 3. Fill in the approvals table for the gate.
-4. Set `status: approved` in the front matter and commit.
+4. Set `status: approved`, `approved_by: "<name> (<role>)"` and `approved: <date>` in the front matter, and commit through a pull request that the owners in `CODEOWNERS` review.
 
-Only people approve. The gate hook then allows the next skill. Gate 0 (the problem framing in PRD Section 1) is also approved by a person, but no hook enforces it; `sdd-spec` checks it and stops if it is missing.
+Only people approve. The gate hook then allows the next skill for that component. The intake checkpoint (the problem framing in PRD Section 1) is also approved by a person, but no hook enforces it; `sdd-spec` checks it and stops if it is missing. The front matter records the approval; the pull request review is what proves the approver's authority. Set `approvals.requireApprover: true` in `sdd.config.json` to make spec-lint require the record.
+
+| Checkpoint | Approver (default role) |
+| --- | --- |
+| Intake checkpoint | Product authority |
+| Gate 1 | Product authority, with feasibility and control reviewers |
+| Gate 2 | Engineering authority; Product confirms any effect on approved outcomes |
+| Gate 3 | Business Application, component and control owners |
+
+The named people for each role, the exception authority and the fast path criteria are open decisions for each adopting organization.
 
 ## Changing an approved document
 
@@ -78,12 +87,25 @@ export async function revokeRole(/* ... */) { /* ... */ }
 it("invalidates cached grants within 60 seconds of revocation", async () => { /* ... */ });
 ```
 
-Then regenerate the coverage report (`docs/trace/coverage.md`; the test plan itself is never edited) and run the checks:
+Then regenerate the evidence report (`docs/trace/coverage.md`; the test plan itself is never edited) and run the checks:
 
 ```bash
 node tools/trace-check/trace-check.mjs --write
 node tools/sdd/cli.mjs check
 ```
+
+To show passing and failing evidence, give trace-check a JUnit XML report from your test runner (for Vitest: `npx vitest run --reporter=junit --outputFile=reports/junit.xml`), with `--results reports/junit.xml` or `paths.testResults` in `sdd.config.json`. A test counts for a criterion when its title names the ID.
+
+| Evidence state | Meaning | Before build | During build | At handoff |
+| --- | --- | --- | --- | --- |
+| `planned` | Mapped to tests in the test strategy or LLD | Enough | Error | Error |
+| `test linked` | A test cites it | Fine | Enough | Run the tests |
+| `passing`, `failing` | A linked test ran | | | `failing` is an error |
+| `deferred`, `excepted` | The owner deferred it (P2, P3) or accepted an exception | Fine | Fine | Fine |
+| `drifted` | The verifier recorded drift | Warning | Warning | Warning |
+| `gap` | Nothing planned or linked | Warning | Error | Error |
+
+"During build" starts when a milestone plan exists for the component. A link is structural evidence: review still decides whether the test checks what the criterion means.
 
 ## Bugs, small changes and support work
 
@@ -91,9 +113,17 @@ Run `/sdd-triage` on a bug, failure, blocker or drift finding. The triage agent 
 
 - **S0 and S1** take the fast path: one human review covers the gates. S0 interrupts work in flight and gets a postmortem in `docs/postmortems/`.
 - **S2 to S4** become normal changes, ranked with P2 and P3 stories.
-- **Every fix** starts at the layer where behavior left intent: a bug starts with a reproducing test citing the criterion; a spec gap starts in the PRD or LLD.
+- **Every fix** starts at the first artifact in the delivery trace that no longer reflects approved intent, as the owner decides: a bug against an unchanged criterion starts in code, with a reproducing test citing the criterion; a spec gap starts in the PRD or LLD.
 
-The one queue: S0, S1, P1, S2 and P2, S3 and P3, S4.
+| Support type | What it is | Triaged by |
+| --- | --- | --- |
+| Failure | Outage, degradation or failed deploy | `sre` |
+| Bug | Behavior violates an existing criterion | `verifier` |
+| Spec gap | No criterion covers the behavior, or a criterion is wrong | `verifier` |
+| Blocker | Something stops delivery | `planner` |
+| Drift | Two artifacts in the trace disagree | `verifier` |
+
+Product priority and operational severity are separate lenses. This reference profile tests one combined queue: S0, S1, P1, S2 and P2, S3 and P3, S4. That is a local choice; your organization may map both lenses into its existing portfolio and incident processes instead.
 
 ## Checks
 

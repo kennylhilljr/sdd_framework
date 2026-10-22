@@ -1,51 +1,65 @@
 <p align="center">
-  <img src="docs/assets/header.svg" alt="SDD Framework: people write the intent, agents derive the rest, checks keep every line of code linked to a requirement" width="100%">
+  <img src="docs/assets/header.svg" alt="SDD Framework: a controlled bridge from Product intent to Engineering delivery, with named decision owners, approval gates and checked links from criteria to tests and code" width="100%">
 </p>
 
 # SDD Framework
 
-A spec-driven development template for teams that build software with AI coding agents. People write what only people can decide. Agents write everything that can be derived from it. Checks in CI keep every test and every line of behavior linked to an approved requirement.
+SDD creates a controlled bridge from Product intent to Engineering delivery. Product owns the problem, outcomes, scope, priorities, constraints and acceptance. Engineering contributes feasibility and risk input while intent is formed, then owns architecture and implementation choices. Shared templates, named decision owners, approval gates and stable identifiers keep that connection from requirements through tests, code and evidence.
 
-It works with **Claude Code** today (skills, agent personas, hooks and slash commands) and with **Codex and other agents** through [`AGENTS.md`](AGENTS.md). The tools need only **Node.js 20 or later** and have no dependencies, so they run the same on macOS, Linux, Windows, a dev container or CI.
+This repository is a **reusable toolkit**. Any team can install its portable core: the templates, decision ownership, gates, identifiers, trace checks and change control. Each team adapts the local choices (approvers, tools, paths, roles and workflow) to its own governance. The toolkit ships with an **Access Management reference profile**: Access Management is the example L1 domain under Cyber IAM where the toolkit is being piloted and iterated. The worked example is synthetic and does not select the pilot's capability or application.
 
+This is a reference implementation, not a finished enterprise standard. Agents support the workflow by preparing bounded, traceable material from approved inputs. They do not replace accountable Product, Engineering, Security or business decisions.
+
+- [Start by audience](#start-by-audience)
 - [How it works](#how-it-works)
 - [Quick start](#quick-start)
 - [Working in Claude Code](#working-in-claude-code)
 - [What is in the box](#what-is-in-the-box)
 - [Documentation](#documentation)
 
+## Start by audience
+
+| You are | Read |
+| --- | --- |
+| **An executive** | This page, then the [framework overview](docs/guide/framework-overview.md): the value, the scope hierarchy, the risks and the [open decisions](docs/standards/spec-driven-development-v2.md#18-open-decisions) |
+| **A Product Manager** | The [usage guide](docs/guide/usage.md) from intake to Gate 1, the [seed questions](docs/standards/spec-driven-development-v2.md#9-the-twelve-seed-questions) and the [PRD templates](docs/templates/) |
+| **In Engineering or Security** | The [standard](docs/standards/spec-driven-development-v2.md): design gates, scope metadata, trace checks, change control and evidence; then the [tools guide](docs/guide/tools.md) |
+| **Adopting it in another IAM or Cyber organization** | [Portable core and local choices](docs/standards/spec-driven-development-v2.md#2-portable-core-and-local-choices), then [new repository](docs/guide/new-repository.md) or [existing repository](docs/guide/existing-repository.md) |
+
 ## How it works
 
-**1. Every document has a layer, and every section has an owner.** Each layer derives from the one above. Sections are tagged **H** (human-authored), **C** (co-authored: an agent drafts options, a person decides) or **A** (agent-generated, by a named persona).
+**1. Three things are kept separate.** Organizational scope uses **L0 to L3** (L0 Cyber and Cyber IAM direction, L1 domain, L2 capability, L3 Business Application), recorded in a [scope map](docs/scope/scope-map.yaml). Documents form an unnumbered **delivery artifact chain**: Product specification, high level design, low level design, plans, code, tests, handoff and evidence. **Gates 1, 2 and 3** are approval checkpoints; they do not correspond to scope levels L1, L2 and L3.
 
 <p align="center">
-  <img src="docs/assets/diagrams/sdd-doc-layers.svg" alt="The document stack: a constitution over seven layers from vision to code, with research, ADRs and machinery beside it" width="760">
+  <img src="docs/assets/diagrams/sdd-doc-layers.svg" alt="The delivery artifact chain from vision to evidence, with its decision owners and gates, beside the separate L0 to L3 organizational scope map" width="760">
 </p>
 
-**2. People enter the chain at four points; agents do the rest.** The owner answers the seed questions and approves the problem framing (Gate 0). Eight skills then run in order; at Gates 1 to 3 a hook blocks the next skill until a person approves the document it builds on.
+**2. Every section has a decision owner.** **H**: a person supplies and approves it. **C**: an agent drafts options and exposes assumptions and tradeoffs; a person selects and approves. **A**: an agent prepares it from approved inputs and cannot change approved intent. Requirements, acceptance criteria, the test strategy, public contracts, schema and authorization are C.
+
+**3. People approve; agents prepare.** Product approves the problem framing at an intake checkpoint, then the Product specification at Gate 1. Engineering approves the high level design at Gate 2. Component and control owners approve the low level design at Gate 3. In Claude Code, a hook blocks the next skill until the artifact for that component is approved.
 
 ```mermaid
 flowchart LR
-    H(["Owner answers<br/>12 seed questions"]) --> I[sdd-intake] --> S[sdd-spec] --> C[sdd-clarify]
-    C --> G1{{"Gate 1<br/>PRD"}} --> HLD[sdd-hld] --> G2{{"Gate 2<br/>SPEC"}} --> LLD[sdd-lld]
+    H(["Product answers<br/>12 seed questions"]) --> I[sdd-intake] --> K{{"Intake<br/>checkpoint"}} --> S[sdd-spec] --> C[sdd-clarify]
+    C --> G1{{"Gate 1<br/>Product spec"}} --> HLD[sdd-hld] --> G2{{"Gate 2<br/>HLD"}} --> LLD[sdd-lld]
     LLD --> G3{{"Gate 3<br/>LLD"}} --> T[sdd-tasks] --> IM[sdd-implement] --> V[sdd-verify]
-    V -. "drift: fix the spec first" .-> S
+    V -. "drift: the owner names the first artifact that lost intent" .-> S
     classDef human fill:#e6eefb,stroke:#2f6fd6,stroke-width:2px,color:#14306f
-    class H,G1,G2,G3 human
+    class H,K,G1,G2,G3 human
 ```
 
-**3. Links are plain text that a script checks.** Every acceptance criterion has a stable ID. The test that exercises it and the code entry point that implements it cite the ID in a comment:
+**4. Links are plain text that a script checks.** Every acceptance criterion has a stable ID. The test that exercises it and the code entry point that implements it cite the ID in a comment:
 
 ```ts
 // @spec IAM-2
 it("IAM-2: invalidates cached grants when a role is revoked", () => { /* ... */ });
 ```
 
-`trace-check` fails the build when a criterion has no test, when a comment cites an ID that does not exist, or when the test plan claims coverage that is not there.
+The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove that a test checks what a criterion means, or that every line is covered, so accountable human review remains required. Each criterion carries an evidence state: planned, test linked, passing, failing, deferred, excepted, drifted or gap. Tests are required once a milestone plan exists for a component, not before.
 
-**4. One queue for delivery and support.** New work is ranked P1 to P3; bugs, failures, blockers and drift are ranked S0 to S4. Both feed one queue: **S0 > S1 > P1 > S2 = P2 > S3 = P3 > S4**.
+**5. Priority and severity are separate lenses.** New work is ranked P1 to P3; bugs, failures, blockers and drift are ranked S0 to S4. The reference profile tests one combined queue (**S0 > S1 > P1 > S2 = P2 > S3 = P3 > S4**). The portable core does not require it.
 
-The full model is in the [framework overview](docs/guide/framework-overview.md) and the [standard](docs/standards/spec-driven-development-v1.md).
+The full model is in the [framework overview](docs/guide/framework-overview.md) and the [standard](docs/standards/spec-driven-development-v2.md).
 
 ## Quick start
 
@@ -60,7 +74,9 @@ npm test               # the sample IAM code and the framework's own tool tests
 npm run sdd:check      # spec-lint and trace-check over the example documents
 ```
 
-The example follows one requirement through every layer: parent requirement `FR-3`, criterion `IAM-2` in the [IAM component PRD](docs/prd/components/PRD-iam-v1.md), [SPEC](docs/spec/SPEC-v1.md) section 4.2, [LLD-iam](docs/lld/LLD-iam-v1.md) §3, milestone task [M1-3](docs/build/M1-plan-v1.md), and finally the [test](test/iam/revoke-role.test.ts) and [code](src/iam/revoke-role.ts) that carry `@spec IAM-2`.
+> **This is a synthetic mechanics example.** The `iam` and `billing` names identify software components in the sample application, not L1 or L2 organizational scopes. They do not select the Access Management pilot's L2 capability or L3 Business Application.
+
+The example's full path is: L0 Cyber and Cyber IAM direction, then the L1 Access Management domain, then an illustrative L2 capability, then an unnamed L3 Business Application ([scope map](docs/scope/scope-map.yaml)), then tests, code and evidence. Inside the application, one requirement runs the whole delivery chain: parent requirement `FR-3`, criterion `IAM-2` in the [IAM component PRD](docs/prd/components/PRD-iam-v1.md), [SPEC](docs/spec/SPEC-v1.md) section 4.2, [LLD-iam](docs/lld/LLD-iam-v1.md) §3, milestone task [M1-3](docs/build/M1-plan-v1.md), and finally the [test](test/iam/revoke-role.test.ts) and [code](src/iam/revoke-role.ts) that carry `@spec IAM-2`, with its evidence in [coverage](docs/trace/coverage.md).
 
 ### Start a brand-new repository
 
@@ -71,7 +87,7 @@ node tools/sdd/cli.mjs doctor
 claude          # then type: /sdd-new <what you want to build>
 ```
 
-`init` installs the constitution, skills, personas, hooks, templates, checks and CI into an empty folder. See [new repository](docs/guide/new-repository.md).
+`init` installs the repository instructions, skills, personas, hooks, templates, checks, a scope map and CI into an empty folder. See [new repository](docs/guide/new-repository.md).
 
 ### Upgrade a repository that already uses the framework
 
@@ -95,27 +111,31 @@ node sdd_framework/tools/sdd/cli.mjs adopt ../existing-app --apply   # writes ne
 
 | Type in Claude Code | What happens | Human step |
 | --- | --- | --- |
-| `/sdd-new <idea>` | Interviews you with the twelve seed questions, then drafts the PRD | Answer the questions |
-| `/sdd-clarify` | Finds gaps, conflicts and ambiguous criteria | Gate 1: approve the PRD |
+| `/sdd-new <idea>` | Interviews Product with the twelve seed questions, then drafts the PRD | Answer the questions; approve the problem framing (intake checkpoint) |
+| `/sdd-clarify` | Finds gaps, conflicts and ambiguous criteria | Gate 1: approve the Product specification |
 | `/sdd-hld` | Drafts the SPEC and ADR options with tradeoffs | Gate 2: choose, approve |
-| `/sdd-lld` | Writes one LLD per component, contracts and the test plan | Gate 3: review contracts, schema, authZ |
-| `/sdd-tasks`, `/sdd-implement` | Plans slices, then builds tests first with `@spec` | Code review |
-| `/sdd-verify` | Runs the checks, updates the trace index, reports drift | |
+| `/sdd-lld <component>` | Drafts one LLD, contracts and the test strategy | Gate 3: approve contracts, schema, authorization, test strategy |
+| `/sdd-tasks <component>`, `/sdd-implement <milestone>` | Plans slices, then builds tests first with `@spec` | Code review |
+| `/sdd-verify` | Runs the checks, updates the audit record, reports drift | The owner decides each disagreement |
 | `/sdd-adopt` | Walks you through adopting an existing codebase | Answer the missing items |
 | `/sdd-triage` | Classifies a bug, failure or blocker and ranks it S0 to S4 | Confirm S0 and S1 |
 | `/sdd-check`, `/sdd-status` | Runs the checks; shows where each component stands | |
 
-A person approves a document by setting `status: approved` in its front matter. Approved versions are frozen; the next change goes into `-v2`. Details are in the [usage guide](docs/guide/usage.md).
+A person approves a document by setting `status: approved` and recording `approved_by` and `approved` in its front matter. Approved versions are frozen; the next change goes into `-v2`. Approver authority comes from repository controls such as `CODEOWNERS` and branch protection, not from the front matter alone. Details are in the [usage guide](docs/guide/usage.md).
+
+**Other agents.** Codex and other agents read [`AGENTS.md`](AGENTS.md) and follow the same skills and gates by hand. The gate and approved-file hooks are Claude Code adapters; without an equivalent adapter, those controls are procedural, and CI checks and code review still apply. See [other agents](docs/guide/other-agents.md).
 
 ## What is in the box
 
 ```text
-AGENTS.md                 constitution: rules, commands, definition of done (CLAUDE.md points here)
-sdd.config.json           components, ID prefixes, paths and feature flags
+AGENTS.md                 repository instructions: rules, commands, definition of done (CLAUDE.md points here)
+sdd.config.json           components, ID prefixes, scope, paths, approvals and feature flags
 docs/                     what people review: vision, PRDs, ADRs, SPEC, LLDs, contracts, test plan, plans, runbooks
+  scope/                  the L0 to L3 organizational scope map
   templates/              one template per artifact; every section tagged H, C or A with its persona
   standards/              the framework standard and the agent persona standard
   guide/                  setup, usage, new and existing repositories, tools, other agents, versioning, catalog
+  trace/                  derived evidence: coverage and the per-component audit record
 .claude/
   skills/                 ten skills: the eight-step chain plus sdd-adopt and sdd-triage
   agents/                 eleven personas, from analyst to verifier
@@ -124,8 +144,8 @@ docs/                     what people review: vision, PRDs, ADRs, SPEC, LLDs, co
 .claude-plugin/           packages the skills, personas and hooks as a Claude Code plugin
 tools/
   sdd/                    command line: init, adopt, upgrade, doctor, check, new, docmap, catalog
-  spec-lint/              document checks
-  trace-check/            requirement, test and code link checks
+  spec-lint/              document, scope and ID lifecycle checks
+  trace-check/            criterion, test, code and evidence checks
   hooks/                  Claude Code hooks
 src/, test/               the worked example (TypeScript and Vitest)
 .devcontainer/            a ready-made local environment
@@ -138,6 +158,7 @@ Every skill, persona and command carries a semantic version and a changelog tabl
 | Guide | For |
 | --- | --- |
 | [Framework overview](docs/guide/framework-overview.md) | What the framework is and why it is shaped this way |
+| [Standard](docs/standards/spec-driven-development-v2.md) | The rules: scope, artifact chain, decision owners, gates, IDs, evidence |
 | [Setup](docs/guide/setup.md) | Preparing a local environment on any machine |
 | [New repository](docs/guide/new-repository.md) | Starting a project with the framework |
 | [Existing repository](docs/guide/existing-repository.md) | Adopting it in a running application, safely |
@@ -146,7 +167,8 @@ Every skill, persona and command carries a semantic version and a changelog tabl
 | [Other agents](docs/guide/other-agents.md) | Using the framework with Codex and future agents |
 | [Versioning](docs/guide/versioning.md) | How the framework, skills and personas are versioned and upgraded |
 | [Catalog](docs/guide/catalog.md) | Every skill, persona and command with its version |
-| [Doc map](docs/README.md) | The documents of the worked example, layer by layer |
+| [Doc map](docs/README.md) | The scope map, the artifact index and the approval workflow of the worked example |
+| [Glossary](docs/glossary.md) | Terms used across the framework |
 
 ## Install as a Claude Code plugin
 
@@ -161,4 +183,4 @@ The plugin brings the skills and personas; a repository still needs `sdd.config.
 
 ## Requirements and license
 
-Node.js 20 or later. git is optional (it enables the staleness and reach checks). No license has been chosen for this template yet; add one before you share it.
+Node.js 20 or later. git is optional (it enables the staleness and reach checks). **No license has been chosen yet.** Reuse outside this repository should wait until the owner selects and publishes one (an open decision in the [standard](docs/standards/spec-driven-development-v2.md#18-open-decisions)).
