@@ -21,10 +21,10 @@ This is a reference implementation, not a finished enterprise standard. Agents s
 
 | You are | Read |
 | --- | --- |
-| **An executive** | This page, then the [framework overview](docs/guide/framework-overview.md): the value, the scope hierarchy, the risks and the [open decisions](docs/standards/spec-driven-development-v2.md#18-open-decisions) |
-| **A Product Manager** | The [usage guide](docs/guide/usage.md) from intake to Gate 1, the [seed questions](docs/standards/spec-driven-development-v2.md#9-the-twelve-seed-questions) and the [PRD templates](docs/templates/) |
-| **In Engineering or Security** | The [standard](docs/standards/spec-driven-development-v2.md): design gates, scope metadata, trace checks, change control and evidence; then the [tools guide](docs/guide/tools.md) |
-| **Adopting it in another organization** | [Portable core and local choices](docs/standards/spec-driven-development-v2.md#2-portable-core-and-local-choices), then [new repository](docs/guide/new-repository.md) or [existing repository](docs/guide/existing-repository.md) |
+| **An executive** | This page, then the [framework overview](docs/guide/framework-overview.md): the value, the scope hierarchy, the risks and the [open decisions](docs/standards/spec-driven-development-v3.md#18-open-decisions) |
+| **A Product Manager** | The [usage guide](docs/guide/usage.md) from intake to Gate 1, the [seed questions](docs/standards/spec-driven-development-v3.md#9-the-twelve-seed-questions) and the [PRD templates](docs/templates/) |
+| **In Engineering or Security** | The [standard](docs/standards/spec-driven-development-v3.md): design gates, scope metadata, trace checks, change control and evidence; then the [tools guide](docs/guide/tools.md) |
+| **Adopting it in another organization** | [Portable core and local choices](docs/standards/spec-driven-development-v3.md#2-portable-core-and-local-choices), then [new repository](docs/guide/new-repository.md) or [existing repository](docs/guide/existing-repository.md) |
 
 ## How it works
 
@@ -66,11 +66,11 @@ When `sdd-verify` reports a disagreement, the owner names the first artifact tha
 it("TECH-2: invalidates cached grants when a role is revoked", () => { /* ... */ });
 ```
 
-The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove that a test checks what a criterion means, or that every line is covered, so accountable human review remains required. Each criterion carries an evidence state: planned, test linked, passing, failing, deferred, excepted, drifted or gap. Tests are required once a milestone plan exists for a component, not before.
+The checks verify that approved criteria resolve to cited tests and behavior entry points, and they flag broken or missing structural links. They do not prove that a test checks what a criterion means, or that every line is covered, so accountable human review remains required. Each criterion carries an evidence state: planned, test linked, passing, failing, deferred, excepted, drifted or gap. Tests are required once a milestone plan makes a criterion due: when its task is marked done, or as soon as the plan names it if the plan has no Status column; not before.
 
 **5. Priority and severity are separate lenses.** New work is ranked P1 to P3; bugs, failures, blockers and drift are ranked S0 to S4. The reference profile tests one combined queue (**S0 > S1 > P1 > S2 = P2 > S3 = P3 > S4**). The portable core does not require it.
 
-The full model is in the [framework overview](docs/guide/framework-overview.md) and the [standard](docs/standards/spec-driven-development-v2.md).
+The full model is in the [framework overview](docs/guide/framework-overview.md) and the [standard](docs/standards/spec-driven-development-v3.md).
 
 ## Quick start
 
@@ -169,7 +169,7 @@ Every skill, persona and command carries a semantic version and a changelog tabl
 | Guide | For |
 | --- | --- |
 | [Framework overview](docs/guide/framework-overview.md) | What the framework is and why it is shaped this way |
-| [Standard](docs/standards/spec-driven-development-v2.md) | The rules: scope, artifact chain, decision owners, gates, IDs, evidence |
+| [Standard](docs/standards/spec-driven-development-v3.md) | The rules: scope, artifact chain, decision owners, gates, IDs, evidence |
 | [Setup](docs/guide/setup.md) | Preparing a local environment on any machine |
 | [New repository](docs/guide/new-repository.md) | Starting a project with the framework |
 | [Existing repository](docs/guide/existing-repository.md) | Adopting it in a running application, safely |
@@ -194,4 +194,4 @@ The plugin brings the skills and personas; a repository still needs `sdd.config.
 
 ## Requirements and license
 
-Node.js 20 or later. git is optional (it enables the staleness and reach checks). **No license has been chosen yet.** Reuse outside this repository should wait until the owner selects and publishes one (an open decision in the [standard](docs/standards/spec-driven-development-v2.md#18-open-decisions)).
+Node.js 20 or later. git is optional (it enables the staleness and reach checks). **No license has been chosen yet.** Reuse outside this repository should wait until the owner selects and publishes one (an open decision in the [standard](docs/standards/spec-driven-development-v3.md#18-open-decisions)).

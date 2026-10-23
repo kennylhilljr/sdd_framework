@@ -6,6 +6,17 @@ All notable changes to the SDD framework are recorded here. The format follows [
 
 Nothing yet.
 
+## 1.1.1 (2026-10-22)
+
+### Fixed
+
+- trace-check: a milestone plan put every approved criterion of each component it covers in build, so criteria of later milestones, and of tasks not yet built, failed CI. Now each current plan (latest version, not superseded) is read on its own: it makes due only the criteria it names, with ranges such as `TECH-1 to TECH-4` expanded; when a task table has a Status column, only the criteria of `done` tasks (or `merged`, `complete`, `completed`) are due and prose mentions do not count. A plan that names no criteria of a component still covers all of them.
+
+### Changed
+
+- Standard v3 (in review) records the rule in "When evidence is required". v2 is superseded.
+- The plan template's task table has a Status column, and `sdd-implement` (1.1.1) marks a task done when it is built.
+
 ## 1.1.0 (2026-10-22)
 
 Aligns the toolkit with the white paper's operating model, keeps it reusable, and adds a Tech domain reference profile.

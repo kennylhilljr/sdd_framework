@@ -1,6 +1,6 @@
 {
   "$schema": "./tools/sdd/sdd.config.schema.json",
-  "frameworkVersion": "1.1.0",
+  "frameworkVersion": "1.1.1",
   "project": {
     "name": "sdd_framework",
     "description": "Spec-driven development toolkit with a synthetic Tech domain reference example",

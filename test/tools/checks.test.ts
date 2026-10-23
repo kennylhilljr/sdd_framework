@@ -245,6 +245,101 @@ describe("trace-check", () => {
     expect(analyze(root).errors.map((e: { msg: string }) => e.msg).join("\n")).toMatch(/TECH-1 \(P1\) has no test.*milestone plan for tech/);
   });
 
+  it("a plan that names criteria puts only those criteria in build", () => {
+    const root = repo({
+      "docs/build/M1-plan-v1.md": doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n", "| Task | Criteria |\n| --- | --- |\n| M1-1 | TECH-1 |\n"),
+      "docs/prd/components/PRD-tech-v1.md": prd,
+      "docs/test/test-plan-v1.md": testPlan([]) + "\n| TECH-1 | unit |\n| TECH-2 | unit |\n",
+    });
+    const errors = analyze(root).errors.map((e: { msg: string }) => e.msg).join("\n");
+    expect(errors).toMatch(/TECH-1 \(P1\) has no test.*milestone plan for tech/);
+    expect(errors).not.toMatch(/TECH-2/);
+  });
+
+  it("with a Status column, only the criteria of done tasks need tests", () => {
+    const root = repo({
+      "docs/build/M1-plan-v1.md": doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n",
+        "| # | Task | Criteria | Status |\n| --- | --- | --- | --- |\n| M1-1 | Allow | TECH-1 | done |\n| M1-2 | Deny | TECH-2 | planned |\n"),
+      "docs/prd/components/PRD-tech-v1.md": prd,
+      "docs/test/test-plan-v1.md": testPlan([]) + "\n| TECH-1 | unit |\n| TECH-2 | unit |\n",
+    });
+    const r = analyze(root);
+    const errors = r.errors.map((e: { msg: string }) => e.msg).join("\n");
+    expect(errors).toMatch(/TECH-1 \(P1\) has no test.*milestone plan for tech/);
+    expect(errors).not.toMatch(/TECH-2/);
+    expect(r.rows.find((x: { id: string }) => x.id === "TECH-2")?.status).toBe("planned");
+  });
+
+  describe("which criteria a plan makes due", () => {
+    const planned = testPlan([]) + "\n| TECH-1 | unit |\n| TECH-2 | unit |\n";
+    const errorsFor = (files: Record<string, string>) =>
+      analyze(repo({ "docs/prd/components/PRD-tech-v1.md": prd, "docs/test/test-plan-v1.md": planned, ...files }))
+        .errors.map((e: { msg: string }) => e.msg).join("\n");
+    const statusPlan = (rows: string, extra = "") =>
+      doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n", `${extra}| # | Task | Criteria | Status |\n| --- | --- | --- | --- |\n${rows}`);
+
+    it("reads each plan on its own: one that names nothing covers every criterion", () => {
+      const e = errorsFor({
+        "docs/build/M1-plan-v1.md": doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n", "| M1-1 | TECH-1 |\n"),
+        "docs/build/M2-plan-v1.md": doc("plan", "draft", "milestone: M2\ncomponents: [tech]\n", "Finish the tech component.\n"),
+      });
+      expect(e).toMatch(/TECH-1 \(P1\) has no test/);
+      expect(e).toMatch(/TECH-2 \(P3\) has no test/);
+    });
+
+    it("ignores a prose mention when the plan has a Status column", () => {
+      const e = errorsFor({ "docs/build/M1-plan-v1.md": statusPlan("| M1-1 | Allow | TECH-1 | done |\n", "TECH-2 moves to M2.\n\n") });
+      expect(e).toMatch(/TECH-1 \(P1\) has no test/);
+      expect(e).not.toMatch(/TECH-2/);
+    });
+
+    it("uses only the latest version of a plan", () => {
+      const e = errorsFor({
+        "docs/build/M1-plan-v1.md": statusPlan("| M1-1 | Allow | TECH-1 | done |\n| M1-2 | Deny | TECH-2 | done |\n"),
+        "docs/build/M1-plan-v2.md": statusPlan("| M1-1 | Allow | TECH-1 | done |\n| M1-2 | Deny | TECH-2 | planned |\n").replace("version: 1", "version: 2"),
+      });
+      expect(e).toMatch(/TECH-1 \(P1\) has no test/);
+      expect(e).not.toMatch(/TECH-2/);
+    });
+
+    it("reads Status whatever the criteria column is called, and accepts bold or code status", () => {
+      const plan = doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n",
+        "| Task | Delivers | Status |\n| --- | --- | --- |\n| M1-1 | TECH-1 | **done** |\n| M1-2 | TECH-2 | `in progress` |\n");
+      const e = errorsFor({ "docs/build/M1-plan-v1.md": plan });
+      expect(e).toMatch(/TECH-1 \(P1\) has no test/);
+      expect(e).not.toMatch(/TECH-2/);
+    });
+
+    it("expands a range such as TECH-1 to TECH-3 to every ID in between", () => {
+      const three = componentPrd("approved", `| TECH-1 | ${EARS} | TECH-FR-1 | P1 |\n| TECH-2 | ${EARS} | TECH-FR-1 | P2 |\n| TECH-3 | ${EARS} | TECH-FR-1 | P1 |`);
+      const e = errorsFor({
+        "docs/prd/components/PRD-tech-v1.md": three,
+        "docs/test/test-plan-v1.md": planned + "| TECH-3 | unit |\n",
+        "docs/build/M1-plan-v1.md": doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n", "| M1-1 | Supports TECH-1 to TECH-3 |\n"),
+      });
+      expect(e).toMatch(/TECH-2 \(P2\) has no test/);
+    });
+
+    it("counts only the cells that name what a done task delivers", () => {
+      const plan = doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n",
+        "| # | Task | Criteria | Status |\n| --- | --- | --- | --- |\n| M1-1 | Fixtures used later by TECH-2 | TECH-1 | Done (PR 12) |\n");
+      const e = errorsFor({ "docs/build/M1-plan-v1.md": plan });
+      expect(e).toMatch(/TECH-1 \(P1\) has no test/);
+      expect(e).not.toMatch(/TECH-2/);
+    });
+  });
+
+  it("a plan that names no criteria of a component puts all of them in build", () => {
+    const root = repo({
+      "docs/build/M1-plan-v1.md": doc("plan", "draft", "milestone: M1\ncomponents: [tech]\n", "Build the tech component.\n"),
+      "docs/prd/components/PRD-tech-v1.md": prd,
+      "docs/test/test-plan-v1.md": testPlan([]) + "\n| TECH-1 | unit |\n| TECH-2 | unit |\n",
+    });
+    const errors = analyze(root).errors.map((e: { msg: string }) => e.msg).join("\n");
+    expect(errors).toMatch(/TECH-1 \(P1\) has no test/);
+    expect(errors).toMatch(/TECH-2 \(P\d\) has no test/);
+  });
+
   it("reads a JUnit report: passing, failing, and a failing test is an error", () => {
     const junit = `<testsuites><testsuite name="s">
 <testcase classname="test/tech/revoke.test.ts" name="TECH &gt; TECH-1: allows"></testcase>

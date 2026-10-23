@@ -7,7 +7,7 @@
       "name": "sdd-framework",
       "source": ".",
       "description": "Spec-driven development for Claude Code: skills, personas, gate hooks and traceability checks.",
-      "version": "1.1.0"
+      "version": "1.1.1"
     }
   ]
 }
