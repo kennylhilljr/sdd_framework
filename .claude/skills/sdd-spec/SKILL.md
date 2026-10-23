@@ -3,7 +3,7 @@ name: sdd-spec
 description: "Turn an approved problem framing into requirements: user stories with priority, functional requirements and EARS acceptance criteria with stable IDs, in the parent and component PRDs. Use after sdd-intake, or when a bug or small change needs its criteria updated."
 argument-hint: "[component name]"
 metadata:
-  version: 1.1.1
+  version: 1.3.0
 ---
 
 # sdd-spec
@@ -32,7 +32,7 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
 1. Confirm Section 1 of the parent PRD is approved by the owner (the intake checkpoint). If not, stop and say so.
 2. Split the work into components with the owner's help. Each component needs a name and a prefix of 2 to 10 capital letters (for example `tech` and `TECH`). Record them in `sdd.config.json` under `components` and in the parent PRD's component table.
 3. Create each component PRD: `node tools/sdd/cli.mjs new prd-component --component <name> --prefix <PREFIX>`.
-4. Dispatch the `product-writer` persona with the Agent tool, one component at a time. Give it the component name, prefix, the parent requirement IDs in scope and the rules below. It writes:
+4. Dispatch the `product-writer` persona with the Agent tool for all components in parallel (one Agent call per component, sent in the same message). Give each instance the component name, prefix, the parent requirement IDs in scope and the rules below. Each writes:
    - user stories `<PREFIX>-US-n` named by the owner, each with a proposed priority P1, P2 or P3 and a one-line reason (the owner decides priority);
    - functional requirements `<PREFIX>-FR-n`, each with a `Parent` column citing `FR-n`;
    - acceptance criteria `<PREFIX>-n` in EARS (or Given/When/Then if the document sets `notation: gherkin`), one response each, with Requirement and Priority columns;
@@ -40,8 +40,8 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
    - invariants `<PREFIX>-INV-n`, each restated as a P1 criterion;
    - edge cases and error behavior, assumptions and open questions, glossary entries.
 5. EARS patterns: "The system shall ...", "When <trigger>, the system shall ...", "While <state>, the system shall ...", "If <condition>, then the system shall ...", "Where <feature>, the system shall ...". Name the scope in the condition so a criterion reads correctly when found by search.
-6. Run `node tools/sdd/cli.mjs check` and fix every spec-lint error in the PRDs.
-7. Run `node tools/sdd/cli.mjs docmap`.
+6. Run a quick inline consistency check across all component PRDs: every story has at least one criterion; every requirement cites a parent FR; no criterion is untestable as written (vague thresholds, no observable response). Fix mechanical issues in agent-owned sections; add `- [ ] Q:` for anything that needs the owner. If this check passes with no open questions, `sdd-clarify` is optional and the owner may go straight to Gate 1.
+7. Run `node tools/sdd/cli.mjs check && node tools/sdd/cli.mjs docmap`.
 
 ## Outputs
 
@@ -52,7 +52,14 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
 
 ## Stop and gate
 
-Hand over to `sdd-clarify`. Gate 1 (the owner approves the PRDs) happens after clarification. Agents never set `status: approved` unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below).
+After the inline consistency check, present a Gate 1 checkpoint summary:
+- **Components:** list each with story count by priority (P1 / P2 / P3)
+- **Invariants and NFRs:** bullet each
+- **Open questions:** count and list any `- [ ] Q:` items remaining
+
+Then ask: "Any concerns before I mark the PRDs approved and move to `sdd-hld`?"
+
+If the owner raises a concern or there are open questions, run `sdd-clarify` to resolve them first, then re-present. If none, stamp all PRDs approved (per Auto-accept below) and hand over to `sdd-hld`.
 
 ## Rules
 
@@ -85,6 +92,8 @@ The gate hook checks `status` only; it passes on `status: approved` regardless o
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.3.0 | 2026-10-23 | Lightweight Gate 1 checkpoint: summary + single question before stamping approved |
+| 1.2.0 | 2026-10-23 | Parallel component dispatches; inline consistency check; sdd-clarify optional when check is clean; combined check+docmap |
 | 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Intake checkpoint replaces Gate 0; requirements and criteria are drafted as C (owner selects and approves) |
 | 1.0.0 | 2026-10-22 | First release |

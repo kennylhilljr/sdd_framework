@@ -2,7 +2,7 @@
 name: sdd-hld
 description: "Draft the system high-level design (the SPEC) and ADR options with tradeoffs from approved PRDs. Use after Gate 1, when the requirements are approved and the system shape needs designing or changing."
 metadata:
-  version: 1.1.1
+  version: 1.3.0
 ---
 
 # sdd-hld
@@ -28,24 +28,33 @@ Design the shape of the solution. The architect drafts options for every decisio
 ## Steps
 
 1. Create the SPEC: `node tools/sdd/cli.mjs new spec` (or `new --next docs/spec/SPEC-vN.md` if the current one is approved).
-2. Dispatch the `architect` persona with the approved PRD IDs in scope. It lists the open decisions (from PRD Section 1.9 and from the design itself) and, for each, drafts 2 or 3 options with consequences.
-3. For each decision with a real tradeoff, create an ADR: `node tools/sdd/cli.mjs new adr --name <slug>` with status `proposed`. Present the options to the owner and record the choice. A choice that one option clearly dominates needs only a line in the SPEC, not an ADR.
-4. Dispatch the `security-reviewer` persona to draft trust boundaries and the threat model (C sections; the owner decides).
-5. Dispatch the `sre` persona to draft the rollout and migration strategy from the owner's risk tolerance (PRD 2.9).
-6. The architect then writes the A sections: component breakdown, data flow and sequence diagrams (Mermaid), capacity estimates from NFR targets, risks and mitigations, and the PRD-to-SPEC traceability table (every FR and criterion ID mapped to a SPEC section).
-7. Dispatch the `test-architect` persona to draft the testing strategy section (C: the owner approves it at Gate 2).
-8. Cut anything that restates the PRD in different words.
-9. Run `node tools/sdd/cli.mjs check` and `node tools/sdd/cli.mjs docmap`. Approved criteria without tests are not errors yet: tests are required once a milestone plan exists for the component.
+2. **Round 1 — dispatch in parallel:** send the `architect` and `security-reviewer` personas in a single message as two Agent calls.
+   - `architect`: lists open decisions from PRD Section 1.9 and the design itself; drafts the initial SPEC structure (component breakdown, data flow and sequence diagrams in Mermaid, capacity estimates from NFR targets, risks and mitigations, PRD-to-SPEC traceability table mapping every FR and criterion ID to a SPEC section).
+   - `security-reviewer`: drafts trust boundaries and the threat model (C sections; the owner decides).
+3. For each decision where the architect cannot clearly recommend one option, create an ADR: `node tools/sdd/cli.mjs new adr --name <slug>` with status `proposed`, present the options to the owner and record the choice. Skip the ADR when one option clearly dominates — add a one-line note in the SPEC instead.
+4. **Round 2 — dispatch in parallel:** send the `sre` and `test-architect` personas in a single message as two Agent calls.
+   - `sre`: drafts the rollout and migration strategy from the owner's risk tolerance (PRD 2.9).
+   - `test-architect`: drafts the testing strategy section (C: the owner approves it at Gate 2).
+5. Cut anything that restates the PRD in different words.
+6. Run `node tools/sdd/cli.mjs check && node tools/sdd/cli.mjs docmap`. Approved criteria without tests are not errors yet: tests are required once a milestone plan exists for the component.
 
 ## Outputs
 
 - `docs/spec/SPEC-vN.md`, status `draft`.
-- `docs/adr/NNNN-<slug>.md`, status `proposed` until the owner decides.
+- `docs/adr/NNNN-<slug>.md`, status `proposed` until the owner decides (only created when the architect flags a real tradeoff).
 - Diagrams as Mermaid in the SPEC, optionally rendered under `docs/assets/diagrams/`.
 
 ## Stop and gate
 
-Stop for **Gate 2**. The owner chooses among ADR options (ADR status `accepted` or `rejected`), ranks the risks, and sets `status: approved` on the SPEC. Agents never set either unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below).
+After completing the SPEC, present a Gate 2 checkpoint summary:
+- **ADRs:** list each open decision with the recommended option and the key tradeoff (or note "no ADR — dominant option chosen")
+- **Top risks:** the two or three highest-ranked risks and their mitigations
+- **Testing strategy:** one line on the approach
+- **Open questions:** any `- [ ] Q:` items remaining
+
+Then ask: "Any concerns, or ADR options to revisit, before I mark the SPEC approved and move to `sdd-lld`?"
+
+If the owner raises a concern or chooses a different ADR option, update the SPEC and ADR, then re-present. If none, stamp the SPEC approved (per Auto-accept below) and hand over to `sdd-lld`.
 
 ## Rules
 
@@ -77,6 +86,8 @@ ADRs keep `status: proposed`; auto-accept applies to the SPEC only. The gate hoo
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.3.0 | 2026-10-23 | Lightweight Gate 2 checkpoint: summary + single question before stamping approved |
+| 1.2.0 | 2026-10-23 | Two parallel dispatch rounds replace four sequential; ADR creation opt-in (skip when one option dominates); combined check+docmap |
 | 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved on SPEC and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Testing strategy drafted as C; check no longer blocks design on missing tests; AGENTS.md is called repository instructions; decisions live in the lowest artifact that covers them |
 | 1.0.0 | 2026-10-22 | First release |

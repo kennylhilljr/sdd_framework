@@ -10,6 +10,12 @@
         "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/tools/hooks/protect-approved.mjs\"" }]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/tools/sdd/cli.mjs\" check 2>/dev/null; node \"${CLAUDE_PLUGIN_ROOT}/tools/sdd/cli.mjs\" docmap 2>/dev/null; exit 0" }]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/tools/hooks/gate.mjs\"" }]

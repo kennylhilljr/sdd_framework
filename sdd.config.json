@@ -53,6 +53,6 @@
     "reachReport": true,
     "divergenceProbe": false,
     "differentialAudit": false,
-    "autoAcceptClaudeRecommendations": false
+    "autoAcceptClaudeRecommendations": true
   }
 }
