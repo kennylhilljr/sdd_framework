@@ -79,7 +79,8 @@
         "protectApprovedDocs": { "type": "boolean", "default": true },
         "reachReport": { "type": "boolean", "default": true },
         "divergenceProbe": { "type": "boolean", "default": false },
-        "differentialAudit": { "type": "boolean", "default": false }
+        "differentialAudit": { "type": "boolean", "default": false },
+        "autoAcceptClaudeRecommendations": { "type": "boolean", "default": false, "description": "When true, skills set status: approved on documents they produce and stamp claude_auto_accepted and claude_auto_accepted_at. Gates pass without manual human approval. Inspect all auto-accepted documents with: node tools/sdd/cli.mjs review-auto-accepted" }
       }
     }
   }

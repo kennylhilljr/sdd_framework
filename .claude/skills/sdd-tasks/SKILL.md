@@ -3,7 +3,7 @@ name: sdd-tasks
 description: "Break an approved LLD into a milestone plan of small, dependency-ordered tasks, each traced to criterion IDs. Use after Gate 3, or to plan a fix on the short path."
 argument-hint: "<component> <milestone, for example tech M2>"
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # sdd-tasks
@@ -46,7 +46,7 @@ Turn approved designs into work an implementer can finish in one session per tas
 
 ## Stop and gate
 
-The owner skims the plan at Gate 3 or right after it and confirms the MVP slice. No separate approval is needed unless the plan changes scope. Agents never set `status: approved` on design documents.
+The owner skims the plan at Gate 3 or right after it and confirms the MVP slice. No separate approval is needed unless the plan changes scope. Agents never set `status: approved` on design documents unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below).
 
 ## Rules
 
@@ -55,9 +55,28 @@ The owner skims the plan at Gate 3 or right after it and confirms the MVP slice.
 - A task that needs a design change goes back to `sdd-lld` (within a component) or `sdd-hld` (across components).
 - Ambiguity goes to the owner as `- [ ] Q:` in the plan.
 
+## Auto-accept
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, set the following fields in the front matter of each plan document this skill writes, instead of `status: draft`:
+
+```yaml
+status: approved
+claude_auto_accepted: true
+claude_auto_accepted_at: <current ISO 8601 UTC timestamp, for example 2026-10-23T14:02Z>
+```
+
+When `approvals.requireApprover` is also `true`, additionally set:
+
+```yaml
+approved_by: "claude (auto)"
+```
+
+The gate hook checks `status` only; it passes on `status: approved` regardless of how it was set. Run `node tools/sdd/cli.mjs review-auto-accepted` to inspect all auto-accepted documents before any release.
+
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Gate bound to the named component; plans record components; the combined queue is a local choice |
 | 1.0.0 | 2026-10-22 | First release |

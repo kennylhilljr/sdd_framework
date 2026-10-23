@@ -3,7 +3,7 @@ name: sdd-intake
 description: "Interview the owner with the twelve seed questions and turn the answers into Section 1 of the parent PRD. Use when starting a new product, feature or initiative, or when someone asks for a new spec, a new PRD or to capture requirements."
 argument-hint: "<one-line idea or problem>"
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 # sdd-intake
@@ -60,7 +60,7 @@ Do not use it for bugs or small changes; those take the short path through `sdd-
 
 ## Stop and gate
 
-Stop after Section 1. The owner approves the problem framing at the intake checkpoint before `sdd-spec` writes requirements. Present a short summary: the problem, the outcomes, the invariants and the open questions. Agents never set `status: approved`; the owner does.
+Stop after Section 1. The owner approves the problem framing at the intake checkpoint before `sdd-spec` writes requirements. Present a short summary: the problem, the outcomes, the invariants and the open questions. Agents never set `status: approved` unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below).
 
 ## Rules
 
@@ -70,10 +70,29 @@ Stop after Section 1. The owner approves the problem framing at the intake check
 - An answer that admits two readings goes back to the owner as `- [ ] Q:`.
 - Project knowledge goes into the PRD, not into agent memory.
 
+## Auto-accept
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, set the following fields in the front matter of the PRD this skill writes, instead of `status: draft`:
+
+```yaml
+status: approved
+claude_auto_accepted: true
+claude_auto_accepted_at: <current ISO 8601 UTC timestamp, for example 2026-10-23T14:02Z>
+```
+
+When `approvals.requireApprover` is also `true`, additionally set:
+
+```yaml
+approved_by: "claude (auto)"
+```
+
+The gate hook checks `status` only; it passes on `status: approved` regardless of how it was set. Run `node tools/sdd/cli.mjs review-auto-accepted` to inspect all auto-accepted documents before any release.
+
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.2 | 2026-10-23 | Auto-accept: sets status: approved and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.1 | 2026-10-22 | Links to standard v3 |
 | 1.1.0 | 2026-10-22 | Intake checkpoint replaces Gate 0; reads the v2 standard and the scope map; records the scope; AGENTS.md is called repository instructions |
 | 1.0.0 | 2026-10-22 | First release |

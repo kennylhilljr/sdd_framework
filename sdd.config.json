@@ -52,6 +52,7 @@
     "protectApprovedDocs": true,
     "reachReport": true,
     "divergenceProbe": false,
-    "differentialAudit": false
+    "differentialAudit": false,
+    "autoAcceptClaudeRecommendations": false
   }
 }

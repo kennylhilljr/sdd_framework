@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { classifyId, parseYaml, parseTables, parseFrontMatter, loadConfig, parseArgs } from "../../tools/lib/sdd-lib.mjs";
+import { classifyId, parseYaml, parseTables, parseFrontMatter, loadConfig, parseArgs, isClaudeAutoAccepted, loadAutoAcceptedDocs, AUTO_ACCEPT_FIELD } from "../../tools/lib/sdd-lib.mjs";
 import { lint } from "../../tools/spec-lint/spec-lint.mjs";
 import { analyze, write } from "../../tools/trace-check/trace-check.mjs";
 import { analyze as analyzeTrace, readJUnit } from "../../tools/trace-check/trace-check.mjs";
@@ -498,5 +498,45 @@ describe("hooks", () => {
     expect(protectDecide(root, "docs/prd/components/PRD-draft-v1.md").allow).toBe(true);
     expect(protectDecide(root, "docs/trace/index.yaml").allow).toBe(true);
     expect(protectDecide(root, "src/x.ts").allow).toBe(true);
+  });
+
+  it("does not auto-pass gates when autoAcceptClaudeRecommendations is false (default)", () => {
+    const root = repo({ "docs/prd/components/PRD-tech-v1.md": componentPrd("draft", `| TECH-1 | ${EARS} | TECH-FR-1 | P1 |`) });
+    expect(gateDecide(root, "sdd-hld").allow).toBe(false);
+  });
+
+  it("passes a gate when a document carries status: approved regardless of auto-accept fields", () => {
+    const prd = componentPrd("approved", `| TECH-1 | ${EARS} | TECH-FR-1 | P1 |`)
+      .replace("status: approved", `status: approved\n${AUTO_ACCEPT_FIELD}: true`);
+    const root = repo({ "docs/prd/components/PRD-tech-v1.md": prd });
+    expect(gateDecide(root, "sdd-hld").allow).toBe(true);
+  });
+
+  it("identifies auto-accepted documents correctly", () => {
+    expect(isClaudeAutoAccepted({ data: { status: "approved", [AUTO_ACCEPT_FIELD]: true } })).toBe(true);
+    expect(isClaudeAutoAccepted({ data: { status: "approved" } })).toBe(false);
+    expect(isClaudeAutoAccepted({ data: {} })).toBe(false);
+  });
+
+  it("loadAutoAcceptedDocs returns only documents stamped with auto-accept", () => {
+    const prd = componentPrd("approved", `| TECH-1 | ${EARS} | TECH-FR-1 | P1 |`)
+      .replace("status: approved", `status: approved\n${AUTO_ACCEPT_FIELD}: true`);
+    const root = repo({
+      "docs/prd/components/PRD-tech-v1.md": prd,
+      "docs/spec/SPEC-v1.md": doc("spec", "approved"),
+    });
+    const cfg = loadConfig(root);
+    const found = loadAutoAcceptedDocs(root, cfg);
+    expect(found).toHaveLength(1);
+    expect(found[0].data[AUTO_ACCEPT_FIELD]).toBe(true);
+  });
+
+  it("shows the review-auto-accepted hint when blocking an auto-accepted document", () => {
+    const prd = componentPrd("approved", `| TECH-1 | ${EARS} | TECH-FR-1 | P1 |`)
+      .replace("status: approved", `status: approved\n${AUTO_ACCEPT_FIELD}: true`);
+    const root = repo({ "docs/prd/components/PRD-tech-v1.md": prd });
+    const result = protectDecide(root, "docs/prd/components/PRD-tech-v1.md");
+    expect(result.allow).toBe(false);
+    expect((result as any).reason).toContain("review-auto-accepted");
   });
 });

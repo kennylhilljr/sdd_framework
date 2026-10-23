@@ -83,6 +83,7 @@ export const DEFAULT_CONFIG = {
     reachReport: true,
     divergenceProbe: false,
     differentialAudit: false,
+    autoAcceptClaudeRecommendations: false,
   },
 };
 
@@ -326,6 +327,8 @@ export const VERSIONED_RE = /^(.*)-v(\d+)\.md$/;
 export const DOC_STATUSES = new Set(["draft", "in-review", "approved", "superseded"]);
 export const ADR_STATUSES = new Set(["proposed", "accepted", "rejected", "superseded", "deprecated"]);
 export const FROZEN_STATUSES = new Set(["approved", "superseded", "accepted", "rejected", "deprecated"]);
+export const AUTO_ACCEPT_FIELD    = "claude_auto_accepted";
+export const AUTO_ACCEPT_AT_FIELD = "claude_auto_accepted_at";
 
 export function loadDocs(root, cfg) {
   const docsDir = join(root, cfg.paths.docs);
@@ -366,6 +369,14 @@ export function loadDocs(root, cfg) {
 
 export function docStatus(d) {
   return String(d.data.status || "").toLowerCase();
+}
+
+export function isClaudeAutoAccepted(d) {
+  return d.data?.[AUTO_ACCEPT_FIELD] === true;
+}
+
+export function loadAutoAcceptedDocs(root, cfg) {
+  return loadDocs(root, cfg).filter(isClaudeAutoAccepted);
 }
 
 // Collect requirement definitions from the PRDs.
@@ -585,7 +596,7 @@ export function isGitRepo(root) {
 // Output helpers
 // ---------------------------------------------------------------------------
 // Flags that never take a value, so "init --git ../app" keeps ../app as the folder.
-export const BOOLEAN_FLAGS = new Set(["apply", "git", "json", "force", "dry-run", "allow-dirty", "check", "advisory", "write", "help", "overwrite"]);
+export const BOOLEAN_FLAGS = new Set(["apply", "git", "json", "force", "dry-run", "allow-dirty", "check", "advisory", "write", "help", "overwrite", "confirm"]);
 
 export function parseArgs(argv) {
   const args = { _: [] };

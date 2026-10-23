@@ -2,7 +2,7 @@
 name: sdd-hld
 description: "Draft the system high-level design (the SPEC) and ADR options with tradeoffs from approved PRDs. Use after Gate 1, when the requirements are approved and the system shape needs designing or changing."
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # sdd-hld
@@ -45,7 +45,7 @@ Design the shape of the solution. The architect drafts options for every decisio
 
 ## Stop and gate
 
-Stop for **Gate 2**. The owner chooses among ADR options (ADR status `accepted` or `rejected`), ranks the risks, and sets `status: approved` on the SPEC. Agents never set either.
+Stop for **Gate 2**. The owner chooses among ADR options (ADR status `accepted` or `rejected`), ranks the risks, and sets `status: approved` on the SPEC. Agents never set either unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below).
 
 ## Rules
 
@@ -55,9 +55,28 @@ Stop for **Gate 2**. The owner chooses among ADR options (ADR status `accepted` 
 - An ADR is never edited after acceptance; a new ADR supersedes it.
 - Ambiguity in a PRD goes back to the owner as `- [ ] Q:`; do not design around it silently.
 
+## Auto-accept
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, set the following fields in the front matter of the SPEC this skill writes, instead of `status: draft`:
+
+```yaml
+status: approved
+claude_auto_accepted: true
+claude_auto_accepted_at: <current ISO 8601 UTC timestamp, for example 2026-10-23T14:02Z>
+```
+
+When `approvals.requireApprover` is also `true`, additionally set:
+
+```yaml
+approved_by: "claude (auto)"
+```
+
+ADRs keep `status: proposed`; auto-accept applies to the SPEC only. The gate hook checks `status` only; it passes on `status: approved` regardless of how it was set. Run `node tools/sdd/cli.mjs review-auto-accepted` to inspect all auto-accepted documents before any release.
+
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved on SPEC and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Testing strategy drafted as C; check no longer blocks design on missing tests; AGENTS.md is called repository instructions; decisions live in the lowest artifact that covers them |
 | 1.0.0 | 2026-10-22 | First release |

@@ -3,7 +3,7 @@ name: sdd-spec
 description: "Turn an approved problem framing into requirements: user stories with priority, functional requirements and EARS acceptance criteria with stable IDs, in the parent and component PRDs. Use after sdd-intake, or when a bug or small change needs its criteria updated."
 argument-hint: "[component name]"
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # sdd-spec
@@ -52,7 +52,7 @@ Write the agent-owned and co-authored parts of the PRDs from the owner's answers
 
 ## Stop and gate
 
-Hand over to `sdd-clarify`. Gate 1 (the owner approves the PRDs) happens after clarification. Agents never set `status: approved`.
+Hand over to `sdd-clarify`. Gate 1 (the owner approves the PRDs) happens after clarification. Agents never set `status: approved` unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below).
 
 ## Rules
 
@@ -63,9 +63,28 @@ Hand over to `sdd-clarify`. Gate 1 (the owner approves the PRDs) happens after c
 - Anything ambiguous becomes `- [ ] Q:` in the PRD, never a silent choice.
 - The PRD says what and why, never how. Design belongs in the SPEC and LLDs.
 
+## Auto-accept
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, set the following fields in the front matter of each PRD this skill writes, instead of `status: draft`:
+
+```yaml
+status: approved
+claude_auto_accepted: true
+claude_auto_accepted_at: <current ISO 8601 UTC timestamp, for example 2026-10-23T14:02Z>
+```
+
+When `approvals.requireApprover` is also `true`, additionally set:
+
+```yaml
+approved_by: "claude (auto)"
+```
+
+The gate hook checks `status` only; it passes on `status: approved` regardless of how it was set. Run `node tools/sdd/cli.mjs review-auto-accepted` to inspect all auto-accepted documents before any release.
+
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Intake checkpoint replaces Gate 0; requirements and criteria are drafted as C (owner selects and approves) |
 | 1.0.0 | 2026-10-22 | First release |

@@ -3,7 +3,7 @@ name: sdd-verify
 description: "Independently check that tests and code still match the approved spec: run spec-lint and trace-check, regenerate coverage, update the audit index and report drift and annotation reach. Use after implementation, before a merge, or on a schedule."
 argument-hint: "[component name]"
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # sdd-verify
@@ -29,7 +29,9 @@ Prove the trace holds. Structural checks confirm that every link exists. The aud
 ## Steps
 
 1. Dispatch the `verifier` persona with the Agent tool. It must not be the agent that wrote the work under review. Give it the components in scope and these steps.
-2. Run `node tools/sdd/cli.mjs check`. Every error is a finding: reverse orphans (an `@spec` that cites an undefined ID), approved criteria without tests in a component that has a milestone plan, a failing linked test, hollow status (`docs/trace/coverage.md` claims evidence no test shows), a deferred P1 criterion. Warnings include criteria with no planned evidence before build, and governing artifacts approved or changed after the last audit.
+2. If `features.autoAcceptClaudeRecommendations` is true, run `node tools/sdd/cli.mjs review-auto-accepted` first. List every document that carries `claude_auto_accepted: true` and `human_reviewed` is absent under a **Pending final review** section of the audit report. Include the count in the summary line, for example: "3 auto-accepted documents await human review (run: node tools/sdd/cli.mjs review-auto-accepted)".
+
+   Run `node tools/sdd/cli.mjs check`. Every error is a finding: reverse orphans (an `@spec` that cites an undefined ID), approved criteria without tests in a component that has a milestone plan, a failing linked test, hollow status (`docs/trace/coverage.md` claims evidence no test shows), a deferred P1 criterion. Warnings include criteria with no planned evidence before build, and governing artifacts approved or changed after the last audit.
 3. Run `node tools/trace-check/trace-check.mjs --write` (with `--results <JUnit file>` when a test report exists) to regenerate `docs/trace/coverage.md` and the evidence counts and governing artifact versions in `docs/trace/index.yaml`. The test plan is never edited.
 4. For a pull request, run `node tools/trace-check/trace-check.mjs --base <base branch>` and report annotation reach for the changed files. A falling number is a review finding.
 5. Re-read each adjacent pair for the changed components (PRD and SPEC, SPEC and LLD, LLD and code) and write one line per pair: "consistent" with a reason, or "needs review" with the tension.
@@ -64,10 +66,12 @@ Findings go to the owner. Drift is never auto-repaired. Verification reports the
 | --- | --- | --- |
 | `features.reachReport` | true | Reports annotation reach in trace-check. |
 | `features.differentialAudit` | false | Runs the bidirectional differential in step 7. Switching it off changes nothing else. |
+| `features.autoAcceptClaudeRecommendations` | false | When true, step 2 surfaces all auto-accepted documents that have not been human-reviewed yet. |
 
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-23 | Surfaces pending auto-accepted documents in step 2 when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Evidence states, test reports, audit record fields and the drift rule |
 | 1.0.0 | 2026-10-22 | First release |

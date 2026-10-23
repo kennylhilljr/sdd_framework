@@ -6,7 +6,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { findRoot, loadConfig, parseFrontMatter, FROZEN_STATUSES, isMain } from "../lib/sdd-lib.mjs";
+import { findRoot, loadConfig, parseFrontMatter, FROZEN_STATUSES, AUTO_ACCEPT_FIELD, isMain } from "../lib/sdd-lib.mjs";
 
 export function decide(root, filePath) {
   const cfg = loadConfig(root);
@@ -20,11 +20,14 @@ export function decide(root, filePath) {
   const status = String(data.status || "").toLowerCase();
   if (!FROZEN_STATUSES.has(status)) return { allow: true };
   const isAdr = r.startsWith(`${cfg.paths.docs}/adr/`);
+  const autoHint = data[AUTO_ACCEPT_FIELD] === true
+    ? " This document was auto-accepted by Claude. Review it first: node tools/sdd/cli.mjs review-auto-accepted"
+    : "";
   return {
     allow: false,
     reason: isAdr
-      ? `${r} is ${status} and frozen. Record a change as a new ADR that supersedes it: node tools/sdd/cli.mjs new adr --name <slug>`
-      : `${r} is ${status} and frozen. Create the next version instead: node tools/sdd/cli.mjs new --next ${r}`,
+      ? `${r} is ${status} and frozen.${autoHint} Record a change as a new ADR that supersedes it: node tools/sdd/cli.mjs new adr --name <slug>`
+      : `${r} is ${status} and frozen.${autoHint} Create the next version instead: node tools/sdd/cli.mjs new --next ${r}`,
   };
 }
 

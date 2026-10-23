@@ -3,7 +3,7 @@ name: sdd-clarify
 description: "Find gaps, conflicts and ambiguous criteria in the PRDs and ask the owner only what is missing, then prepare Gate 1. Use after sdd-spec, before asking the owner to approve the requirements."
 argument-hint: "[component name]"
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # sdd-clarify
@@ -47,7 +47,7 @@ Make the PRDs safe to design from. Check that every criterion is testable, that 
 
 ## Stop and gate
 
-Stop for **Gate 1**. The Product authority, with the feasibility and control reviewers, reviews the PRDs; the approver sets `status: approved` and records `approved_by` and `approved` in each one. Agents never set them. No approved PRD means `sdd-hld` is blocked by the gate hook.
+Stop for **Gate 1**. The Product authority, with the feasibility and control reviewers, reviews the PRDs; the approver sets `status: approved` and records `approved_by` and `approved` in each one. Agents never set them unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below). No approved PRD means `sdd-hld` is blocked by the gate hook.
 
 ## Rules
 
@@ -62,9 +62,28 @@ Stop for **Gate 1**. The Product authority, with the feasibility and control rev
 | --- | --- | --- |
 | `features.divergenceProbe` | false | Runs the blind divergence probe in step 3. Switching it off changes nothing else. |
 
+## Auto-accept
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, set the following fields in the front matter of each PRD this skill finalizes, instead of leaving `status: draft`:
+
+```yaml
+status: approved
+claude_auto_accepted: true
+claude_auto_accepted_at: <current ISO 8601 UTC timestamp, for example 2026-10-23T14:02Z>
+```
+
+When `approvals.requireApprover` is also `true`, additionally set:
+
+```yaml
+approved_by: "claude (auto)"
+```
+
+The gate hook checks `status` only; it passes on `status: approved` regardless of how it was set. Run `node tools/sdd/cli.mjs review-auto-accepted` to inspect all auto-accepted documents before any release.
+
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Gate 1 approval records approved_by and approved |
 | 1.0.0 | 2026-10-22 | First release |

@@ -30,7 +30,7 @@ Product owns the problem, outcomes, scope, priorities, constraints and acceptanc
 ## Rules
 
 - **Approved versions are frozen.** Never edit a document whose status is `approved`; create the next version with `node tools/sdd/cli.mjs new --next <path>`. ADRs are superseded by a new ADR.
-- **Approvals are human.** The intake checkpoint approves the problem framing (PRD Section 1); Gate 1 the Product specification; Gate 2 the SPEC (HLD); Gate 3 the LLD for one component. Agents never set `status: approved`, `approved_by` or `approved`. Name the component when you run a gated skill (`/sdd-lld tech`).
+- **Approvals are human.** The intake checkpoint approves the problem framing (PRD Section 1); Gate 1 the Product specification; Gate 2 the SPEC (HLD); Gate 3 the LLD for one component. Agents never set `status: approved`, `approved_by` or `approved` unless `features.autoAcceptClaudeRecommendations` is enabled (see Optional: auto-accept mode below). Name the component when you run a gated skill (`/sdd-lld tech`).
 - **Every requirement has a stable ID**, never renumbered and never reused. Acceptance criteria use `<PREFIX>-<n>` (for example `TECH-2`) unless `ids.criterionPattern` allows a richer form. A change of actor, trigger, response, target or test obligation gets a new ID; the old one goes in the PRD's ID history table.
 - **Tests and code cite the criteria they satisfy** with a comment such as `// @spec TECH-2`: on the test that exercises the behavior and on the entry point of the behavior in code, not on every helper. A link is structural evidence; it does not prove meaning.
 - **Drift is decided by a person.** Verification reports a disagreement. The named owner determines the first artifact in the delivery trace that no longer reflects approved intent; correct that artifact, then update or regenerate what depends on it.
@@ -66,6 +66,10 @@ node tools/sdd/cli.mjs new --help     # create a document from a template
 | Triage support work | `/sdd-triage` | `sre`, `verifier`, `planner` | Owner confirms S0 and S1 |
 
 Bugs and small changes take the short path: correct the first artifact that lost intent, then tasks, then code.
+
+## Optional: auto-accept mode
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, skills mark their output documents `status: approved` immediately and stamp `claude_auto_accepted: true`. Gates pass without a manual human approval step. This does not remove accountability; it defers it. Use `node tools/sdd/cli.mjs review-auto-accepted` at any time (and before every release) to inspect every auto-accepted document. Run `--confirm` to record that a human has reviewed them, or `--revert <path>` to push a document back to `draft` for proper approval. The flag defaults to `false`; nothing changes for teams that do not opt in.
 
 ## Agents without skills, subagents or hooks (Codex and others)
 

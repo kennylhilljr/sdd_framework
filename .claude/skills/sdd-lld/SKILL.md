@@ -3,7 +3,7 @@ name: sdd-lld
 description: "Write one low-level design per component from the approved SPEC: contracts, schema, algorithms, errors, configuration, observability and the test plan. Use after Gate 2, when a component is ready for detailed design."
 argument-hint: "<component name>"
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # sdd-lld
@@ -44,7 +44,7 @@ Produce the build detail for one component. Agents prepare most of the LLD from 
 
 ## Stop and gate
 
-Stop for **Gate 3**. The Business Application, component and control owners review public or cross-team contracts, persisted schema, authorization enforcement and the test strategy, then set `status: approved` and record `approved_by` and `approved` on the LLD. Agents never set it. The rest of the LLD is reviewed through the code.
+Stop for **Gate 3**. The Business Application, component and control owners review public or cross-team contracts, persisted schema, authorization enforcement and the test strategy, then set `status: approved` and record `approved_by` and `approved` on the LLD. Agents never set it unless `features.autoAcceptClaudeRecommendations` is enabled (see Auto-accept below). The rest of the LLD is reviewed through the code.
 
 ## Rules
 
@@ -53,9 +53,28 @@ Stop for **Gate 3**. The Business Application, component and control owners revi
 - Every optional behavior gets a feature flag that is safe to switch off.
 - Anything the LLD cannot settle without the owner becomes `- [ ] Q:`.
 
+## Auto-accept
+
+When `features.autoAcceptClaudeRecommendations` is `true` in `sdd.config.json`, set the following fields in the front matter of the LLD this skill writes, instead of `status: draft`:
+
+```yaml
+status: approved
+claude_auto_accepted: true
+claude_auto_accepted_at: <current ISO 8601 UTC timestamp, for example 2026-10-23T14:02Z>
+```
+
+When `approvals.requireApprover` is also `true`, additionally set:
+
+```yaml
+approved_by: "claude (auto)"
+```
+
+The gate hook checks `status` only; it passes on `status: approved` regardless of how it was set. Run `node tools/sdd/cli.mjs review-auto-accepted` to inspect all auto-accepted documents before any release.
+
 ## Changelog
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-23 | Auto-accept: sets status: approved and stamps audit fields when features.autoAcceptClaudeRecommendations is true |
 | 1.1.0 | 2026-10-22 | Gate bound to the named component; contracts, schema, authorization and test strategy drafted as C; planned evidence |
 | 1.0.0 | 2026-10-22 | First release |
